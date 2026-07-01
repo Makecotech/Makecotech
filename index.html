@@ -7,7 +7,19 @@
 <title>MakeCoTech | Advanced Engineering &amp; Simulation Consulting</title>
 <meta content="MakeCoTech provides engineering consultancy, finite element analysis, nonlinear material modeling, metal forming simulation, automotive exhaust systems development and semiconductor equipment engineering." name="description"/>
 <link href="style.css" rel="stylesheet"/>
-</head>
+<script>
+if (!sessionStorage.getItem('languageRedirectDone')) {
+    const lang = navigator.language || navigator.userLanguage;
+
+    if (lang.toLowerCase().startsWith('fr') &&
+        !window.location.pathname.startsWith('/fr/')) {
+
+        sessionStorage.setItem('languageRedirectDone', 'true');
+        window.location.href = '/fr/';
+    }
+}
+</script>
+</head>           
 <body>
 <header class="site-header">
 <a aria-label="MakeCoTech home" class="brand" href="#home">
