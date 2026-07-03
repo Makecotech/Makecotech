@@ -268,7 +268,19 @@ ul { margin: 20px 0 0; padding-left: 20px; color: #3f4a5d; line-height: 1.9; }
     border-radius: 20px;
     box-shadow: 0 20px 45px rgba(0,0,0,0.18);
 }
+.founder-linkedin {
+    margin-top: 25px;
+}
 
+.founder-linkedin a {
+    color: #0078d7;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.founder-linkedin a:hover {
+    text-decoration: underline;
+}
 .founder-text h2 {
     margin-bottom: 10px;
 }
