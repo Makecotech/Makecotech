@@ -224,12 +224,547 @@ isotropic, kinematic and combined hardening.
 
 <div class="visualizer-frame">
 
-  <iframe
-    class="plasticity-visualizer"
-    src="plasticity-visualizer.html"
-    title="Interactive Plasticity Hardening Visualizer"
-    loading="lazy"
-  ></iframe>
+  <div id="plasticityVisualizer">
+    <div id="appContainer" style="background-color: #030712; border: 1px solid #1f2937; border-radius: 12px; padding: 10px; font-family: sans-serif; max-width: 960px; margin: 0 auto; color: #ffffff; box-sizing: border-box; overflow: hidden;">
+
+	<!-- Real-time Status Readouts Header -->
+	<div style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; margin-bottom: 10px; border-bottom: 1px solid #1f2937; padding-bottom: 6px;">
+		<div>
+			<div style="color: #9ca3af; font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">Stress State</div>
+			<div id="readoutStress" style="color: #3b82f6; font-size: 18px; font-weight: bold; margin-top: 2px;">0.0 MPa</div>
+		</div>
+		<div>
+			<div style="color: #9ca3af; font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">Backstress (α)</div>
+			<div id="readoutAlpha" style="color: #ef4444; font-size: 18px; font-weight: bold; margin-top: 2px;">0.0 MPa</div>
+		</div>
+		<div>
+			<div style="color: #9ca3af; font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">Material Status</div>
+			<div id="readoutStatus" style="color: #10b981; font-size: 18px; font-weight: bold; margin-top: 2px;">Neutral / Idle</div>
+		</div>
+	</div>
+
+	<!-- Centered 3-Column Chart Layout -->
+	<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 10px; width: 100%;">
+		<div id="canvasWrapperTest" style="text-align: center; width: 100%;">
+			<div style="font-size: 11px; margin-bottom: 4px; font-weight: bold; color: #fbbf24; text-transform: uppercase;">📋 Uniaxial Specimen Setup</div>
+			<canvas id="specimenPlane" style="background-color: #090d16; border-radius: 8px; border: 1px solid #1f2937; display: block; margin: 0 auto;"></canvas>
+		</div>
+		<div id="canvasWrapper1" style="text-align: center; width: 100%;">
+			<div style="font-size: 11px; margin-bottom: 4px; font-weight: bold; color: #ffffff;">Deviatoric Stress Space Plane (s₁-s₂)</div>
+			<canvas id="vectorPlane" style="background-color: #090d16; border-radius: 8px; border: 1px solid #1f2937; display: block; margin: 0 auto;"></canvas>
+		</div>
+		<div id="canvasWrapper2" style="text-align: center; width: 100%;">
+			<div style="font-size: 11px; margin-bottom: 4px; font-weight: bold; color: #ffffff;">Cyclic Stress-Strain Curve</div>
+			<canvas id="curvePlane" style="background-color: #090d16; border-radius: 8px; border: 1px solid #1f2937; display: block; margin: 0 auto;"></canvas>
+		</div>
+	</div>
+	<!-- Client-Side Controls Console Grid Layout -->
+	<div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; background-color: #111827; padding: 12px; border-radius: 8px; border: 1px solid #1f2937; margin-bottom: 10px; box-sizing: border-box;">
+
+		<!-- Left Side: Table Input Parameters with +/- Adjustment Buttons -->
+		<div style="border-right: 1px solid #1f2937; padding-right: 15px;">
+			<div style="color: #fbbf24; font-weight: bold; font-size: 12px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">🏆 Material Configuration</div>
+
+			<table style="width: 100%; border-collapse: collapse; font-size: 11px; font-weight: bold; color: #d1d5db;">
+				<tr style="height: 32px; border-bottom: 1px solid #1f2937;">
+					<td style="width: 50%;">Young's Modulus E (MPa)</td>
+					<td style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding-top: 3px;">
+						<button onclick="adjust('E', -10000)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">−</button>
+						<input type="number" id="inputE" value="200000" step="10000" style="width: 75px; text-align: center; background: #030712; color: #fbbf24; border: 1px solid #374151; border-radius: 4px; font-weight: bold; height: 20px;">
+							<button onclick="adjust('E', 10000)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">+</button>
+						</td>
+				</tr>
+				<tr style="height: 32px; border-bottom: 1px solid #1f2937;">
+					<td>Initial Yield strength σy₀ (MPa)</td>
+					<td style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding-top: 3px;">
+						<button onclick="adjust('Y', -10)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">−</button>
+						<input type="number" id="inputY" value="200" step="10" style="width: 75px; text-align: center; background: #030712; color: #fbbf24; border: 1px solid #374151; border-radius: 4px; font-weight: bold; height: 20px;">
+							<button onclick="adjust('Y', 10)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">+</button>
+						</td>
+				</tr>
+				<tr style="height: 32px; border-bottom: 1px solid #1f2937;">
+					<td>Saturation Limit σsat (MPa)</td>
+					<td style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding-top: 3px;">
+						<button onclick="adjust('u', -10)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">−</button>
+						<input type="number" id="inputU" value="550" step="10" style="width: 75px; text-align: center; background: #030712; color: #fbbf24; border: 1px solid #374151; border-radius: 4px; font-weight: bold; height: 20px;">
+							<button onclick="adjust('u', 10)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">+</button>
+						</td>
+				</tr>
+				<tr style="height: 32px; border-bottom: 1px solid #1f2937;">
+					<td>Kinematic Modulus Hk (MPa)</td>
+					<td style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding-top: 3px;">
+						<button onclick="adjust('Hk', -500)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">−</button>
+						<input type="number" id="inputHk" value="4000" step="500" style="width: 75px; text-align: center; background: #030712; color: #fbbf24; border: 1px solid #374151; border-radius: 4px; font-weight: bold; height: 20px;">
+							<button onclick="adjust('Hk', 500)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">+</button>
+						</td>
+				</tr>
+				<tr style="height: 32px;">
+					<td>Isotropic Modulus Hi (MPa)</td>
+					<td style="display: flex; align-items: center; justify-content: flex-end; gap: 4px; padding-top: 3px;">
+						<button onclick="adjust('Hi', -500)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">−</button>
+						<input type="number" id="inputHi" value="2000" step="500" style="width: 75px; text-align: center; background: #030712; color: #fbbf24; border: 1px solid #374151; border-radius: 4px; font-weight: bold; height: 20px;">
+							<button onclick="adjust('Hi', 500)" style="width:22px; height:22px; background:#374151; color:#ffffff; border:none; border-radius:4px; font-weight:bold; cursor:pointer;">+</button>
+						</td>
+				</tr>
+			</table>
+		</div>
+		<!-- Right Side: Hardening Mode Selectors & BRIGHT GOLD HIGH-VISIBILITY BOUNDS SLIDER CARD -->
+		<div style="display: flex; flex-direction: column; justify-content: space-between; gap: 4px;">
+			<div>
+				<label style="display: block; font-weight: bold; font-size: 10px; margin-bottom: 4px; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.05em;">⚙️ Hardening Formulation Mode</label>
+				<div style="display: flex; flex-direction: column; gap: 4px;">
+					<label style="display: flex; align-items: center; background-color: #030712; border: 1px solid #1f2937; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">
+						<input type="radio" name="hardMode" value="kinematic" checked="" style="margin-right: 6px; cursor: pointer; accent-color: #3b82f6;">
+                        1️⃣ Pure Kinematic Capped Hardening
+                    </label>
+					<label style="display: flex; align-items: center; background-color: #030712; border: 1px solid #1f2937; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">
+						<input type="radio" name="hardMode" value="isotropic" style="margin-right: 6px; cursor: pointer; accent-color: #3b82f6;">
+                        2️⃣ Pure Isotropic Capped Hardening
+                    </label>
+					<label style="display: flex; align-items: center; background-color: #030712; border: 1px solid #1f2937; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">
+						<input type="radio" name="hardMode" value="combined" style="margin-right: 8px; cursor: pointer; accent-color: #3b82f6;">
+                        3️⃣ Combined Capped Hardening (Hk + Hi)
+                    </label>
+				</div>
+			</div>
+
+			<!-- ENHANCED GOLD PANEL: Dynamic slider boundary entry configuration boxes -->
+			<div style="margin-top: 1px; background-color: #fbbf24; border: 1.5px solid #d97706; padding: 6px; border-radius: 6px; box-sizing: border-box; color: #030712; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.25);">
+				<label style="display: block; font-weight: 900; font-size: 11px; margin-bottom: 4px; color: #78350f; text-transform: uppercase; letter-spacing: 0.04em; text-align: center;">🛑 Drag Handle Left/Right To Apply Strain</label>
+
+				<div style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: space-between; margin-bottom: 2px;">
+					<div style="display: flex; flex-direction: column; align-items: center;">
+						<span style="font-size: 8px; font-weight: 900; color: #78350f; text-transform: uppercase;">Min ε (%)</span>
+						<input type="number" id="boundsMin" value="-0.60" step="0.05" style="width: 48px; background: #111827; color: #fbbf24; border: 1px solid #78350f; border-radius: 4px; font-size: 10px; font-weight: bold; text-align: center; height: 18px;">
+                    </div>
+
+					<div style="position: relative; flex: 1; display: flex; align-items: center; padding: 0 4px;">
+						<input type="range" id="strainSlider" min="-600" max="600" value="0" step="1" style="width: 100%; cursor: pointer; -webkit-appearance: none; appearance: none; height: 6px; background: #78350f44; border-radius: 3px; outline: none; margin: 0; border: 1px solid #d9770633;">
+							<style>
+								#strainSlider::-webkit-slider-thumb {
+								-webkit-appearance: none; appearance: none; width: 44px; height: 20px; border-radius: 6px;
+								background: linear-gradient(to bottom, #ffffff 0%, #e2e8f0 25%, #cbd5e1 50%, #94a3b8 75%, #64748b 100%);
+								color: #0f172a; cursor: pointer; border-top: 1px solid #ffffff; border-bottom: 2px solid #1e293b; border-left: 1.5px solid #e2e8f0; border-right: 1.5px solid #cbd5e1;
+								display: flex; align-items: center; justify-content: center; font-family: monospace; font-weight: 900; font-size: 12px; letter-spacing: 1px; content: "< >"; text-shadow: 0 1px 0 rgba(255,255,255,0.6); box-shadow: 0 3px 6px rgba(15,23,42,0.4), inset 0 1px 0 rgba(255,255,255,0.9);
+                            }
+                            #strainSlider::-moz-range-thumb {
+                                width: 44px; height: 20px; border-radius: 6px; background: linear-gradient(to bottom, #ffffff 0%, #e2e8f0 25%, #cbd5e1 50%, #94a3b8 75%, #64748b 100%);
+                                color: #0f172a; cursor: pointer; border-top: 1px solid #ffffff; border-bottom: 2px solid #1e293b; border-left: 1.5px solid #e2e8f0; border-right: 1.5px solid #cbd5e1;
+                                display: flex; align-items: center; justify-content: center; font-family: monospace; font-weight: 900; font-size: 12px; letter-spacing: 1px; content: "< >"; text-shadow: 0 1px 0 rgba(255,255,255,0.6); box-shadow: 0 3px 6px rgba(15,23,42,0.4), inset 0 1px 0 rgba(255,255,255,0.9);
+                            }
+							</style>
+						</div>
+
+					<div style="display: flex; flex-direction: column; align-items: center;">
+						<span style="font-size: 8px; font-weight: 900; color: #78350f; text-transform: uppercase;">Max ε (%)</span>
+						<input type="number" id="boundsMax" value="0.60" step="0.05" style="width: 48px; background: #111827; color: #fbbf24; border: 1px solid #78350f; border-radius: 4px; font-size: 10px; font-weight: bold; text-align: center; height: 18px;">
+                    </div>
+				</div>
+				<div style="font-size: 11px; font-weight: 900; color: #78350f; text-align: center;">
+					Active Displacement (ε): <span id="sliderValue" style="color: #ffffff; background: #78350f; padding: 1px 6px; border-radius: 3px; font-size: 11px;">0.0000</span> %
+				</div>
+			</div>
+
+			<button id="resetBtn" style="background-color: #ef4444; color: white; border: none; font-weight: bold; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 11px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+				Reset Path History 🔄
+			</button>
+		</div>
+	</div>
+	<!-- Principal Equations Panel & Deviatoric Space Academic Definition -->
+	<div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 8px; padding: 14px; color: #e5e7eb; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+		<div>
+			<div style="color: #fbbf24; font-weight: bold; font-size: 13px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #1f2937; padding-bottom: 4px;">📖 Principal Constitutive Formulations</div>
+			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 12px; line-height: 1.65;">
+				<div>
+					<span style="color: #60a5fa; font-weight: bold;">Total Stress Function:</span>
+					<br>
+						&nbsp;&nbsp;<em>σ</em> = <em>E</em> · (<em>ε</em> − <em>ε</em>ᵖ)<br>
+							&nbsp;&nbsp;<span style="color: #9ca3af; font-size: 11px;">
+								[<em>E</em>: Young's Modulus, <em>ε</em>ᵖ: Plastic Strain]
+							</span><br>
+								<br>
+									<span style="color: #60a5fa; font-weight: bold;">The Yield Criterion:</span>
+									<br>
+										&nbsp;&nbsp;<em>f</em>(<em>σ</em>, <em>α</em>) = |<em>σ</em> − <em>α</em>| − <em>σ</em>_<em>y</em> ≤ 0<br>
+											&nbsp;&nbsp;<span style="color: #9ca3af; font-size: 11px;">
+												[The active hardening response is capped by the configured <em>σ</em><sub>sat</sub> limit]
+											</span>
+										</div>
+				<div>
+					<span style="color: #60a5fa; font-weight: bold;">Capped Kinematic Hardening Evolution:</span>
+					<br>
+						&nbsp;&nbsp;<em>dα</em> = <em>H</em>_<em>k</em> · <em>dε</em>ᵖ<br>
+							&nbsp;&nbsp;<span style="color: #9ca3af; font-size: 11px;">
+								[Driven by <em>H</em>_<em>k</em> Modulus; translates yield surface center]
+							</span><br>
+								<br>
+									<span style="color: #60a5fa; font-weight: bold;">Capped Isotropic Hardening Evolution:</span>
+									<br>
+										&nbsp;&nbsp;<em>σ</em>_<em>y</em> = <em>σ</em>_<em>y</em>₀ + <em>H</em>_<em>i</em> · <em>ε̄</em>ᵖ<br>
+											&nbsp;&nbsp;<span style="color: #9ca3af; font-size: 11px;">
+												[Driven by <em>H</em>_<em>i</em> Modulus; expands radius via accumulated <em>ε̄</em>ᵖ]
+											</span>
+										</div>
+			</div>
+		</div>
+
+		<div style="border-top: 1px solid #1f2937; padding-top: 10px;">
+			<div style="color: #34d399; font-weight: bold; font-size: 13px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em;">🧠 Academic Theory: Uniaxial Deviatoric Stress Space Mapping</div>
+			<div style="color: #d1d5db; font-size: 12px; line-height: 1.7; text-align: justify;">
+				The deviatoric stress tensor isolates pure shape distortion by removing hydrostatic pressure components, defined as <strong style="color: #ffffff;">
+					<em>s</em>_<em>ij</em> = <em>σ</em>_<em>ij</em> − ⅓ <em>σ</em>_<em>kk</em> <em>δ</em>_<em>ij</em>
+				</strong>. Under a standard pure uniaxial loading state tensor configuration <strong style="color: #ffffff;">
+					(<em>σ</em>, 0, 0)
+				</strong>, the hydrostatic pressure simplifies directly to <em>p</em> = ⅓<em>σ</em>. Subtracting this from the main diagonal yields the principal deviatoric coordinates: <strong style="color: #fbbf24;">
+					<em>s</em>₁ = ⅔<em>σ</em>
+				</strong> and <strong style="color: #fbbf24;">
+					<em>s</em>₂ = <em>s</em>₃ = −⅓<em>σ</em>
+				</strong>.
+				<br>
+					<br>
+						Consequently, any standard uniaxial testing path is geometrically constrained to satisfy
+<strong style="color: #60a5fa;"><em>s</em>₂ = −½ <em>s</em>₁</strong>.
+For J₂ / von Mises plasticity, with <em>s</em>₃ = −(<em>s</em>₁ + <em>s</em>₂), the yield locus in the ordinary
+<em>s</em>₁–<em>s</em>₂ Cartesian projection is
+<strong style="color: #ffffff;">
+(<em>s</em>₁−<em>a</em>₁)² + (<em>s</em>₁−<em>a</em>₁)(<em>s</em>₂−<em>a</em>₂) + (<em>s</em>₂−<em>a</em>₂)²
+= <em>σ</em><sub>y</sub>² / 3
+</strong>,
+where <em>a</em>₁ = ⅔<em>α</em> and <em>a</em>₂ = −⅓<em>α</em>. Therefore the J₂ yield locus appears as a rotated ellipse in this
+<em>s</em>₁–<em>s</em>₂ plot. During active plastic yielding the current stress point lies on this ellipse; during elastic loading/unloading it lies inside it.
+The configured <em>σ</em><sub>sat</sub> is retained as the cap for the hardening response.</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	window.adjust = function(id, val) {
+	const el = document.getElementById('input' + id.substring(0,1).toUpperCase() + id.substring(1));
+	if (el) {
+	let current = parseFloat(el.value) || 0;
+	el.value = current + val;
+	el.dispatchEvent(new Event('input', { bubbles: true }));
+	}
+	};
+
+	(function() {
+	let E = 200000, sigY0 = 200, sigY = 200, sigSat = 550, Hk = 4000, Hi = 2000;
+	let sigma = 0.0, alpha = 0.0, eps_p = 0.0, eps_p_bar = 0.0, lastSliderVal = 0;
+	let history = [{ sigma: 0.0, alpha: 0.0, eps_p: 0.0, eps_p_bar: 0.0, currentSigY: 200 }];
+
+	const strainSlider = document.getElementById('strainSlider'), resetBtn = document.getElementById('resetBtn');
+	const sliderText = document.getElementById('sliderValue');
+	const modeSelect = document.getElementsByName('hardMode');
+
+	const boundsMinInput = document.getElementById('boundsMin');
+	const boundsMaxInput = document.getElementById('boundsMax');
+	const inputE = document.getElementById('inputE');
+	const inputY = document.getElementById('inputY');
+	const inputU = document.getElementById('inputU');
+	const inputHk = document.getElementById('inputHk');
+	const inputHi = document.getElementById('inputHi');
+
+	const rStress = document.getElementById('readoutStress'), rAlpha = document.getElementById('readoutAlpha'), rStatus = document.getElementById('readoutStatus');
+	const c0 = document.getElementById('specimenPlane'); const ctx0 = c0.getContext('2d');
+	const c1 = document.getElementById('vectorPlane'); const ctx1 = c1.getContext('2d');
+	const c2 = document.getElementById('curvePlane'); const ctx2 = c2.getContext('2d');
+
+	let scale1, scaleX, scaleY;
+	const maxStressWindowSpace = 750;
+	const maxStrain = 0.007;
+
+	function resizeCanvases() {
+	const wrapperWidth = document.getElementById('canvasWrapperTest').clientWidth;
+	const squareSize = Math.max(160, Math.min(270, wrapperWidth));
+
+	c0.width = squareSize; c0.height = squareSize;
+	c1.width = squareSize; c1.height = squareSize;
+	c2.width = squareSize; c2.height = squareSize;
+
+	scale1 = (squareSize * 0.36) / maxStressWindowSpace;
+	scaleX = (squareSize * 0.38) / maxStrain;
+	scaleY = (squareSize * 0.36) / maxStressWindowSpace;
+
+	renderCharts();
+	}
+
+	window.addEventListener('resize', resizeCanvases);
+	setTimeout(resizeCanvases, 50);
+
+	function getX(pt) { return (c2.width/2) + ((pt.sigma / E) + pt.eps_p) * scaleX; }
+	function getY(pt) { return (c2.height/2) - pt.sigma * scaleY; }
+
+	function getActiveMode() {
+	for (let i = 0; i < modeSelect.length; i++) {
+            if (modeSelect[i].checked) return modeSelect[i].value;
+        }
+        return 'kinematic';
+    }
+    function renderCharts() {
+        if (!scale1) return;
+        const w = c0.width, h = c0.height;
+        const mx1 = c1.width / 2, my1 = c1.height / 2;
+        const mx2 = c2.width / 2, my2 = c2.height / 2;
+
+        ctx0.clearRect(0, 0, w, h);
+        ctx0.fillStyle = '#1f2937';
+        ctx0.fillRect(w/2 - 20, 35, 40, 15);
+        ctx0.fillRect(w/2 - 20, h - 50, 40, 15);
+        
+        ctx0.strokeStyle = '#4b5563'; ctx0.lineWidth = 2; ctx0.fillStyle = '#111827';
+        ctx0.beginPath();
+        ctx0.moveTo(w/2 - 15, 50);   ctx0.lineTo(w/2 + 15, 50);
+        ctx0.lineTo(w/2 + 15, 65);   ctx0.quadraticCurveTo(w/2 + 7, 75, w/2 + 7, 85);
+        ctx0.lineTo(w/2 + 7, h - 85); ctx0.quadraticCurveTo(w/2 + 7, h - 75, w/2 + 15, h - 65);
+        ctx0.lineTo(w/2 + 15, h - 50); ctx0.lineTo(w/2 - 15, h - 50);
+        ctx0.lineTo(w/2 - 15, h - 65); ctx0.quadraticCurveTo(w/2 - 7, h - 75, w/2 - 7, h - 85);
+        ctx0.lineTo(w/2 - 7, 85);   ctx0.quadraticCurveTo(w/2 - 7, 75, w/2 - 15, 65);
+        ctx0.closePath(); ctx0.fill(); ctx0.stroke();
+
+        ctx0.strokeStyle = '#fbbf24'; ctx0.lineWidth = 2.5;
+        let arrowOffset = Math.min(12, Math.max(-12, sigma * 0.03));
+        ctx0.beginPath(); ctx0.moveTo(w/2, 35); ctx0.lineTo(w/2, 15 - arrowOffset); ctx0.stroke();
+        if(sigma > 0) {
+            ctx0.beginPath(); ctx0.moveTo(w/2 - 4, 22 - arrowOffset); ctx0.lineTo(w/2, 15 - arrowOffset); ctx0.lineTo(w/2 + 4, 22 - arrowOffset); ctx0.stroke();
+        } else if(sigma < 0) {
+            ctx0.beginPath(); ctx0.moveTo(w/2 - 4, 20 - arrowOffset); ctx0.lineTo(w/2, 27 - arrowOffset); ctx0.lineTo(w/2 + 4, 20 - arrowOffset); ctx0.stroke();
+        }
+        ctx0.beginPath(); ctx0.moveTo(w/2, h - 35); ctx0.lineTo(w/2, h - 15 + arrowOffset); ctx0.stroke();
+        if(sigma > 0) {
+            ctx0.beginPath(); ctx0.moveTo(w/2 - 4, h - 22 + arrowOffset); ctx0.lineTo(w/2, h - 15 + arrowOffset); ctx0.lineTo(w/2 + 4, h - 22 + arrowOffset); ctx0.stroke();
+        } else if(sigma < 0) {
+            ctx0.beginPath(); ctx0.moveTo(w/2 - 4, h - 20 + arrowOffset); ctx0.lineTo(w/2, h - 27 + arrowOffset); ctx0.lineTo(w/2 + 4, h - 20 + arrowOffset); ctx0.stroke();
+        }
+
+        ctx0.fillStyle = '#ffffff'; ctx0.font = '10px sans-serif';
+        ctx0.fillText("σ₁ = " + sigma.toFixed(0) + " MPa", w/2 + 20, h/2 - 5);
+        ctx0.fillStyle = '#9ca3af'; ctx0.fillText("σ₂ = 0", w/2 + 20, h/2 + 10);
+
+        ctx1.clearRect(0, 0, c1.width, c1.height);
+        ctx1.strokeStyle = '#1f2937'; ctx1.lineWidth = 1.2;
+        ctx1.beginPath(); ctx1.moveTo(0, my1); ctx1.lineTo(c1.width, my1); ctx1.stroke();
+        ctx1.beginPath(); ctx1.moveTo(mx1, 0); ctx1.lineTo(mx1, c1.height); ctx1.stroke();
+
+        ctx1.fillStyle = '#ffffff'; ctx1.font = 'bold 10px sans-serif';
+        ctx1.fillText("s₁", c1.width - 12, my1 - 5);
+        ctx1.fillText("s₂", mx1 + 5, 12);
+
+        // Auto-fit stress-space canvas while preserving the same format.
+        const maxPlaneStress = Math.max(sigSat, Math.abs(alpha) + sigY, sigY0, 1.0);
+        scale1 = (c1.width * 0.34) / maxPlaneStress;
+
+        // Draw exact J2 / von Mises ellipse in raw (s1,s2) coordinates:
+        // (s1-a1)^2 + (s1-a1)(s2-a2) + (s2-a2)^2 = sigY^2 / 3
+        function drawJ2Ellipse(ctx, centerS1, centerS2, yieldStress, color, width, dashed) {
+            const aMinor = yieldStress * Math.sqrt(2) / 3.0;   // along s1=s2
+            const aMajor = yieldStress * Math.sqrt(2/3);       // along s1=-s2
+            const N = 180;
+
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.setLineDash(dashed ? [3,4] : []);
+            ctx.beginPath();
+
+            for (let i = 0; i <= N; i++) {
+                const t = 2 * Math.PI * i / N;
+                const u = aMinor * Math.cos(t);
+                const v = aMajor * Math.sin(t);
+
+                // Rotate ellipse principal directions back into s1-s2 axes
+                const ds1 = (u + v) / Math.sqrt(2);
+                const ds2 = (u - v) / Math.sqrt(2);
+
+                const px = mx1 + (centerS1 + ds1) * scale1;
+                const py = my1 - (centerS2 + ds2) * scale1;
+
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+
+            ctx.closePath();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Capping envelope
+        drawJ2Ellipse(ctx1, 0.0, 0.0, sigSat, '#374151', 1.0, true);
+
+        // Uniaxial deviatoric loading path
+        if(history.length > 1) {
+            ctx1.strokeStyle = '#3b82f6';
+            ctx1.lineWidth = 3.0;
+            ctx1.beginPath();
+            const p0 = history[0];
+            ctx1.moveTo(
+                mx1 + (2/3) * p0.sigma * scale1,
+                my1 - (-1/3) * p0.sigma * scale1
+            );
+            history.forEach(function(point) {
+                ctx1.lineTo(
+                    mx1 + (2/3) * point.sigma * scale1,
+                    my1 - (-1/3) * point.sigma * scale1
+                );
+            });
+            ctx1.stroke();
+        }
+
+        // Backstress mapped to deviatoric coordinates
+        const a1 = (2/3) * alpha;
+        const a2 = (-1/3) * alpha;
+
+        // Active yield ellipse
+        drawJ2Ellipse(ctx1, a1, a2, sigY, '#ef4444', 2.2, false);
+
+        // Backstress center marker
+        const centerPx = mx1 + a1 * scale1;
+        const centerPy = my1 - a2 * scale1;
+        ctx1.strokeStyle = '#ef4444';
+        ctx1.lineWidth = 1.5;
+        ctx1.beginPath();
+        ctx1.moveTo(centerPx - 4, centerPy - 4);
+        ctx1.lineTo(centerPx + 4, centerPy + 4);
+        ctx1.moveTo(centerPx + 4, centerPy - 4);
+        ctx1.lineTo(centerPx - 4, centerPy + 4);
+        ctx1.stroke();
+
+        // Current stress point
+        const s1_current = (2/3) * sigma;
+        const s2_current = (-1/3) * sigma;
+        const currentPx = mx1 + s1_current * scale1;
+        const currentPy = my1 - s2_current * scale1;
+
+        ctx1.fillStyle = '#10b981';
+        ctx1.shadowBlur = 10;
+        ctx1.shadowColor = '#10b981';
+        ctx1.beginPath();
+        ctx1.arc(currentPx, currentPy, 5, 0, 2*Math.PI);
+        ctx1.fill();
+        ctx1.shadowBlur = 0;
+
+        ctx1.fillStyle = '#ef4444';
+        ctx1.font = 'bold 9px sans-serif';
+        const labelX = Math.min(c1.width - 110, Math.max(5, centerPx + 18));
+        const labelY = Math.min(c1.height - 8, Math.max(12, centerPy - 10));
+        ctx1.fillText("J₂ Yield Ellipse (f=0)", labelX, labelY);
+
+        // --- CYCLIC STRESS-STRAIN HYSTERESIS LOOP ---
+        ctx2.clearRect(0, 0, c2.width, c2.height);
+        
+        ctx2.strokeStyle = '#181e2e'; ctx2.lineWidth = 0.8; ctx2.setLineDash([2, 4]);
+        for(let v = -600; v <= 600; v += 100) {
+	if(v === 0) continue;
+	ctx2.beginPath(); ctx2.moveTo(0, my2 - v * scaleY); ctx2.lineTo(c2.width, my2 - v * scaleY); ctx2.stroke();
+	}
+	ctx2.setLineDash([]);
+
+	ctx2.strokeStyle = '#1f2937'; ctx2.lineWidth = 1.2;
+	ctx2.beginPath(); ctx2.moveTo(0, my2); ctx2.lineTo(c2.width, my2); ctx2.stroke();
+	ctx2.beginPath(); ctx2.moveTo(mx2, 0); ctx2.lineTo(mx2, c2.height); ctx2.stroke();
+
+	ctx2.fillStyle = '#ffffff'; ctx2.font = 'bold 10px sans-serif';
+	ctx2.fillText("Strain (ε)", c2.width - 55, my2 + 14); ctx2.fillText("Stress (σ)", mx2 + 5, 12);
+	ctx2.fillText("+" + sigSat, mx2 + 5, my2 - (sigSat * scaleY) + 12); ctx2.fillText("-" + sigSat, mx2 + 5, my2 + (sigSat * scaleY) - 4);
+
+	ctx2.strokeStyle = '#fbbf24'; ctx2.lineWidth = 1.0; ctx2.setLineDash([2, 2]);
+	let upperLimitY = my2 - (alpha + sigY) * scaleY;
+	let lowerLimitY = my2 - (alpha - sigY) * scaleY;
+	ctx2.beginPath(); ctx2.moveTo(mx2 - 40, upperLimitY); ctx2.lineTo(mx2 + 40, upperLimitY); ctx2.stroke();
+	ctx2.beginPath(); ctx2.moveTo(mx2 - 40, lowerLimitY); ctx2.lineTo(mx2 + 40, lowerLimitY); ctx2.stroke();
+	ctx2.setLineDash([]);
+	// CRITICAL REPAIR FIX: Adjusted starting index pointer reference format
+	if(history.length > 1) {
+	ctx2.strokeStyle = '#3b82f6'; ctx2.lineWidth = 3.0;
+	ctx2.beginPath();
+	const startCurveNode = history[0];
+	ctx2.moveTo(getX(startCurveNode), getY(startCurveNode));
+	history.forEach(function(point) {
+	let x_coord = mx2 + ((point.sigma / E) + point.eps_p) * scaleX;
+	let y_coord = my2 - point.sigma * scaleY;
+	ctx2.lineTo(x_coord, y_coord);
+	});
+	ctx2.stroke();
+	}
+	ctx2.fillStyle = '#10b981'; ctx2.shadowBlur = 10; ctx2.shadowColor = '#10b981';
+	ctx2.beginPath(); ctx2.arc(mx2 + ((sigma / E) + eps_p) * scaleX, my2 - sigma * scaleY, 6, 0, 2*Math.PI); ctx2.fill(); ctx2.shadowBlur = 0;
+	}
+
+	function processLoading(e) {
+	let userMinPct = parseFloat(boundsMinInput.value) || -0.60;
+	let userMaxPct = parseFloat(boundsMaxInput.value) || 0.60;
+	const rawSliderIntegerVal = parseInt(e.target.value);
+	let normalizedRatio = (rawSliderIntegerVal + 600) / 1200.0;
+	let totalStrainInput = (userMinPct + normalizedRatio * (userMaxPct - userMinPct)) / 100.0;
+
+	sliderText.textContent = (totalStrainInput * 100).toFixed(4);
+	let prevNormalizedRatio = (lastSliderVal + 600) / 1200.0;
+	let prevStrainInput = (userMinPct + prevNormalizedRatio * (userMaxPct - userMinPct)) / 100.0;
+
+	const deltaStrain = totalStrainInput - prevStrainInput;
+	if (deltaStrain === 0) return;
+
+	const subSteps = Math.max(5, Math.abs(rawSliderIntegerVal - lastSliderVal));
+	const stepInc = deltaStrain / subSteps;
+	const currentMode = getActiveMode();
+
+	for (let j = 0; j < subSteps; j++) {
+            let sigmaTrial = sigma + E * stepInc;
+            let yieldFunc = Math.abs(sigmaTrial - alpha) - sigY;
+
+            if (yieldFunc > 0) {
+                let sign = Math.sign(sigmaTrial - alpha);
+                let Hk_active = (currentMode === "isotropic") ? 0.0 : Hk;
+                let Hi_active = (currentMode === "kinematic") ? 0.0 : Hi;
+                
+                let dGamma = yieldFunc / (E + Hk_active + Hi_active);
+                alpha += sign * Hk_active * dGamma; sigY += Hi_active * dGamma;
+                
+                // Capped hardening: retain the user-defined saturation limit.
+                if (sigY > sigSat) sigY = sigSat;
+
+                // Cap the extreme 1D yield boundary |alpha| + sigY at sigSat.
+                if (Math.abs(alpha) + sigY > sigSat) {
+                    const maxAlpha = Math.max(0.0, sigSat - sigY);
+                    alpha = Math.max(-maxAlpha, Math.min(maxAlpha, alpha));
+                }
+                sigma = alpha + sign * sigY; eps_p += sign * dGamma; eps_p_bar += dGamma;         
+                rStatus.textContent = "Plastic Yielding"; rStatus.style.color = "#ef4444";
+            } else {
+                sigma = sigmaTrial; rStatus.textContent = "Elastic Zone"; rStatus.style.color = "#10b981";
+            }
+            history.push({ sigma: sigma, alpha: alpha, eps_p: eps_p, eps_p_bar: eps_p_bar, currentSigY: sigY });
+        }
+        if (history.length > 10000) history.shift();
+        rStress.textContent = sigma.toFixed(1) + " MPa"; rAlpha.textContent = alpha.toFixed(1) + " MPa";
+        lastSliderVal = rawSliderIntegerVal; renderCharts();
+    }
+
+    function updateProperties() {
+        E = parseInt(inputE.value) || 200000; sigY0 = parseInt(inputY.value) || 200; sigSat = parseInt(inputU.value) || 550; Hk = parseInt(inputHk.value) || 4000; Hi = parseInt(inputHi.value) || 2000;
+        if (sigSat <= sigY0) { sigSat = sigY0 + 50; inputU.value = sigSat; }
+	if (history.length <= 1) sigY = sigY0;
+	renderCharts();
+	}
+
+	strainSlider.addEventListener('input', processLoading);
+	inputE.addEventListener('input', updateProperties); inputY.addEventListener('input', updateProperties); inputU.addEventListener('input', updateProperties); inputHk.addEventListener('input', updateProperties); inputHi.addEventListener('input', updateProperties);
+	boundsMinInput.addEventListener('input', function() { resetBtn.click(); }); boundsMaxInput.addEventListener('input', function() { resetBtn.click(); });
+
+	for (let i = 0; i < modeSelect.length; i++) {
+        modeSelect[i].addEventListener('change', function() { resetBtn.click(); });
+    }
+
+    resetBtn.addEventListener('click', function() {
+        sigma = 0.0; alpha = 0.0; eps_p = 0.0; eps_p_bar = 0.0; lastSliderVal = 0; sigY = sigY0;
+        strainSlider.value = 0; sliderText.textContent = "0.0000";
+        history = [{ sigma: 0.0, alpha: 0.0, eps_p: 0.0, eps_p_bar: 0.0, currentSigY: sigY0 }];
+        rStress.textContent = "0.0 MPa"; rAlpha.textContent = "0.0 MPa"; rStatus.textContent = "Neutral / Idle"; rStatus.style.color = "#10b981";
+        renderCharts();
+    });
+})();
+</script>
+
+  </div>
 
 </div>
 
