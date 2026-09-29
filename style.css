@@ -1591,3 +1591,71 @@ Old iframe class is intentionally disabled.
   }
 
 }
+<section class="article-opening">
+
+  <div class="article-opening-inner">
+
+    <div class="article-opening-copy">
+
+      <span class="article-section-label">
+        Plasticity &amp; Hardening
+      </span>
+
+      <h2>
+        What happens after a metal first yields?
+      </h2>
+
+      <p class="article-intro">
+        Have you ever wondered what the
+        <strong>Bauschinger effect</strong>
+        really means, how it is represented in finite element analysis,
+        and why it can matter to an engineering prediction?
+      </p>
+
+      <p>
+        Once plastic deformation occurs, a metal does not necessarily respond
+        identically when the loading direction is reversed. This behavior is
+        commonly represented through <strong>isotropic hardening</strong>,
+        <strong>kinematic hardening</strong>, or a combination of both.
+      </p>
+
+      <p>
+        Use the interactive model to compare how the yield locus,
+        backstress and cyclic stress-strain response evolve as the
+        loading direction changes.
+      </p>
+
+    </div>
+
+
+    <div class="article-opening-tool">
+
+      <div class="visualizer-heading">
+
+        <span class="article-section-label">
+          Interactive Demonstration
+        </span>
+
+        <h2>
+          Explore the hardening response
+        </h2>
+
+        <p>
+          Drag the strain control and switch between capped isotropic,
+          kinematic and combined hardening.
+        </p>
+
+      </div>
+
+
+      <div class="visualizer-frame">
+
+        <!-- KEEP YOUR COMPLETE appContainer VISUALIZER HERE -->
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
