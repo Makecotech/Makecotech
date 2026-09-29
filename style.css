@@ -431,3 +431,75 @@ ul { margin: 20px 0 0; padding-left: 20px; color: #3f4a5d; line-height: 1.9; }
   background: #0b2a5b;
   color: #ffffff;
 }
+.article-section {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.article-section > p {
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.8;
+}
+
+.equation-box {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 22px 30px;
+  text-align: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #0b2a5b;
+  background: #f5f9ff;
+  border-left: 4px solid #0074d9;
+  border-radius: 8px;
+}
+
+.article-list {
+  max-width: 800px;
+  margin: 25px auto;
+  line-height: 1.8;
+}
+
+.comparison-table-wrapper {
+  max-width: 900px;
+  margin: 30px auto;
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #dce4ee;
+  text-align: left;
+  vertical-align: top;
+}
+
+.comparison-table th {
+  background: #0b2a5b;
+  color: #ffffff;
+}
+
+.comparison-table tr:nth-child(even) {
+  background: #f7f9fc;
+}
+
+.visualizer-placeholder {
+  max-width: 950px;
+  margin: 30px auto;
+  min-height: 300px;
+  border: 2px dashed #9ebce0;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5f7895;
+  background: #f8fbff;
+  font-weight: 700;
+}
