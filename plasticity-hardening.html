@@ -61,9 +61,9 @@
         </h1>
 
         <p class="lead">
-          A practical guide to understanding how hardening models
-          influence yielding, reverse loading, cyclic plasticity
-          and finite element predictions.
+          A practical guide to understanding how different hardening models
+          influence yielding, reverse loading, cyclic plasticity and finite
+          element predictions.
         </p>
       </div>
 
@@ -71,31 +71,284 @@
   </section>
 
 
-  <section class="section">
+  <section class="section article-section">
 
     <div class="section-title">
       <p class="eyebrow blue">Metal Plasticity</p>
-
       <h2>Why does the hardening model matter?</h2>
     </div>
 
     <p>
-      When a metal plastically deforms, its subsequent yielding behaviour
-      depends on how the yield condition evolves.
+      When a metal plastically deforms, its subsequent response depends not only
+      on the amount of plastic strain, but also on how the yield condition evolves.
     </p>
 
     <p>
-      In finite element analysis, this behaviour is commonly represented
-      using isotropic hardening, kinematic hardening, or a combination
-      of both.
+      In finite element analysis, this evolution is commonly represented using
+      isotropic hardening, kinematic hardening, or a combination of both.
     </p>
 
     <p>
-      The difference becomes especially important when the loading path
-      changes direction, such as during unloading, reverse loading,
-      cyclic deformation, bending and springback.
+      For predominantly monotonic loading, different hardening formulations may
+      produce relatively similar results. However, when the loading direction changes,
+      the selected hardening law can strongly influence reverse yielding, residual
+      stresses, springback and cyclic plastic response.
     </p>
 
+  </section>
+
+
+  <section class="section article-section">
+
+    <div class="section-title">
+      <p class="eyebrow blue">1. Isotropic Hardening</p>
+      <h2>The yield surface expands</h2>
+    </div>
+
+    <p>
+      In isotropic hardening, the center of the yield surface remains fixed while
+      the size of the yield surface increases as plastic deformation accumulates.
+    </p>
+
+    <div class="equation-box">
+      σ<sub>y</sub> =
+      σ<sub>y0</sub> +
+      H<sub>i</sub> ε̄<sup>p</sup>
+    </div>
+
+    <p>
+      This means that after plastic deformation in one direction, a larger stress
+      magnitude is required to cause yielding in either direction.
+    </p>
+
+    <p>
+      Isotropic hardening can therefore be effective when the material response is
+      dominated by monotonic plastic deformation and the details of load reversal
+      are not important.
+    </p>
+
+  </section>
+
+
+  <section class="section article-section">
+
+    <div class="section-title">
+      <p class="eyebrow blue">2. Kinematic Hardening</p>
+      <h2>The yield surface translates</h2>
+    </div>
+
+    <p>
+      In kinematic hardening, the size of the yield surface remains approximately
+      unchanged while its center moves in stress space.
+    </p>
+
+    <div class="equation-box">
+      dα =
+      H<sub>k</sub> dε<sup>p</sup>
+    </div>
+
+    <p>
+      The translation is represented by the backstress, α. This shift changes the
+      stress required to produce yielding when the loading direction reverses.
+    </p>
+
+    <p>
+      This behavior is particularly important when modeling repeated loading,
+      unloading and reverse plastic deformation.
+    </p>
+
+  </section>
+
+
+  <section class="section article-section">
+
+    <div class="section-title">
+      <p class="eyebrow blue">3. The Bauschinger Effect</p>
+      <h2>Why reverse yielding can occur earlier</h2>
+    </div>
+
+    <p>
+      After plastic deformation in one direction, many metals yield at a lower
+      stress magnitude when subsequently loaded in the opposite direction.
+      This phenomenon is known as the Bauschinger effect.
+    </p>
+
+    <p>
+      Consider a material with an initial yield stress of 200 MPa. After tensile
+      plastic deformation, the backstress may shift the center of the yield surface
+      by +20 MPa.
+    </p>
+
+    <div class="equation-box">
+      Forward yield: +220 MPa
+      <br/>
+      Reverse yield: −180 MPa
+    </div>
+
+    <p>
+      The material has not simply become stronger in all directions. Instead,
+      its previous plastic deformation has changed the position of the yield surface.
+    </p>
+
+  </section>
+
+
+  <section class="section article-section">
+
+    <div class="section-title">
+      <p class="eyebrow blue">4. Combined Hardening</p>
+      <h2>Translation and expansion together</h2>
+    </div>
+
+    <p>
+      Real metallic materials often exhibit both translation and expansion of the
+      yield surface.
+    </p>
+
+    <p>
+      Combined isotropic-kinematic hardening allows both mechanisms to act
+      simultaneously:
+    </p>
+
+    <ul class="article-list">
+      <li>Kinematic hardening controls translation of the yield surface.</li>
+      <li>Isotropic hardening controls expansion of the yield surface.</li>
+      <li>The combined formulation can represent more realistic cyclic response.</li>
+    </ul>
+
+  </section>
+
+
+  <section class="section article-section">
+
+    <div class="section-title">
+      <p class="eyebrow blue">5. When Does It Matter?</p>
+      <h2>Loading path is the key</h2>
+    </div>
+
+    <p>
+      The appropriate hardening model should be selected based on the expected
+      loading path rather than simply on the material type.
+    </p>
+
+    <div class="comparison-table-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Application</th>
+            <th>Hardening consideration</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Predominantly monotonic plastic loading</td>
+            <td>Isotropic hardening may often be sufficient</td>
+          </tr>
+
+          <tr>
+            <td>Bending and springback</td>
+            <td>Kinematic or combined hardening can become important</td>
+          </tr>
+
+          <tr>
+            <td>Bending-unbending over tooling</td>
+            <td>Reverse yielding and Bauschinger effect should be considered</td>
+          </tr>
+
+          <tr>
+            <td>Low-cycle fatigue</td>
+            <td>Kinematic or combined cyclic plasticity models are generally more relevant</td>
+          </tr>
+
+          <tr>
+            <td>Repeated thermo-mechanical loading</td>
+            <td>Combined hardening may be required</td>
+          </tr>
+
+          <tr>
+            <td>Ratcheting and mean-stress evolution</td>
+            <td>More advanced nonlinear cyclic hardening models may be necessary</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+
+
+  <section class="section article-section">
+
+    <div class="section-title">
+      <p class="eyebrow blue">Interactive Demonstration</p>
+      <h2>Explore the hardening response</h2>
+    </div>
+
+    <p>
+      The interactive visualizer below illustrates how the stress state,
+      yield locus and stress-strain response evolve during cyclic loading.
+    </p>
+
+    <p>
+      The model is intended as an educational one-dimensional plasticity
+      demonstration with capped isotropic, kinematic and combined hardening.
+    </p>
+
+    <div class="visualizer-placeholder">
+      Interactive visualizer will be embedded here.
+    </div>
+
+  </section>
+
+
+  <section class="section article-section">
+
+    <div class="section-title">
+      <p class="eyebrow blue">Practical Takeaway</p>
+      <h2>Choose the model based on the stress path</h2>
+    </div>
+
+    <p>
+      Isotropic hardening is not automatically inferior to kinematic hardening,
+      and kinematic hardening is not automatically more accurate.
+    </p>
+
+    <p>
+      The important question is whether the application involves significant
+      unloading, reverse plasticity or cyclic deformation.
+    </p>
+
+    <p>
+      For monotonic loading, a simple isotropic model may be fully adequate.
+      For cyclic or reversing loading paths, capturing translation of the yield
+      surface and the Bauschinger effect can become essential.
+    </p>
+
+    <p>
+      As always, the constitutive model should be calibrated against experimental
+      data representative of the intended loading path and strain range.
+    </p>
+
+  </section>
+
+
+  <section class="contact-section">
+    <div>
+      <p class="eyebrow">Engineering Support</p>
+
+      <h2>
+        Need support with nonlinear material modeling or advanced finite element analysis?
+      </h2>
+
+      <p>
+        MakeCoTech supports engineering teams with constitutive modeling,
+        nonlinear simulation, cyclic plasticity and simulation-driven design.
+      </p>
+    </div>
+
+    <a class="btn primary light" href="mailto:info@makecotech.com">
+      Contact MakeCoTech
+    </a>
   </section>
 
 </main>
