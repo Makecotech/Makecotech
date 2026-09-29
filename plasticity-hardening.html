@@ -3,539 +3,37 @@
 
 <head>
 
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-91WPDSWXXL"></script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-91WPDSWXXL"></script>
 
-  <script>
-    window.dataLayer = window.dataLayer || [];
+<script>
+  window.dataLayer = window.dataLayer || [];
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+  function gtag() {
+    dataLayer.push(arguments);
+  }
 
-    gtag('js', new Date());
-    gtag('config', 'G-91WPDSWXXL');
-  </script>
+  gtag('js', new Date());
+  gtag('config', 'G-91WPDSWXXL');
+</script>
 
-  <meta charset="utf-8" />
+<meta charset="utf-8"/>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+/>
 
-  <title>
-    Isotropic, Kinematic or Combined Hardening? | MakeCoTech
-  </title>
+<title>
+Isotropic, Kinematic & Combined Hardening | MakeCoTech
+</title>
 
-  <meta
-    name="description"
-    content="A practical MakeCoTech guide to isotropic, kinematic and combined hardening in metal plasticity, including reverse loading, the Bauschinger effect, cyclic plasticity and finite element analysis."
-  />
+<meta
+  name="description"
+  content="A practical engineering guide to isotropic, kinematic and combined hardening, the Bauschinger effect, cyclic plasticity and advanced nonlinear material modeling."
+/>
 
-  <!-- Existing MakeCoTech stylesheet -->
-  <link href="style.css" rel="stylesheet" />
-
-
-  <!-- Article-specific styling -->
-  <style>
-
-    /* =========================================================
-       ARTICLE PAGE
-       ========================================================= */
-
-    .article-page {
-      background: #ffffff;
-    }
-
-
-    /* HERO */
-
-    .article-hero {
-      background:
-        linear-gradient(
-          135deg,
-          #07172f 0%,
-          #0b2a5b 55%,
-          #164d82 100%
-        );
-
-      color: #ffffff;
-      padding: 90px 24px 75px;
-    }
-
-
-    .article-container {
-      width: 100%;
-      max-width: 1050px;
-      margin: 0 auto;
-    }
-
-
-    .article-hero .eyebrow {
-      color: #7ec8ff;
-      margin-bottom: 14px;
-    }
-
-
-    .article-hero h1 {
-      margin: 0;
-      max-width: 900px;
-
-      font-size: clamp(2.5rem, 5vw, 4.3rem);
-      line-height: 1.05;
-      letter-spacing: -0.035em;
-
-      color: #ffffff;
-    }
-
-
-    .article-hero .lead {
-      max-width: 800px;
-
-      margin-top: 24px;
-      margin-bottom: 0;
-
-      font-size: 1.18rem;
-      line-height: 1.75;
-
-      color: rgba(255,255,255,0.86);
-    }
-
-
-    .article-meta {
-      display: flex;
-      flex-wrap: wrap;
-
-      gap: 10px;
-
-      margin-top: 28px;
-    }
-
-
-    .article-tag {
-      display: inline-block;
-
-      padding: 7px 12px;
-
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 999px;
-
-      background: rgba(255,255,255,0.07);
-
-      color: rgba(255,255,255,0.82);
-
-      font-size: 0.85rem;
-      font-weight: 600;
-    }
-
-
-    /* ARTICLE BODY */
-
-    .article-body {
-      max-width: 880px;
-
-      margin: 0 auto;
-
-      padding: 70px 24px 80px;
-    }
-
-
-    .article-body section {
-      margin-bottom: 76px;
-    }
-
-
-    .article-body h2 {
-      margin-top: 0;
-      margin-bottom: 20px;
-
-      font-size: clamp(1.8rem, 3vw, 2.35rem);
-      line-height: 1.2;
-
-      color: #0b2a5b;
-    }
-
-
-    .article-body h3 {
-      margin-top: 32px;
-      margin-bottom: 12px;
-
-      font-size: 1.3rem;
-
-      color: #163a63;
-    }
-
-
-    .article-body p {
-      margin: 0 0 20px;
-
-      font-size: 1.05rem;
-      line-height: 1.85;
-
-      color: #334155;
-    }
-
-
-    .article-section-label {
-      display: block;
-
-      margin-bottom: 8px;
-
-      color: #0074d9;
-
-      font-size: 0.83rem;
-      font-weight: 800;
-
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-
-    /* INTRO */
-
-    .article-intro {
-      font-size: 1.16rem !important;
-      line-height: 1.85 !important;
-
-      color: #26384d !important;
-    }
-
-
-    /* MODEL SUMMARY CARDS */
-
-    .model-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-
-      gap: 22px;
-
-      margin: 36px 0 20px;
-    }
-
-
-    .model-card {
-      padding: 26px;
-
-      border: 1px solid #dbe5f0;
-      border-radius: 14px;
-
-      background: #ffffff;
-
-      box-shadow:
-        0 12px 30px rgba(11,42,91,0.06);
-    }
-
-
-    .model-card .model-symbol {
-      display: inline-flex;
-
-      width: 42px;
-      height: 42px;
-
-      align-items: center;
-      justify-content: center;
-
-      margin-bottom: 18px;
-
-      border-radius: 10px;
-
-      background: #eef6ff;
-
-      color: #0b66c3;
-
-      font-size: 1.15rem;
-      font-weight: 800;
-    }
-
-
-    .model-card h3 {
-      margin: 0 0 12px;
-
-      color: #0b2a5b;
-    }
-
-
-    .model-card p {
-      margin: 0;
-
-      font-size: 0.96rem;
-      line-height: 1.7;
-    }
-
-
-    /* EQUATIONS */
-
-    .equation-box {
-      margin: 30px 0;
-
-      padding: 22px 28px;
-
-      border-left: 4px solid #0074d9;
-      border-radius: 10px;
-
-      background: #f4f8fc;
-
-      text-align: center;
-
-      color: #0b2a5b;
-
-      font-size: 1.3rem;
-      font-weight: 700;
-    }
-
-
-    .equation-note {
-      display: block;
-
-      margin-top: 8px;
-
-      color: #66788d;
-
-      font-size: 0.86rem;
-      font-weight: 500;
-    }
-
-
-    /* CALLOUT */
-
-    .callout {
-      margin: 32px 0;
-
-      padding: 24px 28px;
-
-      border: 1px solid #dce8f4;
-      border-radius: 12px;
-
-      background: #f7fbff;
-    }
-
-
-    .callout strong {
-      color: #0b2a5b;
-    }
-
-
-    .callout p:last-child {
-      margin-bottom: 0;
-    }
-
-
-    /* COMPARISON TABLE */
-
-    .comparison-table-wrapper {
-      margin: 35px 0;
-
-      overflow-x: auto;
-
-      border: 1px solid #dce5ef;
-      border-radius: 12px;
-    }
-
-
-    .comparison-table {
-      width: 100%;
-
-      border-collapse: collapse;
-
-      background: #ffffff;
-    }
-
-
-    .comparison-table th {
-      padding: 16px 18px;
-
-      background: #0b2a5b;
-
-      color: #ffffff;
-
-      text-align: left;
-
-      font-size: 0.95rem;
-    }
-
-
-    .comparison-table td {
-      padding: 16px 18px;
-
-      border-bottom: 1px solid #e5ebf1;
-
-      color: #334155;
-
-      vertical-align: top;
-
-      line-height: 1.55;
-    }
-
-
-    .comparison-table tr:last-child td {
-      border-bottom: none;
-    }
-
-
-    .comparison-table tbody tr:nth-child(even) {
-      background: #f8fafc;
-    }
-
-
-    /* VISUALIZER */
-
-    .visualizer-section {
-      max-width: 1180px;
-
-      margin: 0 auto;
-
-      padding: 10px 24px 90px;
-    }
-
-
-    .visualizer-heading {
-      max-width: 880px;
-
-      margin: 0 auto 32px;
-    }
-
-
-    .visualizer-frame {
-      overflow: hidden;
-
-      border: 1px solid #1f2937;
-      border-radius: 18px;
-
-      background: #07111f;
-
-      box-shadow:
-        0 22px 55px rgba(0,0,0,0.16);
-    }
-
-
-    .visualizer-placeholder {
-      min-height: 500px;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: center;
-
-      padding: 40px;
-
-      color: #9db5cf;
-
-      text-align: center;
-    }
-
-
-    /* TAKEAWAYS */
-
-    .takeaways {
-      padding: 30px;
-
-      border-radius: 14px;
-
-      background: #f4f8fc;
-    }
-
-
-    .takeaways h3 {
-      margin-top: 0;
-    }
-
-
-    .takeaways ul {
-      margin: 0;
-      padding-left: 22px;
-    }
-
-
-    .takeaways li {
-      margin-bottom: 12px;
-
-      color: #334155;
-
-      line-height: 1.7;
-    }
-
-
-    /* ARTICLE CTA */
-
-    .article-cta {
-      background:
-        linear-gradient(
-          135deg,
-          #081b3a,
-          #123e70
-        );
-
-      color: #ffffff;
-
-      padding: 62px 24px;
-    }
-
-
-    .article-cta-inner {
-      max-width: 1000px;
-
-      margin: 0 auto;
-
-      display: flex;
-
-      align-items: center;
-      justify-content: space-between;
-
-      gap: 32px;
-    }
-
-
-    .article-cta h2 {
-      max-width: 700px;
-
-      margin: 0 0 10px;
-
-      color: #ffffff;
-    }
-
-
-    .article-cta p {
-      max-width: 700px;
-
-      margin: 0;
-
-      color: rgba(255,255,255,0.78);
-
-      line-height: 1.7;
-    }
-
-
-    .article-cta .btn {
-      flex-shrink: 0;
-    }
-
-
-    /* RESPONSIVE */
-
-    @media (max-width: 850px) {
-
-      .model-grid {
-        grid-template-columns: 1fr;
-      }
-
-
-      .article-cta-inner {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-
-      .article-hero {
-        padding-top: 70px;
-        padding-bottom: 60px;
-      }
-
-    }
-
-  </style>
+<link href="style.css" rel="stylesheet"/>
 
 </head>
 
@@ -543,701 +41,724 @@
 <body class="article-page">
 
 
-<!-- =========================================================
-     HEADER
-     ========================================================= -->
+<!-- HEADER -->
 
 <header class="site-header">
 
-  <a
-    aria-label="MakeCoTech home"
-    class="brand"
-    href="index.html"
-  >
-
-    <img
-      alt="MakeCoTech logo"
-      src="makecotech_logo.png"
-    />
-
-  </a>
+<a
+  aria-label="MakeCoTech home"
+  class="brand"
+  href="index.html"
+>
+  <img
+    alt="MakeCoTech logo"
+    src="makecotech_logo.png"
+  />
+</a>
 
 
-  <button
-    aria-label="Open menu"
-    class="menu-toggle"
-  >
-    ☰
-  </button>
+<button
+  aria-label="Open menu"
+  class="menu-toggle"
+>
+  ☰
+</button>
 
 
-  <nav class="nav">
+<nav class="nav">
 
-    <a href="index.html#home">
-      Home
-    </a>
+<a href="index.html#home">
+Home
+</a>
 
-    <a href="index.html#services">
-      Services
-    </a>
+<a href="index.html#services">
+Services
+</a>
 
-    <a href="index.html#industries">
-      Industries
-    </a>
+<a href="index.html#industries">
+Industries
+</a>
 
-    <a href="index.html#resources">
-      Technical Resources
-    </a>
+<a href="index.html#resources">
+Technical Resources
+</a>
 
-    <a href="index.html#about">
-      About
-    </a>
+<a href="index.html#about">
+About
+</a>
 
-    <a href="index.html#founder">
-      Founder
-    </a>
+<a href="index.html#founder">
+Founder
+</a>
 
-    <a href="index.html#contact">
-      Contact
-    </a>
+<a href="index.html#contact">
+Contact
+</a>
 
-  </nav>
+</nav>
 
 </header>
 
 
 
-<!-- =========================================================
-     ARTICLE HERO
-     ========================================================= -->
-
 <main>
+
+
+<!-- ======================================================
+     COMPACT ARTICLE HEADER
+     ====================================================== -->
 
 <section class="article-hero">
 
-  <div class="article-container">
+<div class="article-container">
 
-    <p class="eyebrow">
-      Technical Resource
-    </p>
+<p class="eyebrow">
+Technical Resource
+</p>
 
+<h1>
+Isotropic, Kinematic or Combined Hardening?
+</h1>
 
-    <h1>
-      Isotropic, Kinematic or Combined Hardening?
-    </h1>
+<p class="lead">
+Understanding how the yield surface evolves is essential when
+plastic deformation involves unloading, load reversal or cyclic loading.
+</p>
 
+<div class="article-meta">
 
-    <p class="lead">
+<span class="article-tag">
+Metal Plasticity
+</span>
 
-      A practical guide to how yield surfaces evolve during plastic
-      deformation — and why the choice of hardening model matters
-      for reverse loading, springback, cyclic plasticity and fatigue.
+<span class="article-tag">
+Nonlinear FEA
+</span>
 
-    </p>
+<span class="article-tag">
+Cyclic Loading
+</span>
 
+<span class="article-tag">
+Material Modeling
+</span>
 
-    <div class="article-meta">
+</div>
 
-      <span class="article-tag">
-        Metal Plasticity
-      </span>
-
-      <span class="article-tag">
-        Finite Element Analysis
-      </span>
-
-      <span class="article-tag">
-        Cyclic Loading
-      </span>
-
-      <span class="article-tag">
-        Material Modeling
-      </span>
-
-    </div>
-
-  </div>
+</div>
 
 </section>
 
 
 
-<!-- =========================================================
-     ARTICLE BODY
-     ========================================================= -->
+<!-- ======================================================
+     SHORT INTRO
+     ====================================================== -->
+
+<div class="article-body">
+
+<section>
+
+<span class="article-section-label">
+Plasticity & Hardening
+</span>
+
+<h2>
+What happens after a metal first yields?
+</h2>
+
+<p class="article-intro">
+Have you ever questioned what the
+<strong>Bauschinger effect</strong> actually means,
+how it is represented in a finite element material model,
+and why it can matter to an engineering prediction?
+</p>
+
+<p>
+Once plastic deformation occurs, a metal does not necessarily
+respond identically when the loading direction is reversed.
+The way the yield condition evolves is commonly represented
+through <strong>isotropic hardening</strong>,
+<strong>kinematic hardening</strong>, or a combination of both.
+</p>
+
+<p>
+The interactive demonstration below provides a simple way to explore
+these differences before going into the constitutive equations.
+</p>
+
+</section>
+
+</div>
+
+
+
+<!-- ======================================================
+     INTERACTIVE TOOL — EARLY IN ARTICLE
+     ====================================================== -->
+
+<section class="visualizer-section">
+
+<div class="visualizer-heading">
+
+<span class="article-section-label">
+Interactive Demonstration
+</span>
+
+<h2>
+Explore the hardening response
+</h2>
+
+<p>
+Apply cyclic strain and observe how the stress response,
+backstress and yield locus evolve for different hardening formulations.
+</p>
+
+<p>
+The visualizer is an educational uniaxial model using capped
+isotropic, kinematic and combined hardening.
+</p>
+
+</div>
+
+
+<div class="visualizer-frame">
+
+<!--
+Replace this placeholder later with the actual
+HTML / JavaScript hardening visualizer.
+-->
+
+<div class="visualizer-placeholder">
+
+Interactive Plasticity Hardening Visualizer
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ======================================================
+     ARTICLE DETAILS
+     ====================================================== -->
 
 <div class="article-body">
 
 
-<!-- INTRODUCTION -->
+<!-- ISOTROPIC -->
 
 <section>
 
-  <span class="article-section-label">
-    Introduction
-  </span>
+<span class="article-section-label">
+Isotropic Hardening
+</span>
 
-  <h2>
-    Why does the hardening model matter?
-  </h2>
+<h2>
+Expansion of the yield surface
+</h2>
 
+<p>
+In isotropic hardening, the center of the yield surface remains fixed
+while its size increases as plastic deformation accumulates.
+</p>
 
-  <p class="article-intro">
+<div class="equation-box">
 
-    When a metal plastically deforms, the next question is not only
-    how much it hardens, but how its yield condition evolves.
+σ<sub>y</sub>
+=
+σ<sub>y0</sub>
++
+H<sub>i</sub>
+ε̄<sup>p</sup>
 
-  </p>
+<span class="equation-note">
+Simplified linear isotropic hardening formulation
+</span>
 
+</div>
 
-  <p>
+<p>
+In a one-dimensional interpretation, yielding therefore moves farther
+away from zero stress in both tension and compression.
+</p>
 
-    In finite element analysis, this evolution is commonly represented
-    through isotropic hardening, kinematic hardening, or a combination
-    of both.
-
-  </p>
-
-
-  <p>
-
-    For predominantly monotonic loading, different hardening
-    formulations may produce relatively similar results.
-
-    Once the loading direction changes, however, the selected hardening
-    law can have a significant influence on reverse yielding,
-    residual stress, springback and cyclic plastic response.
-
-  </p>
-
-
-  <div class="model-grid">
-
-
-    <div class="model-card">
-
-      <div class="model-symbol">
-        ↗
-      </div>
-
-      <h3>
-        Isotropic
-      </h3>
-
-      <p>
-        The yield surface expands while its center remains fixed.
-      </p>
-
-    </div>
-
-
-    <div class="model-card">
-
-      <div class="model-symbol">
-        →
-      </div>
-
-      <h3>
-        Kinematic
-      </h3>
-
-      <p>
-        The yield surface translates while its size remains unchanged.
-      </p>
-
-    </div>
-
-
-    <div class="model-card">
-
-      <div class="model-symbol">
-        ↗→
-      </div>
-
-      <h3>
-        Combined
-      </h3>
-
-      <p>
-        The yield surface both expands and translates.
-      </p>
-
-    </div>
-
-
-  </div>
+<p>
+This behavior is often adequate when the plastic loading is mainly
+monotonic and reverse yielding is not an important part of the response.
+</p>
 
 </section>
 
 
 
-<!-- ISOTROPIC HARDENING -->
+<!-- KINEMATIC -->
 
 <section>
 
-  <span class="article-section-label">
-    1. Isotropic Hardening
-  </span>
+<span class="article-section-label">
+Kinematic Hardening
+</span>
 
-  <h2>
-    The yield surface expands
-  </h2>
+<h2>
+Translation of the yield surface
+</h2>
 
+<p>
+Kinematic hardening introduces a
+<strong>backstress</strong>, usually denoted by α.
+Instead of simply expanding, the yield surface translates in stress space.
+</p>
 
-  <p>
+<div class="equation-box">
 
-    In isotropic hardening, the center of the yield surface remains
-    fixed while the size of the yield surface increases as plastic
-    deformation accumulates.
+dα
+=
+H<sub>k</sub>
+dε<sup>p</sup>
 
-  </p>
+<span class="equation-note">
+Simplified linear kinematic hardening representation
+</span>
 
+</div>
 
-  <div class="equation-box">
+<p>
+The corresponding one-dimensional yield condition can be written as:
+</p>
 
-    σ<sub>y</sub>
-    =
-    σ<sub>y0</sub>
-    +
-    H<sub>i</sub>
-    ε̄<sup>p</sup>
+<div class="equation-box">
 
-    <span class="equation-note">
-      Simplified linear isotropic hardening representation
-    </span>
+f(σ,α)
+=
+|σ − α|
+− σ<sub>y</sub>
+≤ 0
 
-  </div>
+</div>
 
-
-  <p>
-
-    This means that after plastic deformation, a greater stress
-    magnitude is required to produce further yielding in both
-    loading directions.
-
-  </p>
-
-
-  <p>
-
-    Isotropic hardening is therefore often suitable when plastic
-    deformation is predominantly monotonic and the details of
-    load reversal are not critical.
-
-  </p>
+<p>
+This translation creates an important asymmetry after prior plastic
+deformation: yielding can occur earlier when the loading direction reverses.
+</p>
 
 </section>
 
 
 
-<!-- KINEMATIC HARDENING -->
+<!-- BAUSCHINGER -->
 
 <section>
 
-  <span class="article-section-label">
-    2. Kinematic Hardening
-  </span>
+<span class="article-section-label">
+Bauschinger Effect
+</span>
 
-  <h2>
-    The yield surface translates
-  </h2>
+<h2>
+Why does reverse yielding occur earlier?
+</h2>
 
+<p>
+Consider a material with an initial yield stress of
+200 MPa.
+</p>
 
-  <p>
+<p>
+After plastic loading in tension, suppose a positive backstress of
+20 MPa has developed.
+The tensile and compressive yield limits become approximately:
+</p>
 
-    In kinematic hardening, the size of the yield surface remains
-    approximately unchanged while its center moves in stress space.
+<div class="callout">
 
-  </p>
+<p>
+<strong>Forward tensile yield:</strong>
++220 MPa
+</p>
 
+<p>
+<strong>Reverse compressive yield:</strong>
+−180 MPa
+</p>
 
-  <div class="equation-box">
+</div>
 
-    dα
-    =
-    H<sub>k</sub>
-    dε<sup>p</sup>
+<p>
+The material has therefore not simply become stronger.
+Its previous plastic deformation has changed the position of the
+yield surface.
+</p>
 
-    <span class="equation-note">
-      Simplified linear kinematic hardening representation
-    </span>
-
-  </div>
-
-
-  <p>
-
-    The displacement of the yield surface is represented by the
-    backstress, α.
-
-    As plastic deformation develops, the backstress changes and moves
-    the center of the yield locus.
-
-  </p>
-
-
-  <p>
-
-    This becomes especially important when the loading direction
-    reverses.
-
-  </p>
+<p>
+This reduction in reverse yield stress is the basic mechanical idea
+behind the <strong>Bauschinger effect</strong>.
+</p>
 
 </section>
 
 
 
-<!-- BAUSCHINGER EFFECT -->
+<!-- WHY IT MATTERS -->
 
 <section>
 
-  <span class="article-section-label">
-    3. Bauschinger Effect
-  </span>
+<span class="article-section-label">
+Engineering Relevance
+</span>
 
-  <h2>
-    Why reverse yielding can occur earlier
-  </h2>
+<h2>
+Why does this matter in FEA?
+</h2>
 
-
-  <p>
-
-    After plastic deformation in one direction, many metals yield
-    at a lower stress magnitude when subsequently loaded in the
-    opposite direction.
-
-    This phenomenon is known as the
-    <strong>Bauschinger effect</strong>.
-
-  </p>
+<p>
+The choice of hardening model becomes particularly important whenever
+the loading path includes significant unloading and reverse plasticity.
+</p>
 
 
-  <div class="callout">
+<div class="comparison-table-wrapper">
 
-    <p>
-      <strong>Simple example:</strong>
-    </p>
+<table class="comparison-table">
 
-    <p>
+<thead>
 
-      Assume an initial yield stress of 200 MPa.
+<tr>
+<th>Application</th>
+<th>Why hardening matters</th>
+</tr>
 
-      Following tensile plastic deformation, a backstress of
-      +20 MPa develops.
+</thead>
 
-    </p>
+<tbody>
 
-    <div class="equation-box">
+<tr>
 
-      Forward yield ≈ +220 MPa
+<td>
+Predominantly monotonic loading
+</td>
 
-      <br><br>
+<td>
+Isotropic hardening may often provide an adequate engineering representation.
+</td>
 
-      Reverse yield ≈ −180 MPa
-
-    </div>
-
-  </div>
-
-
-  <p>
-
-    The material has therefore not simply become stronger in every
-    direction.
-
-    Its previous plastic deformation has changed the location of the
-    yield surface.
-
-  </p>
+</tr>
 
 
-  <p>
+<tr>
 
-    Capturing this effect can be important for springback,
-    bending-unbending, low-cycle fatigue and other applications
-    involving substantial load reversal.
+<td>
+Bending and springback
+</td>
 
-  </p>
+<td>
+Reverse yielding can influence residual stress and final springback.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Bending-unbending over tooling
+</td>
+
+<td>
+The material can experience repeated changes in the direction of plastic flow.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Low-cycle fatigue
+</td>
+
+<td>
+The hysteresis loop and cyclic plastic strain depend strongly on the cyclic plasticity model.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Thermo-mechanical cycling
+</td>
+
+<td>
+Repeated thermal expansion and constraint can generate alternating plastic deformation.
+</td>
+
+</tr>
+
+
+<tr>
+
+<td>
+Ratcheting
+</td>
+
+<td>
+Accumulation of plastic strain over repeated cycles requires appropriate cyclic hardening behavior.
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
 
 </section>
 
 
 
-<!-- COMBINED HARDENING -->
+<!-- COMBINED -->
 
 <section>
 
-  <span class="article-section-label">
-    4. Combined Hardening
-  </span>
+<span class="article-section-label">
+Combined Hardening
+</span>
 
-  <h2>
-    Translation and expansion together
-  </h2>
+<h2>
+Real materials can both translate and expand
+</h2>
 
+<p>
+Real metallic materials do not necessarily behave as purely isotropic
+or purely kinematic systems.
+</p>
 
-  <p>
-
-    Real metallic materials frequently exhibit both translation and
-    expansion of the yield surface.
-
-  </p>
-
-
-  <p>
-
-    Combined isotropic-kinematic hardening allows both mechanisms
-    to act simultaneously.
-
-  </p>
+<p>
+Combined hardening allows the yield surface to both
+<strong>translate</strong> and <strong>change size</strong>.
+</p>
 
 
-  <div class="model-grid">
+<div class="model-grid">
 
 
-    <div class="model-card">
+<div class="model-card">
 
-      <h3>
-        Translation
-      </h3>
+<h3>
+Isotropic contribution
+</h3>
 
-      <p>
+<p>
+Controls the evolution of the yield-surface size with accumulated
+plastic deformation.
+</p>
 
-        Kinematic hardening moves the center of the yield surface
-        and represents directional memory of previous plastic loading.
-
-      </p>
-
-    </div>
+</div>
 
 
-    <div class="model-card">
+<div class="model-card">
 
-      <h3>
-        Expansion
-      </h3>
+<h3>
+Kinematic contribution
+</h3>
 
-      <p>
+<p>
+Controls translation of the yield surface and directional memory
+of previous plastic deformation.
+</p>
 
-        Isotropic hardening changes the size of the yield surface
-        as accumulated plastic deformation increases.
-
-      </p>
-
-    </div>
+</div>
 
 
-    <div class="model-card">
+<div class="model-card">
 
-      <h3>
-        Combined Response
-      </h3>
+<h3>
+Combined response
+</h3>
 
-      <p>
+<p>
+Allows a more flexible representation of cyclic stress-strain behavior.
+</p>
 
-        Both mechanisms can be calibrated together to represent
-        more complex cyclic material behavior.
-
-      </p>
-
-    </div>
+</div>
 
 
-  </div>
+</div>
 
 </section>
 
 
 
-<!-- MODEL SELECTION -->
+<!-- ADVANCED MODELS / MAKECOTECH -->
 
 <section>
 
-  <span class="article-section-label">
-    5. Model Selection
-  </span>
+<span class="article-section-label">
+Advanced Constitutive Modeling
+</span>
 
-  <h2>
-    When does the difference matter?
-  </h2>
+<h2>
+The real material response may be considerably more complex
+</h2>
 
+<p>
+The simplified hardening laws above are useful for understanding
+the physical mechanisms, but advanced engineering simulations may
+require substantially richer constitutive behavior.
+</p>
 
-  <p>
-
-    The appropriate hardening formulation should be selected based
-    primarily on the expected loading path rather than simply on
-    the material type.
-
-  </p>
-
-
-  <div class="comparison-table-wrapper">
-
-    <table class="comparison-table">
-
-      <thead>
-
-        <tr>
-
-          <th>
-            Application
-          </th>
-
-          <th>
-            Hardening consideration
-          </th>
-
-        </tr>
-
-      </thead>
+<p>
+Depending on the material, temperature, strain rate and loading history,
+the response may include:
+</p>
 
 
-      <tbody>
+<ul class="article-list">
 
-        <tr>
+<li>
+Nonlinear isotropic and kinematic hardening
+</li>
 
-          <td>
-            Predominantly monotonic plastic loading
-          </td>
+<li>
+Cyclic hardening and cyclic softening
+</li>
 
-          <td>
-            Isotropic hardening may often be sufficient
-          </td>
+<li>
+Combined nonlinear plasticity formulations
+</li>
 
-        </tr>
+<li>
+Viscoplasticity and strain-rate-dependent behavior
+</li>
 
+<li>
+Creep and high-temperature time-dependent deformation
+</li>
 
-        <tr>
+<li>
+Damage initiation and damage evolution
+</li>
 
-          <td>
-            Bending and springback
-          </td>
+<li>
+Ductile failure and brittle failure
+</li>
 
-          <td>
-            Kinematic or combined hardening can become important
-          </td>
+<li>
+Thermo-mechanical constitutive behavior
+</li>
 
-        </tr>
+<li>
+Custom constitutive formulations and user-material implementations
+</li>
 
-
-        <tr>
-
-          <td>
-            Bending-unbending over tooling
-          </td>
-
-          <td>
-            Reverse yielding and the Bauschinger effect should be considered
-          </td>
-
-        </tr>
-
-
-        <tr>
-
-          <td>
-            Low-cycle fatigue
-          </td>
-
-          <td>
-            Kinematic or combined cyclic plasticity models are generally more relevant
-          </td>
-
-        </tr>
+</ul>
 
 
-        <tr>
+<div class="callout">
 
-          <td>
-            Repeated thermo-mechanical loading
-          </td>
+<p>
+<strong>MakeCoTech can support advanced nonlinear material modeling</strong>
+from model selection and parameter calibration through implementation
+and finite element verification.
+</p>
 
-          <td>
-            Combined hardening may provide a more representative response
-          </td>
+<p>
+This includes plastic hardening and softening behavior,
+cyclic plasticity, viscoplasticity, creep, damage and failure models
+for demanding structural and thermo-mechanical simulations.
+</p>
 
-        </tr>
-
-
-        <tr>
-
-          <td>
-            Ratcheting and mean-stress evolution
-          </td>
-
-          <td>
-            More advanced nonlinear cyclic hardening formulations may be required
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-  </div>
+</div>
 
 </section>
 
 
 
-<!-- PRACTICAL TAKEAWAY -->
+<!-- MODEL CALIBRATION -->
 
 <section>
 
-  <span class="article-section-label">
-    Practical Takeaway
-  </span>
+<span class="article-section-label">
+Model Calibration
+</span>
 
-  <h2>
-    Choose the model based on the stress path
-  </h2>
+<h2>
+A sophisticated model is only useful if its parameters are meaningful
+</h2>
+
+<p>
+Hardening parameters should ideally be calibrated using experimental
+data representative of the actual loading path and strain range.
+</p>
+
+<p>
+A monotonic tensile test may be sufficient for a simple isotropic
+plasticity model, but cyclic material models generally require
+additional loading-unloading or tension-compression data.
+</p>
+
+<p>
+The objective is not to use the most complicated model available,
+but to use a constitutive description that captures the mechanisms
+that materially influence the engineering prediction.
+</p>
+
+</section>
 
 
-  <p>
 
-    Isotropic hardening is not automatically inferior to kinematic
-    hardening, and kinematic hardening is not automatically more accurate.
+<!-- TAKEAWAYS -->
 
-  </p>
+<section>
+
+<span class="article-section-label">
+Key Takeaways
+</span>
+
+<h2>
+The loading path should guide the hardening model
+</h2>
 
 
-  <div class="takeaways">
+<div class="takeaways">
 
-    <h3>
-      Key points
-    </h3>
+<ul>
 
-    <ul>
+<li>
+Isotropic hardening expands the yield surface.
+</li>
 
-      <li>
-        For mostly monotonic plastic deformation, isotropic hardening
-        may provide an adequate engineering representation.
-      </li>
+<li>
+Kinematic hardening translates the yield surface.
+</li>
 
-      <li>
-        When substantial unloading and reverse plasticity occur,
-        translation of the yield surface becomes important.
-      </li>
+<li>
+Translation allows reverse yielding and the Bauschinger effect to be represented.
+</li>
 
-      <li>
-        Kinematic hardening provides a mechanism for representing
-        the Bauschinger effect.
-      </li>
+<li>
+Combined hardening can capture both translation and expansion.
+</li>
 
-      <li>
-        Combined hardening can represent both expansion and translation.
-      </li>
+<li>
+For cyclic plasticity, more advanced nonlinear hardening laws may be required.
+</li>
 
-      <li>
-        Constitutive parameters should ideally be calibrated using
-        experimental data representative of the actual loading path
-        and plastic strain range.
-      </li>
+<li>
+Viscoplasticity, creep, damage and failure may also need to be included depending on the application.
+</li>
 
-    </ul>
+<li>
+Material parameters should be calibrated against representative experimental data.
+</li>
 
-  </div>
+</ul>
+
+</div>
 
 </section>
 
@@ -1246,93 +767,41 @@
 
 
 
-<!-- =========================================================
-     INTERACTIVE VISUALIZER
-     ========================================================= -->
-
-<section class="visualizer-section">
-
-  <div class="visualizer-heading">
-
-    <span class="article-section-label">
-      Interactive Demonstration
-    </span>
-
-    <h2>
-      Explore the hardening response
-    </h2>
-
-    <p>
-
-      The interactive visualizer illustrates how the stress state,
-      yield locus and stress-strain response evolve during cyclic
-      uniaxial loading.
-
-    </p>
-
-    <p>
-
-      The current demonstration uses capped isotropic, kinematic and
-      combined hardening formulations for educational purposes.
-
-    </p>
-
-  </div>
-
-
-  <div class="visualizer-frame">
-
-    <div class="visualizer-placeholder">
-
-      Interactive hardening visualizer will be embedded here.
-
-    </div>
-
-  </div>
-
-</section>
-
-
-
-<!-- =========================================================
-     CTA
-     ========================================================= -->
+<!-- ======================================================
+     ENGINEERING SUPPORT
+     ====================================================== -->
 
 <section class="article-cta">
 
-  <div class="article-cta-inner">
+<div class="article-cta-inner">
 
-    <div>
+<div>
 
-      <p class="eyebrow">
-        Engineering Support
-      </p>
+<p class="eyebrow">
+Advanced Engineering Support
+</p>
 
-      <h2>
-        Need support with nonlinear material modeling or advanced FEA?
-      </h2>
+<h2>
+Need a material model beyond standard plasticity?
+</h2>
 
-      <p>
+<p>
+MakeCoTech provides support in nonlinear finite element analysis,
+advanced constitutive modeling, material calibration,
+viscoplasticity, cyclic plasticity, creep, damage and failure.
+</p>
 
-        MakeCoTech supports engineering teams with nonlinear simulation,
-        constitutive modeling, plasticity, cyclic loading and
-        simulation-driven product development.
-
-      </p>
-
-    </div>
+</div>
 
 
-    <a
-      class="btn primary light"
-      href="mailto:info@makecotech.com"
-    >
+<a
+  class="btn primary light"
+  href="mailto:info@makecotech.com"
+>
+Discuss Your Application
+</a>
 
-      Contact MakeCoTech
-
-    </a>
-
-  </div>
+</div>
 
 </section>
 
@@ -1341,58 +810,56 @@
 
 
 
-<!-- =========================================================
-     FOOTER
-     ========================================================= -->
+<!-- FOOTER -->
 
 <footer class="footer">
 
-  <div class="footer-brand">
+<div class="footer-brand">
 
-    <img
-      alt="MakeCoTech MC icon"
-      src="makecotech_mc_icon.png"
-    />
+<img
+  alt="MakeCoTech MC icon"
+  src="makecotech_mc_icon.png"
+/>
 
-    <p>
-      Advanced Engineering &amp; Simulation Consulting
-    </p>
+<p>
+Advanced Engineering &amp; Simulation Consulting
+</p>
 
-  </div>
-
-
-  <div class="footer-links">
-
-    <a href="index.html#services">
-      Services
-    </a>
-
-    <a href="index.html#industries">
-      Industries
-    </a>
-
-    <a href="index.html#resources">
-      Technical Resources
-    </a>
-
-    <a href="index.html#about">
-      About
-    </a>
-
-    <a href="index.html#founder">
-      Founder
-    </a>
-
-    <a href="index.html#contact">
-      Contact
-    </a>
-
-  </div>
+</div>
 
 
-  <p class="copyright">
-    © 2026 MakeCoTech. All rights reserved.
-  </p>
+<div class="footer-links">
+
+<a href="index.html#services">
+Services
+</a>
+
+<a href="index.html#industries">
+Industries
+</a>
+
+<a href="index.html#resources">
+Technical Resources
+</a>
+
+<a href="index.html#about">
+About
+</a>
+
+<a href="index.html#founder">
+Founder
+</a>
+
+<a href="index.html#contact">
+Contact
+</a>
+
+</div>
+
+
+<p class="copyright">
+© 2026 MakeCoTech. All rights reserved.
+</p>
 
 </footer>
 
@@ -1400,16 +867,16 @@
 
 <script>
 
-  const toggle =
-    document.querySelector('.menu-toggle');
+const toggle =
+  document.querySelector('.menu-toggle');
 
-  const nav =
-    document.querySelector('.nav');
+const nav =
+  document.querySelector('.nav');
 
-  toggle.addEventListener(
-    'click',
-    () => nav.classList.toggle('open')
-  );
+toggle.addEventListener(
+  'click',
+  () => nav.classList.toggle('open')
+);
 
 </script>
 
