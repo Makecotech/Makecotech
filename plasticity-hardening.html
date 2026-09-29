@@ -618,7 +618,7 @@ The configured <em>σ</em><sub>sat</sub> is retained as the cap for the hardenin
             }
             history.push({ sigma: sigma, alpha: alpha, eps_p: eps_p, eps_p_bar: eps_p_bar, currentSigY: sigY });
         }
-        if (history.length > 10000) history.shift();
+        if (history.length > 50000) history.shift();
         rStress.textContent = sigma.toFixed(1) + " MPa"; rAlpha.textContent = alpha.toFixed(1) + " MPa";
         lastSliderVal = rawSliderIntegerVal; renderCharts();
     }
