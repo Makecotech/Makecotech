@@ -404,3 +404,30 @@ ul { margin: 20px 0 0; padding-left: 20px; color: #3f4a5d; line-height: 1.9; }
         justify-content: center;
     }
 }
+.resources .cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 420px));
+  gap: 30px;
+  justify-content: start;
+}
+
+.resources .card {
+  min-height: 300px;
+}
+
+.resources .card .btn {
+  display: inline-block;
+  margin-top: 18px;
+  color: #0b2a5b;
+  border: 1px solid #0b2a5b;
+  background: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.resources .card .btn:hover {
+  background: #0b2a5b;
+  color: #ffffff;
+}
