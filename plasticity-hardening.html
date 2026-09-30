@@ -21,6 +21,352 @@
 />
 
 <link href="style.css" rel="stylesheet"/>
+
+<style>
+/* Mobile additions only. Desktop rendering remains controlled by style.css
+   and the original inline visualizer styles. */
+.mobile-only {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+
+  /* ---------- Article shell ---------- */
+  .article-page {
+    overflow-x: hidden;
+  }
+
+  .article-page .article-hero {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .article-page .article-body,
+  .article-page .visualizer-section {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .article-page .visualizer-heading {
+    margin-bottom: 8px !important;
+  }
+
+  /* ---------- Main interactive tool ---------- */
+  #appContainer {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 8px !important;
+    overflow: visible !important;
+    border-radius: 10px !important;
+  }
+
+  /* Status stays three-across but is compact and readable */
+  #statusReadouts {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+    margin-bottom: 8px !important;
+  }
+
+  #statusReadouts > div {
+    min-width: 0;
+    padding: 0 2px;
+  }
+
+  #statusReadouts > div > div:first-child {
+    font-size: 8px !important;
+    letter-spacing: 0.02em !important;
+    white-space: normal !important;
+    line-height: 1.2 !important;
+  }
+
+  #readoutStress,
+  #readoutAlpha,
+  #readoutStatus {
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    overflow-wrap: anywhere;
+  }
+
+  /* Charts become one-per-row.
+     Stress-strain first, yield ellipse second, specimen third. */
+  #chartGrid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  #canvasWrapper2 {
+    order: 1;
+  }
+
+  #canvasWrapper1 {
+    order: 2;
+  }
+
+  #canvasWrapperTest {
+    order: 3;
+  }
+
+  #canvasWrapperTest,
+  #canvasWrapper1,
+  #canvasWrapper2 {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  #canvasWrapperTest > div,
+  #canvasWrapper1 > div,
+  #canvasWrapper2 > div {
+    font-size: 11px !important;
+    margin-bottom: 6px !important;
+  }
+
+  #specimenPlane,
+  #vectorPlane,
+  #curvePlane {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 auto !important;
+  }
+
+  /* Controls become a single-column, touch-friendly stack.
+     Hardening mode / loading control comes before material parameters. */
+  #controlsGrid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 10px !important;
+  }
+
+  #loadingControlsPane {
+    order: 1;
+    gap: 10px !important;
+  }
+
+  #materialConfigPane {
+    order: 2;
+    border-right: 0 !important;
+    border-top: 1px solid #1f2937 !important;
+    padding-right: 0 !important;
+    padding-top: 10px !important;
+  }
+
+  /* Large tap targets for hardening modes */
+  #hardeningModes {
+    gap: 7px !important;
+  }
+
+  #hardeningModes label {
+    min-height: 44px !important;
+    padding: 9px 10px !important;
+    font-size: 12px !important;
+    line-height: 1.3 !important;
+    border-radius: 7px !important;
+  }
+
+  #hardeningModes input[type="radio"] {
+    width: 20px !important;
+    height: 20px !important;
+    flex: 0 0 20px;
+    margin-right: 9px !important;
+  }
+
+  /* Gold strain control */
+  #strainControlPanel {
+    padding: 10px 8px !important;
+    border-radius: 8px !important;
+  }
+
+  #strainControlPanel > label {
+    font-size: 11px !important;
+    line-height: 1.3 !important;
+    margin-bottom: 10px !important;
+  }
+
+  #boundsMin,
+  #boundsMax {
+    width: 64px !important;
+    height: 42px !important;
+    font-size: 16px !important;
+  }
+
+  #strainSlider {
+    height: 10px !important;
+    min-height: 44px;
+    border: 0 !important;
+    background: transparent !important;
+  }
+
+  #strainSlider::-webkit-slider-runnable-track {
+    height: 10px;
+    border-radius: 5px;
+    background: rgba(120,53,15,0.28);
+    border: 1px solid rgba(217,119,6,0.35);
+  }
+
+  #strainSlider::-webkit-slider-thumb {
+    width: 48px !important;
+    height: 32px !important;
+    margin-top: -12px;
+    border-radius: 8px !important;
+  }
+
+  #strainSlider::-moz-range-track {
+    height: 10px;
+    border-radius: 5px;
+    background: rgba(120,53,15,0.28);
+    border: 1px solid rgba(217,119,6,0.35);
+  }
+
+  #strainSlider::-moz-range-thumb {
+    width: 48px !important;
+    height: 32px !important;
+    border-radius: 8px !important;
+  }
+
+  #sliderValue {
+    font-size: 13px !important;
+    padding: 3px 8px !important;
+  }
+
+  /* Alternative to dragging for touch/accessibility */
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .mobile-strain-buttons {
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .mobile-strain-buttons button {
+    flex: 1 1 0;
+    min-height: 44px;
+    border: 1px solid #465a78;
+    border-radius: 8px;
+    background: linear-gradient(180deg, #334b70 0%, #1f3558 100%);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow:
+      0 3px 0 #13243d,
+      0 6px 12px rgba(0,0,0,0.22);
+  }
+
+  .mobile-strain-buttons button:active {
+    transform: translateY(2px);
+    box-shadow:
+      0 1px 0 #13243d,
+      0 3px 7px rgba(0,0,0,0.18);
+  }
+
+  /* Material configuration: each property row is easy to tap */
+  #materialConfigPane table {
+    font-size: 12px !important;
+  }
+
+  #materialConfigPane tr {
+    height: auto !important;
+  }
+
+  #materialConfigPane td {
+    padding: 7px 0 !important;
+    vertical-align: middle !important;
+  }
+
+  #materialConfigPane td:first-child {
+    width: 44% !important;
+    padding-right: 8px !important;
+    line-height: 1.3 !important;
+  }
+
+  #materialConfigPane td:last-child {
+    min-height: 44px !important;
+    gap: 6px !important;
+    padding-top: 7px !important;
+  }
+
+  #materialConfigPane button {
+    width: 44px !important;
+    height: 44px !important;
+    flex: 0 0 44px !important;
+    border-radius: 8px !important;
+    font-size: 18px !important;
+  }
+
+  #materialConfigPane input[type="number"] {
+    width: 92px !important;
+    height: 44px !important;
+    font-size: 16px !important;
+    border-radius: 7px !important;
+  }
+
+  /* Reset button: compact, raised and centered */
+  #resetBtn {
+    width: auto !important;
+    min-width: 190px !important;
+    min-height: 44px !important;
+    align-self: center !important;
+    padding: 10px 18px !important;
+    border: 1px solid #1a2b47 !important;
+    border-radius: 9px !important;
+    background: linear-gradient(180deg, #3e5c8f 0%, #243b63 100%) !important;
+    color: #ffffff !important;
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    box-shadow:
+      0 4px 0 #162841,
+      0 8px 14px rgba(0,0,0,0.24) !important;
+  }
+
+  #resetBtn:active {
+    transform: translateY(3px);
+    box-shadow:
+      0 1px 0 #162841,
+      0 4px 8px rgba(0,0,0,0.18) !important;
+  }
+
+  /* Theory is collapsed by default on phones */
+  .mobile-theory-toggle {
+    width: 100%;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    background: #111827;
+    color: #dbeafe;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  #theoryPanel {
+    display: none !important;
+    margin-top: 8px;
+    padding: 11px !important;
+  }
+
+  #theoryPanel.mobile-open {
+    display: flex !important;
+  }
+
+  #theoryPanel > div:first-child > div:nth-child(2) {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  #theoryPanel,
+  #theoryPanel * {
+    overflow-wrap: anywhere;
+  }
+}
+</style>
+
 </head>
 
 <body class="article-page">
@@ -112,7 +458,7 @@
 <div id="appContainer" style="background-color: #030712; border: 1px solid #1f2937; border-radius: 12px; padding: 10px; font-family: sans-serif; max-width: 960px; margin: 0 auto; color: #ffffff; box-sizing: border-box; overflow: hidden;">
 
 	<!-- Real-time Status Readouts Header -->
-	<div style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; margin-bottom: 10px; border-bottom: 1px solid #1f2937; padding-bottom: 6px;">
+	<div id="statusReadouts" style="display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; margin-bottom: 10px; border-bottom: 1px solid #1f2937; padding-bottom: 6px;">
 		<div>
 			<div style="color: #9ca3af; font-size: 11px; text-transform: uppercase; font-weight: bold; letter-spacing: 0.05em;">Stress State</div>
 			<div id="readoutStress" style="color: #3b82f6; font-size: 18px; font-weight: bold; margin-top: 2px;">0.0 MPa</div>
@@ -128,7 +474,7 @@
 	</div>
 
 	<!-- Centered 3-Column Chart Layout -->
-	<div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 10px; width: 100%;">
+	<div id="chartGrid" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 10px; width: 100%;">
 		<div id="canvasWrapperTest" style="text-align: center; width: 100%;">
 			<div style="font-size: 11px; margin-bottom: 4px; font-weight: bold; color: #fbbf24; text-transform: uppercase;">📋 Uniaxial Specimen Setup</div>
 			<canvas id="specimenPlane" style="background-color: #090d16; border-radius: 8px; border: 1px solid #1f2937; display: block; margin: 0 auto;"></canvas>
@@ -143,10 +489,10 @@
 		</div>
 	</div>
 	<!-- Client-Side Controls Console Grid Layout -->
-	<div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; background-color: #111827; padding: 12px; border-radius: 8px; border: 1px solid #1f2937; margin-bottom: 10px; box-sizing: border-box;">
+	<div id="controlsGrid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 15px; background-color: #111827; padding: 12px; border-radius: 8px; border: 1px solid #1f2937; margin-bottom: 10px; box-sizing: border-box;">
 
 		<!-- Left Side: Table Input Parameters with +/- Adjustment Buttons -->
-		<div style="border-right: 1px solid #1f2937; padding-right: 15px;">
+		<div id="materialConfigPane" style="border-right: 1px solid #1f2937; padding-right: 15px;">
 			<div style="color: #fbbf24; font-weight: bold; font-size: 12px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">🏆 Material Configuration</div>
 
 			<table style="width: 100%; border-collapse: collapse; font-size: 11px; font-weight: bold; color: #d1d5db;">
@@ -193,10 +539,10 @@
 			</table>
 		</div>
 		<!-- Right Side: Hardening Mode Selectors & BRIGHT GOLD HIGH-VISIBILITY BOUNDS SLIDER CARD -->
-		<div style="display: flex; flex-direction: column; justify-content: space-between; gap: 4px;">
+		<div id="loadingControlsPane" style="display: flex; flex-direction: column; justify-content: space-between; gap: 4px;">
 			<div>
 				<label style="display: block; font-weight: bold; font-size: 10px; margin-bottom: 4px; color: #fbbf24; text-transform: uppercase; letter-spacing: 0.05em;">⚙️ Hardening Formulation Mode</label>
-				<div style="display: flex; flex-direction: column; gap: 4px;">
+				<div id="hardeningModes" style="display: flex; flex-direction: column; gap: 4px;">
 					<label style="display: flex; align-items: center; background-color: #030712; border: 1px solid #1f2937; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer;">
 						<input type="radio" name="hardMode" value="kinematic" checked="" style="margin-right: 6px; cursor: pointer; accent-color: #3b82f6;">
                         1️⃣ Pure Kinematic Capped Hardening
@@ -213,7 +559,7 @@
 			</div>
 
 			<!-- ENHANCED GOLD PANEL: Dynamic slider boundary entry configuration boxes -->
-			<div style="margin-top: 1px; background-color: #fbbf24; border: 1.5px solid #d97706; padding: 6px; border-radius: 6px; box-sizing: border-box; color: #030712; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.25);">
+			<div id="strainControlPanel" style="margin-top: 1px; background-color: #fbbf24; border: 1.5px solid #d97706; padding: 6px; border-radius: 6px; box-sizing: border-box; color: #030712; box-shadow: 0 4px 10px rgba(251, 191, 36, 0.25);">
 				<label style="display: block; font-weight: 900; font-size: 11px; margin-bottom: 4px; color: #78350f; text-transform: uppercase; letter-spacing: 0.04em; text-align: center;">🛑 Drag Handle Left/Right To Apply Strain</label>
 
 				<div style="display: flex; align-items: center; gap: 8px; width: 100%; justify-content: space-between; margin-bottom: 2px;">
@@ -249,13 +595,21 @@
 				</div>
 			</div>
 
+            <div class="mobile-strain-buttons mobile-only" aria-label="Mobile strain controls">
+                <button type="button" id="strainStepDown" aria-label="Decrease strain">− Strain</button>
+                <button type="button" id="strainStepUp" aria-label="Increase strain">+ Strain</button>
+            </div>
+
 			<button id="resetBtn" style="background-color: #ef4444; color: white; border: none; font-weight: bold; padding: 6px; border-radius: 6px; cursor: pointer; font-size: 11px; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
 				Reset Path History 🔄
 			</button>
 		</div>
 	</div>
 	<!-- Principal Equations Panel & Deviatoric Space Academic Definition -->
-	<div style="background-color: #111827; border: 1px solid #1f2937; border-radius: 8px; padding: 14px; color: #e5e7eb; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
+	<button type="button" id="theoryToggle" class="mobile-only mobile-theory-toggle" aria-expanded="false" aria-controls="theoryPanel">
+        Show theory &amp; equations
+    </button>
+    <div id="theoryPanel" style="background-color: #111827; border: 1px solid #1f2937; border-radius: 8px; padding: 14px; color: #e5e7eb; box-sizing: border-box; display: flex; flex-direction: column; gap: 14px;">
 		<div>
 			<div style="color: #fbbf24; font-weight: bold; font-size: 13px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #1f2937; padding-bottom: 4px;">📖 Principal Constitutive Formulations</div>
 			<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; font-size: 12px; line-height: 1.65;">
@@ -358,8 +712,14 @@ The configured <em>σ</em><sub>sat</sub> is retained as the cap for the hardenin
 	const maxStrain = 0.007;
 
 	function resizeCanvases() {
-	const wrapperWidth = document.getElementById('canvasWrapperTest').clientWidth;
-	const squareSize = Math.max(160, Math.min(270, wrapperWidth));
+	const isMobile = window.matchMedia('(max-width: 700px)').matches;
+	const specimenWidth = document.getElementById('canvasWrapperTest').clientWidth;
+	const vectorWidth = document.getElementById('canvasWrapper1').clientWidth;
+	const curveWidth = document.getElementById('canvasWrapper2').clientWidth;
+	const wrapperWidth = Math.min(specimenWidth, vectorWidth, curveWidth);
+	const squareSize = isMobile
+	    ? Math.max(160, Math.min(330, wrapperWidth))
+	    : Math.max(160, Math.min(270, wrapperWidth));
 
 	c0.width = squareSize; c0.height = squareSize;
 	c1.width = squareSize; c1.height = squareSize;
@@ -969,6 +1329,51 @@ The configured <em>σ</em><sub>sat</sub> is retained as the cap for the hardenin
   </p>
 
 </footer>
+
+
+<script>
+(function () {
+  const slider = document.getElementById('strainSlider');
+  const stepDown = document.getElementById('strainStepDown');
+  const stepUp = document.getElementById('strainStepUp');
+  const theoryToggle = document.getElementById('theoryToggle');
+  const theoryPanel = document.getElementById('theoryPanel');
+
+  function stepSlider(delta) {
+    if (!slider) return;
+
+    const min = Number(slider.min);
+    const max = Number(slider.max);
+    const current = Number(slider.value);
+    const next = Math.max(min, Math.min(max, current + delta));
+
+    slider.value = String(next);
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  if (stepDown) {
+    stepDown.addEventListener('click', function () {
+      stepSlider(-40);
+    });
+  }
+
+  if (stepUp) {
+    stepUp.addEventListener('click', function () {
+      stepSlider(40);
+    });
+  }
+
+  if (theoryToggle && theoryPanel) {
+    theoryToggle.addEventListener('click', function () {
+      const open = theoryPanel.classList.toggle('mobile-open');
+      theoryToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      theoryToggle.textContent = open
+        ? 'Hide theory & equations'
+        : 'Show theory & equations';
+    });
+  }
+})();
+</script>
 
 <script>
 const toggle = document.querySelector('.menu-toggle');
