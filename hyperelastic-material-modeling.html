@@ -83,13 +83,13 @@
 @media print{.hyperelastic-nav{display:none}}
 
 
-/* Responsive overview video. */
+/* Responsive looping overview animation. */
 .explorer-overview{scroll-margin-top:110px}
 .explorer-overview figure{margin:20px 0 0}
-.explorer-overview video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:12px;background:#0b243e;box-shadow:0 10px 30px rgba(11,42,91,.12)}
+.explorer-overview .overview-animation{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:12px;background:#0b243e;box-shadow:0 10px 30px rgba(11,42,91,.12)}
 .explorer-overview figcaption{margin-top:10px;color:#62768c;font-size:.82rem;line-height:1.6}
 .explorer-overview .resource-links{margin-top:16px}
-@media print{.explorer-overview video{display:none}}
+@media print{.explorer-overview .overview-animation{display:none}}
 
 </style>
 <link rel="canonical" href="https://www.makecotech.com/hyperelastic-material-modeling.html"/>
@@ -148,11 +148,8 @@
 <h2 id="video-overview-title">Explore Hyperelastic Explorer in 36 seconds</h2>
 <p>Compare material models, explore five loading modes, fit experimental data and export curves to Excel.</p>
 <figure>
-<video controls playsinline preload="none" width="1920" height="1080" poster="assets/video/hyperelastic-explorer-overview.jpg" aria-label="MakeCoTech Hyperelastic Explorer video overview" aria-describedby="video-overview-caption">
-<source src="assets/video/hyperelastic-explorer-overview.mp4" type="video/mp4"/>
-<p><a href="assets/video/hyperelastic-explorer-overview.mp4">Watch or download the overview video</a>.</p>
-</video>
-<figcaption id="video-overview-caption">A 36-second introduction with on-screen text and music. The animations and fitting data are educational illustrations.</figcaption>
+<img class="overview-animation" src="assets/video/MakeCoTech-Hyperelastic-Website.gif" width="1280" height="720" alt="MakeCoTech Hyperelastic Explorer: animated material deformation, model comparisons, five loading modes and parameter fitting." aria-describedby="video-overview-caption"/>
+<figcaption id="video-overview-caption">A silent, continuously looping 36-second overview with on-screen text. The animations and fitting data are educational illustrations.</figcaption>
 </figure>
 <div class="resource-links">
 <a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open Interactive Tool</a>
