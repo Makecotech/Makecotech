@@ -82,6 +82,15 @@
 @media(max-width:560px){.hyperelastic-nav{padding:12px 16px;gap:6px}.hyperelastic-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
 @media print{.hyperelastic-nav{display:none}}
 
+
+/* Responsive overview video. */
+.explorer-overview{scroll-margin-top:110px}
+.explorer-overview figure{margin:20px 0 0}
+.explorer-overview video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:12px;background:#0b243e;box-shadow:0 10px 30px rgba(11,42,91,.12)}
+.explorer-overview figcaption{margin-top:10px;color:#62768c;font-size:.82rem;line-height:1.6}
+.explorer-overview .resource-links{margin-top:16px}
+@media print{.explorer-overview video{display:none}}
+
 </style>
 <link rel="canonical" href="https://www.makecotech.com/hyperelastic-material-modeling.html"/>
 <meta property="og:type" content="article"/>
@@ -133,6 +142,24 @@
 </section>
 
 <div class="article-body">
+
+<section class="explorer-overview" id="video-overview" aria-labelledby="video-overview-title">
+<span class="article-section-label">Watch the Overview</span>
+<h2 id="video-overview-title">Explore Hyperelastic Explorer in 36 seconds</h2>
+<p>Compare material models, explore five loading modes, fit experimental data and export curves to Excel.</p>
+<figure>
+<video controls playsinline preload="none" width="1920" height="1080" poster="assets/video/hyperelastic-explorer-overview.jpg" aria-label="MakeCoTech Hyperelastic Explorer video overview" aria-describedby="video-overview-caption">
+<source src="assets/video/hyperelastic-explorer-overview.mp4" type="video/mp4"/>
+<p><a href="assets/video/hyperelastic-explorer-overview.mp4">Watch or download the overview video</a>.</p>
+</video>
+<figcaption id="video-overview-caption">A 36-second introduction with on-screen text and music. The animations and fitting data are educational illustrations.</figcaption>
+</figure>
+<div class="resource-links">
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open Interactive Tool</a>
+<a class="alt" href="hyperelastic-explorer-help.html">Read the User Guide</a>
+</div>
+</section>
+
 
 <section>
 <span class="article-section-label">Nonlinear Material Modeling</span>
