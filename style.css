@@ -1076,3 +1076,72 @@ ul { margin: 20px 0 0; padding-left: 20px; color: #3f4a5d; line-height: 1.9; }
 .resource-publication a:focus-visible{outline:3px solid #008cff;outline-offset:3px}
 @media(max-width:560px){.resources .cards{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:420px){.resource-publication-links{grid-template-columns:1fr}.resource-publication h3{min-height:0}}
+
+/* Distinct, clickable cards for guides, tools and LinkedIn articles. */
+.resources .resource-publication {
+  background: linear-gradient(135deg, #edf5ff, #deecff);
+  border-color: #8eb6e4;
+  border-top: 4px solid #0074d9;
+  box-shadow: 0 12px 30px rgba(0, 83, 160, .12);
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+
+.resources .resource-publication::after {
+  opacity: .12;
+  pointer-events: none;
+}
+
+/* The title link covers the card; the separate action links stay above it. */
+.resources .resource-publication h3 a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+
+.resources .resource-publication .resource-publication-docs,
+.resources .resource-publication .resource-publication-links {
+  position: relative;
+  z-index: 2;
+}
+
+.resources .resource-publication .resource-publication-docs a {
+  color: #005aa8;
+}
+
+.resources .resource-publication .resource-publication-links a {
+  background: #0b2a5b;
+  border-color: #0b2a5b;
+  color: #fff;
+  transition: background .2s ease, border-color .2s ease;
+}
+
+.resources .resource-publication .resource-publication-links a:hover,
+.resources .resource-publication .resource-publication-links a:focus-visible {
+  background: #006bc9;
+  border-color: #006bc9;
+  color: #fff;
+}
+
+.resources .resource-publication:focus-within {
+  border-color: #0074d9;
+  box-shadow: 0 16px 36px rgba(0, 83, 160, .2);
+}
+
+@media (hover: hover) {
+  .resources .resource-publication:hover {
+    background: linear-gradient(135deg, #e3efff, #d3e5ff);
+    border-color: #0074d9;
+    box-shadow: 0 18px 38px rgba(0, 83, 160, .2);
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .resources .resource-publication,
+  .resources .resource-publication .resource-publication-links a {
+    transition: none;
+    transform: none;
+  }
+}
