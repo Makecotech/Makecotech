@@ -277,12 +277,12 @@
 <section>
 <span class="article-section-label">Benchmarking</span>
 <h2>Checking the fitting workflow against Abaqus examples</h2>
-<p>The tool includes two distinct benchmark presets:</p>
+<p>The tool provides two examples with distinct purposes:</p>
 <div class="model-grid">
-<div class="model-card"><h3>Abaqus SI Hypertest Benchmark</h3><p>Uniaxial, biaxial, planar and volumetric data for checking both deviatoric fitting and compressibility.</p></div>
-<div class="model-card"><h3>Abaqus 2016 Rubber-Fit Benchmark</h3><p>The historical Treloar fitting example in its original units, converted explicitly to MPa and stretch for reproduction of the incompressible calibration example.</p></div>
+<div class="model-card"><h3>Hyperelastic benchmark: Abaqus SI Hypertest</h3><p>Published rubber data for uniaxial, biaxial, planar and volumetric loading, used to explore deviatoric fitting and compressibility.</p></div>
+<div class="model-card"><h3>Hyperfoam demonstration</h3><p>Synthetic one-term Ogden Hyperfoam data across five loading modes, generated with μ₁ = 0.5 MPa, α₁ = 2 and ν₁ = 0.20 to demonstrate parameter fitting.</p></div>
 </div>
-<p>The 2016 guide reports an all-data Arruda–Boyce fit of approximately μ = 3.28 kgf/cm² and locking stretch λm = 5.24, providing a useful published cross-check.</p>
+<p>The Hyperfoam example uses generated model data. It demonstrates the fitting workflow and requires separate experimental or solver data for external validation.</p>
 </section>
 
 <section>
