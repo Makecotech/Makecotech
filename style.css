@@ -1293,3 +1293,11 @@ body.service-dialog-open { overflow: hidden; }
   .services .service-card,
   .service-card-media img { transition: none; transform: none !important; }
 }
+
+/* Keep the complete press-brake tooling and sheet bend visible in its panel. */
+.service-dialog-media.service-forming-media {
+  height: clamp(180px, 32vw, 320px);
+}
+.service-forming-media img {
+  object-fit: contain;
+}
