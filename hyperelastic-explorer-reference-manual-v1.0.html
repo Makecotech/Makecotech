@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MakeCoTech Hyperelastic Explorer v1.0 — Technical Reference Manual | MakeCoTech</title>
+<meta name="description" content="Technical reference manual for MakeCoTech Hyperelastic Explorer v1.0: constitutive derivations, loading-mode reductions, fitting objectives, optimization algorithms, numerical methods and implementation assumptions."/>
+<link href="style.css" rel="stylesheet"/>
+<link rel="icon" href="makecotech_mc_icon.png"/>
+<style>
+.article-page{background:#fff}
+.article-hero{background:linear-gradient(135deg,#07172f 0%,#0b2a5b 60%,#164d82 100%);color:#fff;padding:42px 24px 36px}
+.article-container{width:100%;max-width:980px;margin:0 auto}
+.article-hero .eyebrow{margin:0 0 8px;color:#7ec8ff;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-hero h1{max-width:920px;margin:0;color:#fff;font-size:clamp(1.9rem,3.6vw,2.8rem);line-height:1.12;letter-spacing:-.02em}
+.article-hero .lead{max-width:880px;margin:14px 0 0;color:rgba(255,255,255,.86);font-size:1rem;line-height:1.65}
+.article-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.article-tag{padding:5px 9px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:600}
+.article-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.article-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:7px;text-decoration:none;font-size:.86rem;font-weight:800}
+.article-btn.primary{background:#fff;color:#0b2a5b}
+.article-btn.secondary{border:1px solid rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.06)}
+.article-btn:hover{text-decoration:none;filter:brightness(.97)}
+.toc{max-width:980px;margin:0 auto;padding:26px 24px 0}
+.toc-box{padding:17px 20px;border:1px solid #dce7f1;border-radius:10px;background:#f8fbff}
+.toc-box>strong{color:#0b2a5b}
+.toc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px 18px;margin-top:10px}
+.toc a{color:#164d82;text-decoration:none;font-size:.8rem;line-height:1.55}
+.article-body{max-width:980px;margin:0 auto;padding:38px 24px 60px}
+.article-body section{margin-bottom:48px}
+.article-section-label{display:block;margin-bottom:5px;color:#0074d9;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-body h2{margin:0 0 14px;color:#0b2a5b;font-size:1.55rem;line-height:1.28;text-align:left}
+.article-body h3{margin:25px 0 9px;color:#163a63;font-size:1.08rem}
+.article-body h4{margin:18px 0 7px;color:#274d72;font-size:.96rem}
+.article-body p{margin:0 0 14px;color:#334155;font-size:.95rem;line-height:1.72;text-align:left}
+.article-intro{color:#26384d!important;font-size:1.02rem!important}
+.eq{margin:17px 0;padding:13px 17px;border-left:3px solid #0074d9;border-radius:6px;background:#f5f8fc;color:#0b2a5b;font-family:Cambria,Georgia,serif;font-size:1rem;line-height:1.65;overflow:auto}
+.eq.small{font-size:.91rem}
+.deriv{margin:17px 0;padding:14px 17px;border:1px solid #dce7f2;border-radius:8px;background:#fbfdff;color:#26384d;font-family:Consolas,"Courier New",monospace;font-size:.83rem;line-height:1.72;white-space:pre-wrap;overflow:auto}
+.callout{margin:20px 0;padding:17px 19px;border:1px solid #dce8f4;border-left:4px solid #0074d9;border-radius:8px;background:#f8fbff}
+.callout.warning{border-left-color:#d97706;background:#fffaf0}
+.callout p:last-child{margin-bottom:0}
+.tablewrap{margin:22px 0;overflow-x:auto;border:1px solid #dce5ef;border-radius:10px}
+table{width:100%;border-collapse:collapse;background:#fff;min-width:690px}
+th{padding:11px 13px;background:#0b2a5b;color:#fff;font-size:.82rem;text-align:left}
+td{padding:11px 13px;border-bottom:1px solid #e5ebf1;color:#334155;font-size:.86rem;line-height:1.5;vertical-align:top}
+tr:last-child td{border-bottom:none}
+tbody tr:nth-child(even){background:#f8fafc}
+.doccontrol{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin:18px 0}
+.doccontrol div{padding:11px;border:1px solid #d9e4ee;border-radius:8px;background:#f8fafc}
+.doccontrol small{display:block;color:#64748b;font-size:.69rem;font-weight:800;text-transform:uppercase}
+.doccontrol b{display:block;color:#0b2a5b;font-size:.88rem;margin-top:3px}
+.algo{margin:18px 0;padding:16px;border:1px solid #cfddea;border-radius:9px;background:#f8fbff}
+.algo ol,.algo ul{margin:8px 0 0;padding-left:22px}
+.algo li{margin:7px 0;color:#334155;font-size:.9rem;line-height:1.55}
+.checklist{columns:2;column-gap:28px;margin:12px 0;padding-left:20px}
+.checklist li{break-inside:avoid;margin:7px 0;color:#334155;font-size:.9rem;line-height:1.5}
+.reference-list{font-size:.83rem;color:#66788d}
+.reference-list a{color:#0074d9}
+.resource-links{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.resource-links a{display:inline-flex;padding:9px 12px;border-radius:7px;background:#0b2a5b;color:#fff;font-size:.82rem;font-weight:800;text-decoration:none}
+.resource-links a.alt{background:#fff;color:#0b2a5b;border:1px solid #9fbad3}
+.code{font-family:Consolas,monospace;color:#0b2a5b;background:#edf5fc;padding:1px 5px;border-radius:4px}
+@media(max-width:820px){
+ .toc-grid{grid-template-columns:1fr 1fr}
+ .doccontrol{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+ .article-actions{flex-direction:column;align-items:stretch}
+ .toc-grid,.doccontrol{grid-template-columns:1fr}
+ .checklist{columns:1}
+}
+@media print{
+ .site-header,.article-actions,.toc{display:none!important}
+ .article-hero{background:#fff!important;color:#111!important;padding:18px 0}
+ .article-hero h1,.article-hero .lead,.article-hero .eyebrow{color:#111!important}
+ .article-body{max-width:none;padding:0}
+ section{break-inside:avoid}
+}
+
+/* Navigation for the Hyperelastic Explorer publication. */
+.hyperelastic-nav{display:flex;flex-wrap:wrap;gap:8px;max-width:900px;margin:0 auto;padding:14px 24px;border-bottom:1px solid #dbe5f0;background:#fff;font:600 .875rem/1.4 Arial,Helvetica,sans-serif}
+.hyperelastic-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid #cbdcec;border-radius:6px;color:#164d82;text-decoration:none}
+.hyperelastic-nav a:hover{background:#edf6ff;border-color:#0074d9}
+.hyperelastic-nav a[aria-current="page"]{background:#0b2a5b;color:#fff;border-color:#0b2a5b}
+.hyperelastic-nav a:focus-visible,.resource-publication a:focus-visible{outline:3px solid #008cff;outline-offset:3px}
+#tool .hyperelastic-nav{max-width:none;margin:0 0 10px;padding:0 0 10px;border-color:#26364a;background:transparent}
+#tool .hyperelastic-nav a{border-color:#40536a;color:#dbeafe;background:#10233a}
+#tool .hyperelastic-nav a[aria-current="page"]{background:#dbeafe;color:#081d33}
+@media(max-width:560px){.hyperelastic-nav{padding:12px 16px;gap:6px}.hyperelastic-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
+@media print{.hyperelastic-nav{display:none}}
+
+</style>
+<link rel="canonical" href="https://www.makecotech.com/hyperelastic-explorer-reference-manual-v1.0.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="MakeCoTech"/>
+<meta property="og:title" content="MakeCoTech Hyperelastic Explorer v1.0 — Technical Reference Manual | MakeCoTech"/>
+<meta property="og:description" content="Technical reference manual for MakeCoTech Hyperelastic Explorer v1.0: constitutive derivations, loading-mode reductions, fitting objectives, optimization algorithms, numerical methods and implementation assumptions."/>
+<meta property="og:url" content="https://www.makecotech.com/hyperelastic-explorer-reference-manual-v1.0.html"/>
+<meta name="twitter:card" content="summary"/>
+</head>
+<body class="article-page">
+
+<header class="site-header">
+<a aria-label="MakeCoTech home" class="brand" href="index.html"><img alt="MakeCoTech logo" src="makecotech_logo.png"/></a>
+<button type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation" class="menu-toggle">☰</button>
+<nav class="nav" id="site-navigation" aria-label="Main navigation">
+<a href="index.html#home">Home</a>
+<a href="index.html#services">Services</a>
+<a href="index.html#industries">Industries</a>
+<a href="index.html#resources">Technical Resources</a>
+<a href="index.html#about">About</a>
+<a href="index.html#founder">Founder</a>
+<a href="index.html#contact">Contact</a>
+</nav>
+</header>
+<nav class="hyperelastic-nav" aria-label="Hyperelastic resources">
+<a href="hyperelastic-material-modeling.html">Article</a>
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Interactive explorer</a>
+<a href="hyperelastic-explorer-help.html">User guide</a>
+<a href="hyperelastic-explorer-reference-manual-v1.0.html" aria-current="page">Reference manual</a>
+</nav>
+
+
+<main>
+<section class="article-hero">
+<div class="article-container">
+<p class="eyebrow">Technical Reference Manual</p>
+<h1>MakeCoTech Hyperelastic Explorer v1.0</h1>
+<p class="lead">Constitutive equations, loading-mode derivations, fitting objectives, parameter-identification strategy, optimization algorithms, numerical methods and the engineering simplifications used by the released interactive tool.</p>
+<div class="article-meta">
+<span class="article-tag">Manual Rev 1.0</span>
+<span class="article-tag">Tool v1.0</span>
+<span class="article-tag">Hyperelasticity</span>
+<span class="article-tag">Optimization</span>
+<span class="article-tag">Abaqus-Oriented Calibration</span>
+</div>
+<div class="article-actions">
+<a class="article-btn primary" href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open Interactive Module</a>
+<a class="article-btn secondary" href="hyperelastic-explorer-help.html">User Guide</a>
+<a class="article-btn secondary" href="hyperelastic-material-modeling.html">Technical Article</a>
+</div>
+</div>
+</section>
+
+<div class="toc">
+<div class="toc-box">
+<strong>Contents</strong>
+<div class="toc-grid">
+<a href="#scope">1. Scope & document control</a>
+<a href="#assumptions">2. Assumptions & units</a>
+<a href="#kinematics">3. Kinematics & stress measures</a>
+<a href="#loading">4. Loading-mode reductions</a>
+<a href="#energy">5. Stress from strain energy</a>
+<a href="#linear">6. Linear reference</a>
+<a href="#neo">7. Neo-Hookean</a>
+<a href="#mr">8. Mooney-Rivlin</a>
+<a href="#ogden">9. Ogden N=1</a>
+<a href="#poly">10. Yeoh / Reduced Polynomial</a>
+<a href="#arruda">11. Arruda-Boyce</a>
+<a href="#vdw">12. Van der Waals / Kilian</a>
+<a href="#compressible">13. Standard compressibility</a>
+<a href="#hyperfoam">14. Ogden Hyperfoam N=1</a>
+<a href="#input">15. Experimental data processing</a>
+<a href="#objective">16. Fitting objectives & metrics</a>
+<a href="#linearfit">17. Linear least-squares fitting</a>
+<a href="#nonlinearfit">18. Nonlinear optimization</a>
+<a href="#numerics">19. Numerical algorithms</a>
+<a href="#matching">20. Initial-stiffness matching</a>
+<a href="#benchmarks">21. Benchmark presets</a>
+<a href="#simplifications">22. Applied simplifications</a>
+<a href="#stability">23. Stability & limitations</a>
+<a href="#reproduce">24. Reproduction checklist</a>
+<a href="#references">25. References</a>
+</div>
+</div>
+</div>
+
+<div class="article-body">
+
+<section id="scope">
+<span class="article-section-label">1 · Scope</span>
+<h2>Purpose and document control</h2>
+<p class="article-intro">This manual documents the equations and numerical procedures implemented in <strong>MakeCoTech Hyperelastic Explorer v1.0</strong>. Its purpose is to make the browser implementation auditable rather than a black box. The equations below describe the released tool behavior, including deliberate reductions and numerical safeguards.</p>
+
+<div class="doccontrol">
+<div><small>Tool</small><b>MakeCoTech Hyperelastic Explorer</b></div>
+<div><small>Tool version</small><b>1.0</b></div>
+<div><small>Manual revision</small><b>1.0</b></div>
+<div><small>Reference year</small><b>2026</b></div>
+</div>
+
+<p>Recommended reference:</p>
+<div class="eq">MakeCoTech Hyperelastic Explorer v1.0, Technical Reference Manual Rev 1.0, MakeCoTech, 2026.</div>
+
+<div class="callout warning"><p><strong>Scope boundary.</strong> This manual describes the MakeCoTech browser implementation, not the complete Abaqus material library. Several models are intentionally restricted to one order, homogeneous material-point loading, or a specific fitting strategy. These reductions are stated explicitly.</p></div>
+</section>
+
+<section id="assumptions">
+<span class="article-section-label">2 · Common assumptions</span>
+<h2>Units, conventions and modeling scope</h2>
+<p>Unless a section states otherwise, the tool assumes homogeneous, isotropic, isothermal, rate-independent and purely elastic/hyperelastic response. No finite-element mesh is solved.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Quantity</th><th>Convention</th></tr></thead>
+<tbody>
+<tr><td>Stress</td><td>MPa</td></tr>
+<tr><td>Strain-energy density</td><td>MJ/m³; numerically 1 MPa = 1 MJ/m³</td></tr>
+<tr><td>Stretch</td><td>λ = current length / reference length</td></tr>
+<tr><td>Engineering strain</td><td>ε = λ − 1</td></tr>
+<tr><td>Volume ratio</td><td>J = det(F) = V/V₀</td></tr>
+<tr><td>Volumetric pressure</td><td>Positive in compression: J &lt; 1 gives p &gt; 0</td></tr>
+<tr><td>Normal stress fitted internally</td><td>Nominal / first-Piola stress</td></tr>
+<tr><td>Simple shear</td><td>Shear amount γ with F₁₂ = γ</td></tr>
+</tbody></table></div>
+
+<p>The released v1.0 tool does not represent rate dependence, Mullins effect, permanent set, viscoelasticity, plasticity, anisotropy, temperature-dependent coefficients, damage, cavitation or solver-level constitutive stability.</p>
+</section>
+
+<section id="kinematics">
+<span class="article-section-label">3 · Continuum kinematics</span>
+<h2>Principal stretches, invariants and stress measures</h2>
+
+<p>For principal stretches λ₁, λ₂ and λ₃:</p>
+<div class="eq">J = λ₁ λ₂ λ₃.</div>
+
+<p>The first two stretch invariants are</p>
+<div class="eq small">
+I₁ = λ₁² + λ₂² + λ₃²<br>
+I₂ = λ₁²λ₂² + λ₂²λ₃² + λ₃²λ₁².
+</div>
+
+<p>For standard compressible hyperelastic models, the isochoric stretches and invariants are</p>
+<div class="eq small">
+λ̄ᵢ = J<sup>−1/3</sup>λᵢ<br>
+Ī₁ = J<sup>−2/3</sup>I₁<br>
+Ī₂ = J<sup>−4/3</sup>I₂.
+</div>
+
+<h3>Nominal stress versus Cauchy stress</h3>
+<div class="eq">P = J σ F<sup>−T</sup>.</div>
+<p>For a diagonal principal deformation:</p>
+<div class="eq">Pᵢ = J σᵢ / λᵢ.</div>
+<p>For J = 1:</p>
+<div class="eq">Pᵢ = σᵢ / λᵢ.</div>
+<p>This last relation is used when incompressible Cauchy/true stress data are entered. In a compressible normal test, Cauchy stress alone does not determine nominal stress because J or the lateral stretches are also required. Therefore compressible normal-data fitting accepts nominal/engineering stress.</p>
+</section>
+
+<section id="loading">
+<span class="article-section-label">4 · Homogeneous loading modes</span>
+<h2>Kinematic reductions used by the tool</h2>
+
+<h3>Incompressible uniaxial</h3>
+<div class="eq">λ₁ = λ, &nbsp; λ₂ = λ₃ = λ<sup>−1/2</sup>, &nbsp; J = 1.</div>
+
+<h3>Incompressible equibiaxial</h3>
+<div class="eq">λ₁ = λ₂ = λ, &nbsp; λ₃ = λ<sup>−2</sup>, &nbsp; J = 1.</div>
+
+<h3>Incompressible planar tension / pure shear</h3>
+<div class="eq">λ₁ = λ, &nbsp; λ₂ = 1, &nbsp; λ₃ = λ<sup>−1</sup>, &nbsp; J = 1.</div>
+
+<h3>Simple shear</h3>
+<div class="eq small">
+F = [[1, γ, 0], [0, 1, 0], [0, 0, 1]], &nbsp; J = 1.
+</div>
+<p>The non-trivial principal stretches can be written as</p>
+<div class="eq">η = asinh(γ/2), &nbsp; λ<sub>+</sub> = e<sup>η</sup>, &nbsp; λ<sub>−</sub> = e<sup>−η</sup>, &nbsp; λ₃ = 1.</div>
+
+<div class="callout"><p><strong>Planar/pure shear is not simple shear.</strong> The two modes follow different deformation paths and provide different constitutive information.</p></div>
+</section>
+
+<section id="energy">
+<span class="article-section-label">5 · Energy formulation</span>
+<h2>Stress from strain energy without an FEA solve</h2>
+
+<p>For a hyperelastic solid, stress is obtained from derivatives of the strain-energy density. Along a homogeneous one-parameter path, the work-conjugate nominal stress is obtained by differentiating the path energy.</p>
+
+<h3>Uniaxial and planar</h3>
+<div class="eq">P = dW*/dλ.</div>
+
+<h3>Equibiaxial</h3>
+<div class="deriv">dW*/dλ = P₁(dλ₁/dλ) + P₂(dλ₂/dλ)
+         = P₁ + P₂.
+
+For equal biaxial loading P₁ = P₂ = P:
+
+P = 1/2 dW*/dλ.</div>
+
+<h3>Simple shear</h3>
+<div class="eq">τ = dW/dγ.</div>
+
+<h3>Compressible free-surface equilibrium</h3>
+<p>For standard compressible uniaxial loading the tool writes λ₂ = λ₃ = t and minimizes</p>
+<div class="eq">W(λ,t,t)</div>
+<p>with respect to t. Since</p>
+<div class="deriv">dW/dt = P₂ + P₃ = 2P_transverse,</div>
+<p>a stationary minimum gives zero transverse nominal traction. Equibiaxial and planar modes have one free thickness stretch, and the same stationarity condition gives P₃ = 0.</p>
+
+<p>Once the free transverse state has been found, the axial stress is calculated by differentiating the <em>minimized</em> energy. The transverse derivative vanishes at equilibrium, so this is an application of the envelope theorem.</p>
+</section>
+
+<section id="linear">
+<span class="article-section-label">6 · Reference curve</span>
+<h2>Linear elastic — small-strain reference</h2>
+
+<p>The linear model is deliberately included only as a small-strain comparison. It is not presented as a finite-strain hyperelastic constitutive law.</p>
+
+<p>For a compressible small-strain reference, ν is reconstructed from E and K₀:</p>
+<div class="eq">ν = (3K₀ − E)/(6K₀).</div>
+<p>and</p>
+<div class="eq">G = E/[2(1+ν)].</div>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Mode</th><th>Displayed stress</th><th>Displayed energy</th></tr></thead>
+<tbody>
+<tr><td>Uniaxial</td><td>P = E(λ−1)</td><td>W = 1/2 E(λ−1)²</td></tr>
+<tr><td>Equibiaxial</td><td>P = E/(1−ν)(λ−1)</td><td>W = E/(1−ν)(λ−1)²</td></tr>
+<tr><td>Planar</td><td>P = E/(1−ν²)(λ−1)</td><td>W = 1/2 E/(1−ν²)(λ−1)²</td></tr>
+<tr><td>Simple shear</td><td>τ = Gγ</td><td>W = 1/2 Gγ²</td></tr>
+</tbody></table></div>
+
+<p>For fitting in the incompressible comparison mode, ν = 0.5, so the model basis functions become E(λ−1), 2E(λ−1), 4E(λ−1)/3 and Eγ/3 for uniaxial, biaxial, planar and shear respectively.</p>
+
+<div class="callout warning"><p>Large-strain extrapolation of the linear curve is intentionally educational only.</p></div>
+</section>
+
+<section id="neo">
+<span class="article-section-label">7 · Hyperelastic law</span>
+<h2>Neo-Hookean</h2>
+<div class="eq">W<sub>iso</sub> = μ/2(Ī₁−3).</div>
+<p>For J = 1:</p>
+<div class="eq">G₀ = μ, &nbsp; E₀ = 3μ.</div>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Mode</th><th>Closed-form incompressible stress used by the tool</th></tr></thead>
+<tbody>
+<tr><td>Uniaxial</td><td>P = μ(λ−λ<sup>−2</sup>)</td></tr>
+<tr><td>Equibiaxial</td><td>P = μ(λ−λ<sup>−5</sup>)</td></tr>
+<tr><td>Planar</td><td>P = μ(λ−λ<sup>−3</sup>)</td></tr>
+<tr><td>Simple shear</td><td>τ = μγ</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="mr">
+<span class="article-section-label">8 · Hyperelastic law</span>
+<h2>Mooney-Rivlin</h2>
+<div class="eq">W<sub>iso</sub> = C₁₀(Ī₁−3) + C₀₁(Ī₂−3).</div>
+<div class="eq">G₀ = 2(C₁₀+C₀₁).</div>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Mode</th><th>Closed-form incompressible stress</th></tr></thead>
+<tbody>
+<tr><td>Uniaxial</td><td>P = 2C₁₀(λ−λ<sup>−2</sup>) + 2C₀₁(1−λ<sup>−3</sup>)</td></tr>
+<tr><td>Equibiaxial</td><td>P = 2C₁₀(λ−λ<sup>−5</sup>) + 2C₀₁(λ³−λ<sup>−3</sup>)</td></tr>
+<tr><td>Planar</td><td>P = 2(C₁₀+C₀₁)(λ−λ<sup>−3</sup>)</td></tr>
+<tr><td>Simple shear</td><td>τ = 2(C₁₀+C₀₁)γ</td></tr>
+</tbody></table></div>
+
+<h3>Identifiability in simple shear</h3>
+<div class="eq">I₁ = I₂ = 3 + γ²</div>
+<div class="eq">W = (C₁₀+C₀₁)γ².</div>
+<p>Only the sum C10+C01 is identifiable from simple shear. Planar loading also collapses to the same sum because I₁ = I₂ = λ²+1+λ<sup>−2</sup>. The tool therefore warns that uniaxial and/or equibiaxial information is required if C10 and C01 are to be separated.</p>
+</section>
+
+<section id="ogden">
+<span class="article-section-label">9 · Hyperelastic law</span>
+<h2>Ogden, N = 1, Abaqus-style normalization</h2>
+
+<div class="eq">W<sub>iso</sub> = (2μ/α²)(λ̄₁<sup>α</sup> + λ̄₂<sup>α</sup> + λ̄₃<sup>α</sup> − 3).</div>
+<p>Under this normalization:</p>
+<div class="eq">G₀ = μ, &nbsp; E₀ = 3μ for J = 1.</div>
+
+<p>This differs from other Ogden conventions that place a different factor in front of the power sum. Therefore a parameter named μ from another convention is not necessarily numerically interchangeable.</p>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Mode</th><th>Closed-form incompressible stress</th></tr></thead>
+<tbody>
+<tr><td>Uniaxial</td><td>P = (2μ/α)[λ<sup>α−1</sup>−λ<sup>−α/2−1</sup>]</td></tr>
+<tr><td>Equibiaxial</td><td>P = (2μ/α)[λ<sup>α−1</sup>−λ<sup>−2α−1</sup>]</td></tr>
+<tr><td>Planar</td><td>P = (2μ/α)[λ<sup>α−1</sup>−λ<sup>−α−1</sup>]</td></tr>
+</tbody></table></div>
+
+<h3>Simple shear derivation</h3>
+<div class="deriv">η = asinh(γ/2)
+λ+ = exp(η), λ− = exp(−η), λ3 = 1
+
+W = (2μ/α²)[exp(αη)+exp(−αη)−2]
+  = (4μ/α²)[cosh(αη)−1]
+
+dη/dγ = 1/sqrt(4+γ²)
+
+τ = dW/dγ
+  = (4μ/α)sinh(αη)/sqrt(4+γ²).</div>
+
+<p>The GUI allows −20 ≤ α ≤ 20 and keeps |α| away from zero. The fitter accepts |α| ≥ 0.15.</p>
+</section>
+
+<section id="poly">
+<span class="article-section-label">10 · Polynomial laws</span>
+<h2>Yeoh and Reduced Polynomial N = 2</h2>
+
+<h3>Yeoh</h3>
+<div class="eq">W = C₁₀X + C₂₀X² + C₃₀X³, &nbsp; X = Ī₁−3.</div>
+
+<h3>Reduced Polynomial N = 2</h3>
+<div class="eq">W = C₁₀X + C₂₀X².</div>
+
+<p>For the supported incompressible modes, define X and A as:</p>
+<div class="tablewrap"><table>
+<thead><tr><th>Mode</th><th>X = Ī₁−3</th><th>A</th></tr></thead>
+<tbody>
+<tr><td>Uniaxial</td><td>λ² + 2/λ − 3</td><td>λ − λ<sup>−2</sup></td></tr>
+<tr><td>Equibiaxial</td><td>2λ² + λ<sup>−4</sup> − 3</td><td>λ − λ<sup>−5</sup></td></tr>
+<tr><td>Planar</td><td>λ² + 1 + λ<sup>−2</sup> − 3</td><td>λ − λ<sup>−3</sup></td></tr>
+<tr><td>Simple shear</td><td>γ²</td><td>γ</td></tr>
+</tbody></table></div>
+
+<p>Then for Yeoh:</p>
+<div class="eq">P = 2A[C₁₀ + 2C₂₀X + 3C₃₀X²].</div>
+<p>For Reduced Polynomial N=2, the C30 term is omitted. These stresses are linear in the fitted coefficients, allowing an exact weighted linear least-squares solve.</p>
+
+<div class="eq">G₀ = 2C₁₀.</div>
+</section>
+
+<section id="arruda">
+<span class="article-section-label">11 · Network model</span>
+<h2>Arruda-Boyce fifth-order series</h2>
+
+<p>The implemented isochoric potential is the fifth-order series</p>
+<div class="eq small">
+W = μ [ 1/2(Ī₁−3)
++ (Ī₁²−9)/(20λm²)
++ 11(Ī₁³−27)/(1050λm⁴)
++ 19(Ī₁⁴−81)/(7000λm⁶)
++ 519(Ī₁⁵−243)/(673750λm⁸) ].
+</div>
+
+<p>Differentiating near the undeformed state gives the initial shear modulus:</p>
+<div class="eq small">
+G₀ = μ[1 + 3/(5λm²) + 99/(175λm⁴) + 513/(875λm⁶) + 42039/(67375λm⁸)].
+</div>
+
+<p>Therefore the Arruda-Boyce parameter μ is not exactly G0 for finite λm. The tool’s “Match Initial Stiffness” operation uses the inverse of this correction factor.</p>
+
+<p>Displayed stresses are obtained by differentiating the path energy numerically. During fitting, μ is profiled analytically for each trial λm because the model response is linear in μ when λm is fixed.</p>
+
+<div class="callout"><p><strong>Applied simplification:</strong> v1.0 uses the fifth-order invariant series shown above; it does not evaluate an exact inverse-Langevin function.</p></div>
+</section>
+
+<section id="vdw">
+<span class="article-section-label">12 · Network model</span>
+<h2>Van der Waals / Kilian</h2>
+
+<div class="eq small">
+Ĩ = (1−β)Ī₁ + βĪ₂<br>
+η = sqrt[(Ĩ−3)/(λm²−3)]<br><br>
+W<sub>iso</sub> = μ{ −(λm²−3)[ln(1−η)+η] − (2/3)a[(Ĩ−3)/2]^(3/2) }.
+</div>
+
+<p>The locking singularity occurs as η approaches 1. The implementation returns a numerical barrier when η ≥ 0.999999.</p>
+<p>To prevent tiny negative values caused by floating-point noise, the implementation evaluates z = max(0, Ĩ−3) before calculating η and the 3/2 power.</p>
+
+<p>The optimizer uses μ &gt; 0, λm &gt; √3, 0 ≤ β ≤ 1. In the released fitting algorithm the interaction parameter is mapped to approximately −0.95 &lt; a &lt; 0.95. This is an optimization bound chosen for browser robustness; it is not presented as a universal constitutive-law restriction.</p>
+</section>
+
+<section id="compressible">
+<span class="article-section-label">13 · Standard compressibility</span>
+<h2>Volumetric terms and free transverse deformation</h2>
+
+<h3>D1 family</h3>
+<p>Neo-Hookean, Mooney-Rivlin, Ogden, Yeoh and Reduced Polynomial use:</p>
+<div class="eq">U<sub>vol</sub> = (J−1)²/D₁ = 1/2 K₀(J−1)², &nbsp; K₀ = 2/D₁.</div>
+<p>With pressure positive in compression:</p>
+<div class="eq">p = K₀(1−J).</div>
+
+<h3>D family</h3>
+<p>Arruda-Boyce and Van der Waals use:</p>
+<div class="eq">U<sub>vol</sub> = (1/D)[(J²−1)/2 − ln J] = 1/2 K₀[(J²−1)/2 − ln J], &nbsp; K₀ = 2/D.</div>
+<div class="eq">p = 1/2 K₀(1/J − J).</div>
+
+<h3>Normal loading</h3>
+<p>The tool does not prescribe a lateral Poisson ratio for these finite-strain compressible laws. Instead, it solves the free transverse stretch by minimizing total energy for each prescribed axial stretch.</p>
+
+<h3>Simple shear</h3>
+<p>Ideal simple shear has J = 1, so the volumetric term contributes zero energy and zero pressure.</p>
+</section>
+
+<section id="hyperfoam">
+<span class="article-section-label">14 · Compressible foam model</span>
+<h2>Ogden Hyperfoam, N = 1</h2>
+
+<p>Hyperfoam is treated separately from “compressible Ogden + D1.” It is inherently compressible and couples distortional and volumetric behavior in the same potential.</p>
+
+<div class="eq small">
+U = (2μ/α²)[λ₁^α + λ₂^α + λ₃^α − 3 + (1/β)(J^(−αβ) − 1)].
+</div>
+
+<div class="eq">β = ν/(1−2ν).</div>
+
+<p>When |β| &lt; 10<sup>−9</sup>, the code evaluates the analytic limit of the volumetric term:</p>
+<div class="eq">(J^(−αβ)−1)/β → −α ln J.</div>
+
+<h3>Principal nominal stress</h3>
+<div class="deriv">τj = (2μ/α)[λj^α − J^(−αβ)]
+
+Pj = τj/λj
+
+Pj = (2μ/α)[λj^(α−1) − J^(−αβ)/λj].</div>
+
+<h3>Uniaxial free-surface derivation</h3>
+<div class="deriv">Let λ2 = λ3 = t.
+
+Zero transverse stress:
+t^α = J^(−αβ)
+
+t = J^(−β)
+J = λ t²
+
+t = (λ t²)^(−β)
+t^(1+2β) = λ^(−β)
+t = λ^[−β/(1+2β)]
+
+Since β = ν/(1−2ν):
+β/(1+2β) = ν
+
+Therefore:
+λ2 = λ3 = λ^(−ν).</div>
+
+<h3>Equibiaxial and planar free surfaces</h3>
+<div class="eq small">
+Equibiaxial: λ₁ = λ₂ = λ, &nbsp; λ₃ = λ<sup>−2ν/(1−ν)</sup><br>
+Planar: λ₁ = λ, λ₂ = 1, &nbsp; λ₃ = λ<sup>−ν/(1−ν)</sup>.
+</div>
+
+<h3>Volumetric pressure</h3>
+<div class="eq">p = (2μ/α)[J<sup>−αβ−1</sup> − J<sup>α/3−1</sup>].</div>
+
+<h3>Simple shear</h3>
+<div class="eq small">
+η = asinh(γ/2)<br>
+W = (4μ/α²)[cosh(αη)−1]<br>
+τ = (4μ/α)sinh(αη)/sqrt(4+γ²).
+</div>
+
+<h3>Initial moduli</h3>
+<div class="eq">G₀ = μ, &nbsp; K₀ = 2μ(β + 1/3).</div>
+
+<p>The Hyperfoam implementation is restricted to N = 1 in v1.0.</p>
+</section>
+
+<section id="input">
+<span class="article-section-label">15 · Data processing</span>
+<h2>Experimental inputs and internal conversions</h2>
+
+<div class="tablewrap"><table>
+<thead><tr><th>User input</th><th>Internal conversion</th></tr></thead>
+<tbody>
+<tr><td>Stretch λ</td><td>Used directly</td></tr>
+<tr><td>Engineering strain (%)</td><td>λ = 1 + ε/100</td></tr>
+<tr><td>Nominal / engineering stress</td><td>Used directly</td></tr>
+<tr><td>Incompressible Cauchy / true stress σ</td><td>P = σ/λ</td></tr>
+<tr><td>Engineering shear (%)</td><td>γ = value/100</td></tr>
+<tr><td>Volume change (%)</td><td>J = 1 + value/100</td></tr>
+<tr><td>Volumetric pressure</td><td>Positive compression convention</td></tr>
+</tbody></table></div>
+
+<p>Each loading mode stores up to 30 rows. The active table selector only chooses which dataset is visible for editing; the fitting checkboxes independently control which datasets enter the combined fit.</p>
+
+<p>When “Restrict fit to Fit Min / Max” is enabled, only points satisfying</p>
+<div class="eq">Fit Min ≤ x ≤ Fit Max</div>
+<p>are passed to the fitting routines. Data outside that range remain stored.</p>
+</section>
+
+<section id="objective">
+<span class="article-section-label">16 · Objective functions</span>
+<h2>Abaqus relative error, least squares and reporting metrics</h2>
+
+<h3>Abaqus relative stress-error objective</h3>
+<div class="eq">E<sub>rel</sub> = Σ[1 − T<sub>model,i</sub>/T<sub>test,i</sub>]².</div>
+<p>This is equivalent to weighted least squares with</p>
+<div class="eq">wᵢ = 1/T<sub>test,i</sub>².</div>
+<p>Experimental points with |Ttest| ≤ 10<sup>−12</sup> are omitted from the relative objective because the denominator is undefined. They remain in RMSE and R² reporting.</p>
+
+<h3>Absolute least squares</h3>
+<div class="eq">E<sub>abs</sub> = Σ(T<sub>model,i</sub> − T<sub>test,i</sub>)².</div>
+
+<h3>Reported metrics</h3>
+<div class="eq small">
+SSE = Σ(T<sub>test,i</sub>−T<sub>model,i</sub>)²<br>
+RMSE = sqrt(SSE/n)<br>
+R² = 1 − SSE/SST.
+</div>
+
+<p>The selected objective is what determines the fitted parameters. RMSE and R² are reporting metrics and can rank candidates differently from the relative-error objective.</p>
+</section>
+
+<section id="linearfit">
+<span class="article-section-label">17 · Optimization</span>
+<h2>Direct weighted linear least squares</h2>
+
+<p>When stress is linear in the unknown coefficients, the tool avoids iterative optimization. For</p>
+<div class="eq">T<sub>model,k</sub> = Σ cⱼ qⱼ(xₖ)</div>
+<p>the weighted normal equations are</p>
+<div class="eq">(QᵀWQ)c = QᵀWy.</div>
+
+<p>The browser assembles these matrices directly and solves them with Gauss-Jordan elimination and partial pivoting. A pivot magnitude below 10<sup>−18</sup> is treated as singular.</p>
+
+<h3>Single-coefficient case</h3>
+<div class="eq">c = [Σw q y]/[Σw q²].</div>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Model / quantity</th><th>Unknowns solved directly</th></tr></thead>
+<tbody>
+<tr><td>Linear reference</td><td>E</td></tr>
+<tr><td>Neo-Hookean</td><td>μ</td></tr>
+<tr><td>Mooney-Rivlin</td><td>C10, C01</td></tr>
+<tr><td>Yeoh</td><td>C10, C20, C30</td></tr>
+<tr><td>Reduced Polynomial N=2</td><td>C10, C20</td></tr>
+<tr><td>Volumetric D / D1 family</td><td>K0, then D or D1 = 2/K0</td></tr>
+</tbody></table></div>
+
+<h3>Mooney-Rivlin basis</h3>
+<div class="deriv">Uniaxial:
+q10 = 2(λ−λ^−2)
+q01 = 2(1−λ^−3)
+
+Equibiaxial:
+q10 = 2(λ−λ^−5)
+q01 = 2(λ³−λ^−3)
+
+Planar:
+q10 = q01 = 2(λ−λ^−3)
+
+Simple shear:
+q10 = q01 = 2γ.</div>
+
+<h3>Yeoh basis</h3>
+<div class="deriv">P = 2A C10 + 4XA C20 + 6X²A C30
+
+Therefore:
+q10 = 2A
+q20 = 4XA
+q30 = 6X²A.</div>
+
+<p>No positivity constraint is imposed on Mooney-Rivlin, Yeoh or Reduced Polynomial coefficients by the linear solver. This allows mathematically best fits but places responsibility on the user to check physical admissibility and stability.</p>
+</section>
+
+<section id="nonlinearfit">
+<span class="article-section-label">18 · Optimization</span>
+<h2>Profile searches and nonlinear simplex optimization</h2>
+
+<p>The implementation reduces nonlinear dimension wherever possible by solving any linear scale parameter analytically inside the nonlinear search.</p>
+
+<h3>Ogden N=1</h3>
+<div class="algo"><ol>
+<li>Choose a trial α.</li>
+<li>At fixed α, stress is linear in μ; solve μ by weighted single-coefficient least squares.</li>
+<li>Reject μ ≤ 0.</li>
+<li>Coarse deterministic scan α from −12 to −0.2 and +0.2 to +12 in increments of 0.08.</li>
+<li>Refine around the best α over ±0.20 with step 0.004.</li>
+<li>Reject |α| &lt; 0.15.</li>
+</ol></div>
+
+<p>This is a deterministic profile search. It is not the internal Abaqus optimizer.</p>
+
+<h3>Arruda-Boyce</h3>
+<div class="algo"><ol>
+<li>Choose a trial λm.</li>
+<li>Set μ = 1 and calculate the unit response.</li>
+<li>Because stress scales linearly with μ, solve μ analytically by weighted least squares.</li>
+<li>Reject μ ≤ 0.</li>
+<li>Search 151 logarithmically spaced λm values from 1.05 to 25.</li>
+<li>Refine around the best ln(λm) with 161 points at log-space increment 0.0015.</li>
+</ol></div>
+
+<h3>Van der Waals / Kilian</h3>
+<p>For fixed λm, a and β, stress is linear in μ. The tool profiles μ analytically and searches only the remaining nonlinear parameters.</p>
+<div class="eq small">
+λm = √3 + exp(z₀)<br>
+a = 0.95 tanh(z₁)<br>
+β = logistic(z₂), if β is fitted.
+</div>
+
+<p>Multi-start seeds:</p>
+<div class="deriv">λm seeds = [2.2, 3.2, 5, 7, 12]
+a seeds  = [−0.25, 0.10, 0.40]
+β seeds  = [0.03, 0.25, 0.60] when β is fitted
+
+At most 24 generated combinations are retained.
+The current UI state is also inserted as an additional start.</div>
+
+<p>Simplex step sizes are [0.28, 0.35] when β is fixed and [0.28, 0.35, 0.65] when β is fitted. Each run is limited to 110 iterations.</p>
+
+<h3>Hyperfoam N=1</h3>
+<p>For fixed α and ν, the response is linear in μ. The tool solves μ analytically and performs a nonlinear search only in α and optionally ν.</p>
+
+<div class="eq small">
+|α| = 0.15 + exp(z₀), with sign inherited from the seed<br>
+ν = −0.95 + 1.44 logistic(z₁), if ν is fitted.
+</div>
+
+<div class="deriv">α seeds = [−8, −4, −2, 2, 4, 8]
+ν seeds = [−0.10, 0.05, 0.20, 0.35, 0.45] when fitted
+
+Simplex step sizes:
+[0.32] for fixed ν
+[0.32, 0.55] when ν is fitted
+
+Maximum iterations per start = 120.</div>
+
+<h3>Custom Nelder-Mead-style simplex</h3>
+<p>The implementation uses a compact deterministic simplex routine with:</p>
+<div class="eq">reflection = 1, expansion = 2, inward contraction = 0.5, shrink = 0.5.</div>
+
+<p>At each iteration, vertices are sorted by objective. The worst point is reflected through the centroid. If reflection improves on the best point, an expansion is tried. If reflection is not accepted, an inward contraction is attempted; otherwise the simplex is shrunk toward the best vertex.</p>
+
+<p>Early termination occurs when</p>
+<div class="eq">max(f) − min(f) &lt; 10<sup>−11</sup> max(1, |f<sub>best</sub>|).</div>
+
+<div class="callout"><p><strong>Important distinction:</strong> this is a MakeCoTech browser optimization strategy chosen for transparency and robustness. It is not claimed to duplicate Abaqus' proprietary internal numerical optimizer.</p></div>
+</section>
+
+<section id="numerics">
+<span class="article-section-label">19 · Numerical evaluation</span>
+<h2>Transverse minimization, finite differences and safeguards</h2>
+
+<h3>Golden-section minimization for standard compressible models</h3>
+<p>The initial estimate for the free transverse stretch is the corresponding incompressible value:</p>
+<div class="eq small">
+Uniaxial: t₀ = λ<sup>−1/2</sup><br>
+Equibiaxial: t₀ = λ<sup>−2</sup><br>
+Planar: t₀ = λ<sup>−1</sup>.
+</div>
+
+<p>The one-dimensional search interval is</p>
+<div class="eq small">
+a = max(10<sup>−5</sup>, 0.12 t₀)<br>
+b = min(50, max(6 t₀, 0.2)).
+</div>
+
+<p>The tool then executes 82 golden-section iterations using φ = (√5−1)/2 and returns the midpoint of the final bracket.</p>
+
+<h3>Numerical stress differentiation</h3>
+<p>For generic incompressible normal-response models:</p>
+<div class="eq">h = max(10<sup>−6</sup>, |λ|·2×10<sup>−5</sup>).</div>
+<p>For standard compressible normal response, each λ±h state is independently re-minimized in the transverse direction before the energy derivative is taken:</p>
+<div class="eq">h = max(2×10<sup>−6</sup>, |λ|·10<sup>−5</sup>).</div>
+
+<p>This re-equilibration at both derivative points is important for accuracy at large K0.</p>
+
+<p>For generic simple shear:</p>
+<div class="eq">h = max(10<sup>−6</sup>, |γ|·2×10<sup>−5</sup> + 10<sup>−6</sup>).</div>
+
+<h3>Biaxial factor</h3>
+<p>Because differentiating the path energy with respect to the common biaxial λ produces P1+P2, the tool multiplies the path derivative by 1/2 to report the nominal stress in one loaded direction.</p>
+
+<h3>Numerical barriers</h3>
+<ul class="checklist">
+<li>J must remain positive.</li>
+<li>Invalid high-energy states return a large penalty value.</li>
+<li>Van der Waals rejects η ≥ 0.999999.</li>
+<li>Van der Waals clips Ĩ−3 to zero before square-root / 3/2 operations.</li>
+<li>General UI stretch/volume ranges must remain positive.</li>
+<li>Normal/volumetric range magnitudes are limited to 25 by the GUI safety check.</li>
+<li>Simple-shear range magnitude is limited to 50.</li>
+<li>Non-finite optimization values are replaced with a large penalty.</li>
+</ul>
+</section>
+
+<section id="matching">
+<span class="article-section-label">20 · Convenience operation</span>
+<h2>“Match Initial Stiffness” logic</h2>
+
+<p>This button is not a fitting routine. It updates model parameters so that the initial small-strain stiffness is approximately consistent with the user-entered reference E.</p>
+
+<h3>Incompressible</h3>
+<div class="eq">G = E/3.</div>
+
+<h3>Compressible standard models</h3>
+<p>Using</p>
+<div class="eq">E = 9K₀G/(3K₀+G),</div>
+<p>the tool solves</p>
+<div class="eq">G = 3EK₀/(9K₀−E).</div>
+<p>If 9K0 ≤ E, the match is rejected as incompatible with the intended positive isotropic moduli.</p>
+
+<h3>Parameter assignment</h3>
+<div class="tablewrap"><table>
+<thead><tr><th>Model</th><th>Assigned initial-stiffness parameter</th></tr></thead>
+<tbody>
+<tr><td>Neo-Hookean</td><td>μ = G</td></tr>
+<tr><td>Ogden N=1</td><td>μ = G</td></tr>
+<tr><td>Mooney-Rivlin</td><td>C10+C01 = G/2, split 70% / 30%</td></tr>
+<tr><td>Yeoh</td><td>C10 = G/2; higher-order coefficients are not reset</td></tr>
+<tr><td>Reduced Polynomial</td><td>C10 = G/2; C20 is not reset</td></tr>
+<tr><td>Arruda-Boyce</td><td>μ = G / Arruda correction factor</td></tr>
+<tr><td>Van der Waals</td><td>μ = G</td></tr>
+<tr><td>Hyperfoam N=1</td><td>μ = E/[2(1+ν)] using the current Hyperfoam ν</td></tr>
+</tbody></table></div>
+
+<div class="callout warning"><p>The 70/30 Mooney-Rivlin split is only a convenient initialization preserving the correct initial shear modulus. It is not a material identification result.</p></div>
+</section>
+
+<section id="benchmarks">
+<span class="article-section-label">21 · Verification data</span>
+<h2>Built-in Abaqus benchmark presets</h2>
+
+<h3>Abaqus SI Hypertest Benchmark</h3>
+<p>The preset contains 23 uniaxial, 16 equibiaxial, 13 planar and 4 volumetric points. The tool stores/displays stress in MPa and selects compressible behavior plus the Abaqus relative-stress objective. The preset is intended to exercise both the deviatoric and volumetric fitting workflow.</p>
+
+<h3>Abaqus 2016 Rubber-Fit Benchmark</h3>
+<p>The second preset stores the older Treloar fitting data in their raw kgf/cm² stress and nominal-strain form, then converts them at load time:</p>
+<div class="eq small">
+λ = 1 + ε<sub>nominal</sub><br>
+1 kgf/cm² = 0.0981 MPa.
+</div>
+<p>It includes 23 uniaxial, 16 biaxial and 13 planar points, uses incompressible fitting and selects the relative-stress objective.</p>
+
+<p>The 2016 Abaqus benchmark documentation reports an all-data Arruda-Boyce fit near</p>
+<div class="eq">μ = 3.28 kgf/cm² ≈ 0.3218 MPa, &nbsp; λm = 5.24.</div>
+<p>This published result is useful as an external coefficient-level cross-check.</p>
+</section>
+
+<section id="simplifications">
+<span class="article-section-label">22 · Engineering reductions</span>
+<h2>How the material laws are simplified for the applied tool use case</h2>
+
+<div class="tablewrap"><table>
+<thead><tr><th>Area</th><th>Released-tool simplification</th><th>Reason / consequence</th></tr></thead>
+<tbody>
+<tr><td>Geometry</td><td>Homogeneous material point / ideal specimen only</td><td>No mesh, contact, stress concentration or boundary-condition artifact is included.</td></tr>
+<tr><td>Ogden</td><td>N = 1</td><td>Keeps interpretation and fitting transparent; higher-order Ogden terms are not represented.</td></tr>
+<tr><td>Hyperfoam</td><td>N = 1</td><td>Useful educational/applied foam law; higher-order terms are omitted.</td></tr>
+<tr><td>Arruda-Boyce</td><td>Fifth-order invariant series</td><td>Uses the engineering series implemented in the tool, not an exact inverse-Langevin evaluation.</td></tr>
+<tr><td>Yeoh</td><td>Up to C30</td><td>Third-order first-invariant form only.</td></tr>
+<tr><td>Reduced Polynomial</td><td>N = 2</td><td>Only C10 and C20 are included.</td></tr>
+<tr><td>Compressible standard fitting</td><td>Non-volumetric coefficients fitted under incompressibility; volumetric K0 fitted separately</td><td>Matches the calibration organization used by the tool and avoids coupling D/D1 into each deviatoric optimization.</td></tr>
+<tr><td>Fit All</td><td>Current K0/D/D1 is kept fixed for standard models</td><td>Allows direct comparison of deviatoric models without refitting a different bulk response for every row.</td></tr>
+<tr><td>Hyperfoam fitting</td><td>Selected volumetric points participate directly</td><td>Hyperfoam couples volumetric and distortional response; no separate D/D1 fit exists.</td></tr>
+<tr><td>Temperature</td><td>Single isothermal parameter set</td><td>No temperature interpolation.</td></tr>
+<tr><td>Rate effects</td><td>None</td><td>Viscoelasticity and rate dependence require a separate constitutive model.</td></tr>
+<tr><td>Stability</td><td>No full Drucker / tangent positive-definiteness check</td><td>Good curve fit alone must not be interpreted as constitutive stability.</td></tr>
+</tbody></table></div>
+
+<h3>Minimum-data guards in the UI</h3>
+<p>The current fitting commands require at least:</p>
+<div class="eq small">
+Linear / Neo-Hookean: 2 non-volumetric points<br>
+Mooney-Rivlin / Ogden / Arruda-Boyce / Reduced Polynomial: 3<br>
+Yeoh: 4<br>
+Van der Waals: 5<br>
+Hyperfoam: 4 non-volumetric points, after which all selected modes (including volumetric) may participate<br>
+Fit All: 5 non-volumetric points.
+</div>
+<p>These are practical UI guards; they are not a proof of parameter identifiability or matrix conditioning.</p>
+</section>
+
+<section id="stability">
+<span class="article-section-label">23 · Limitations</span>
+<h2>Stability, extrapolation and responsibility</h2>
+
+<p>The tool reports fit error and allows visual extrapolation, but it does not perform a complete constitutive stability assessment such as the full Abaqus Drucker stability check or a general strong-ellipticity analysis.</p>
+
+<p>A fitted coefficient set may:</p>
+<ul class="checklist">
+<li>match the supplied data but be non-unique;</li>
+<li>be poorly conditioned because the chosen loading modes do not identify every coefficient;</li>
+<li>behave unrealistically outside the calibration range;</li>
+<li>be numerically unstable in a finite-element model;</li>
+<li>fail to represent temperature, rate, damage or cyclic effects present in the real material;</li>
+<li>be unsuitable for another stress state despite a high R² value.</li>
+</ul>
+
+<div class="callout warning"><p><strong>Educational and preliminary engineering use only.</strong> The user is responsible for independent validation of experimental data, units, coefficients, extrapolation, material stability and the final finite-element implementation. MakeCoTech provides no warranty that a fitted law is suitable for a particular component, design decision or safety-critical application.</p></div>
+</section>
+
+<section id="reproduce">
+<span class="article-section-label">24 · Reproducibility</span>
+<h2>Checklist for reproducing a tool result</h2>
+
+<p>A calibration report should record at minimum:</p>
+<ul class="checklist">
+<li>Tool name: MakeCoTech Hyperelastic Explorer</li>
+<li>Tool version: 1.0</li>
+<li>Selected constitutive law</li>
+<li>Incompressible / compressible behavior</li>
+<li>D or D1 family where applicable</li>
+<li>All entered model parameters</li>
+<li>Hyperfoam ν handling or Van der Waals β handling</li>
+<li>Selected fitting objective</li>
+<li>Which loading-mode checkboxes were enabled</li>
+<li>Input strain definition for each dataset</li>
+<li>Input stress definition for each dataset</li>
+<li>Fit Min / Max and whether restriction was active</li>
+<li>Experimental units and any conversions</li>
+<li>RMSE and R²</li>
+<li>Fitted coefficient set</li>
+<li>Calibration range and intended FEA range</li>
+</ul>
+
+<p>The Excel export is designed to preserve most of this information together with generated curves and experimental data.</p>
+
+<div class="resource-links">
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open Interactive Module</a>
+<a class="alt" href="hyperelastic-explorer-help.html">User Guide</a>
+<a class="alt" href="hyperelastic-material-modeling.html">Technical Article</a>
+</div>
+</section>
+
+<section id="references">
+<span class="article-section-label">25 · References</span>
+<h2>Primary formulation and benchmark references</h2>
+
+<div class="reference-list">
+<p><strong>Dassault Systèmes SIMULIA.</strong> Hyperelastic Behavior of Rubberlike Materials, Abaqus documentation.<br>
+<a href="https://docs.software.vt.edu/abaqusv2025/English/SIMACAEMATRefMap/simamat-c-hyperelastic.htm">https://docs.software.vt.edu/abaqusv2025/English/SIMACAEMATRefMap/simamat-c-hyperelastic.htm</a></p>
+
+<p><strong>Dassault Systèmes SIMULIA.</strong> Fitting Hyperelastic and Hyperfoam Constants / hyperelastic fitting theory, Abaqus documentation.<br>
+<a href="https://docs.software.vt.edu/abaqusv2025/English/SIMACAETHERefMap/simathe-c-fithyperconst.htm">https://docs.software.vt.edu/abaqusv2025/English/SIMACAETHERefMap/simathe-c-fithyperconst.htm</a></p>
+
+<p><strong>Dassault Systèmes SIMULIA.</strong> Rubber under uniaxial tension / hyperelastic benchmark.<br>
+<a href="https://docs.software.vt.edu/abaqusv2025/English/SIMACAEBMKRefMap/simabmk-c-hypertest.htm">https://docs.software.vt.edu/abaqusv2025/English/SIMACAEBMKRefMap/simabmk-c-hypertest.htm</a></p>
+
+<p><strong>Abaqus 2016 Benchmarks Guide.</strong> Fitting of rubber test data.<br>
+<a href="https://ceae-server.colorado.edu/v2016/books/bmk/ch03s01ach170.html">https://ceae-server.colorado.edu/v2016/books/bmk/ch03s01ach170.html</a></p>
+
+<p><strong>Treloar, L. R. G.</strong> Stress-strain data for vulcanised rubber under various types of deformation. Transactions of the Faraday Society, 40 (1944), 59–70.</p>
+
+<p><strong>Implementation note.</strong> Where this manual specifies numerical bounds, iteration counts, search grids or algorithmic transforms, those values describe the MakeCoTech v1.0 browser implementation rather than a requirement of the underlying constitutive theory.</p>
+</div>
+</section>
+
+</div>
+</main>
+
+<script>
+const menuToggle=document.querySelector('.menu-toggle');
+const nav=document.querySelector('.nav');
+if(menuToggle&&nav){
+ function setMenu(open){nav.classList.toggle('open',open);menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');}
+ menuToggle.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));
+ nav.addEventListener('click',event=>{if(event.target.closest('a'))setMenu(false);});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav.classList.contains('open')){setMenu(false);menuToggle.focus();}});
+}
+</script>
+</body>
+</html>
