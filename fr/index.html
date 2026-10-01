@@ -19,6 +19,24 @@
 <link rel="alternate" hreflang="en" href="https://www.makecotech.com/"/>
 <link rel="alternate" hreflang="fr" href="https://www.makecotech.com/fr/"/>
 <link rel="alternate" hreflang="x-default" href="https://www.makecotech.com/"/>
+<style>
+/* Keep the longer French navigation comfortable on smaller screens. */
+@media (max-width: 1280px) {
+  .menu-toggle { display: block; }
+  .nav {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    padding: 20px 7%;
+    flex-direction: column;
+    align-items: flex-start;
+    background: var(--navy);
+  }
+  .nav.open { display: flex; }
+}
+</style>
 </head>
 
 <body>
@@ -33,6 +51,7 @@
 <a href="#home">Accueil</a>
 <a href="#services">Services</a>
 <a href="#industries">Secteurs</a>
+<a href="#resources">Ressources techniques</a>
    
 <a href="#about">À propos</a>
 <a href="#fondateur">Fondateur</a>
@@ -125,6 +144,43 @@ matériaux, d'analyse thermique et de support au développement de produits.
 <span>Équipements Industriels</span>
 <span>Énergie</span>
 <span>Recherche et Développement</span>
+</div>
+</section>
+
+<section class="section resources" id="resources">
+<div class="section-title">
+<p class="eyebrow blue">Ressources techniques</p>
+<h2>Guides d’ingénierie, articles et outils interactifs</h2>
+<p>Des ressources pratiques pour comprendre la modélisation des matériaux,
+la plasticité des métaux et les matériaux hyperélastiques.</p>
+<p>Les articles, guides et outils interactifs ci-dessous sont disponibles en anglais.</p>
+</div>
+
+<div class="cards">
+<article class="card resource-publication" lang="en">
+<div class="icon" aria-hidden="true">σ</div>
+<h3><a href="../plasticity-hardening.html" hreflang="en">Isotropic, Kinematic &amp; Combined Hardening</a></h3>
+<p>A practical guide to understanding how different hardening models influence yielding, reverse loading, the Bauschinger effect, cyclic plasticity and springback predictions.</p>
+<div class="resource-publication-links">
+<a href="../plasticity-hardening.html" hreflang="en">Read Guide</a>
+<a href="../plasticity-hardening.html#appContainer" hreflang="en">Open Interactive Tool</a>
+</div>
+</article>
+
+<article class="card resource-publication" lang="en">
+<div class="icon" aria-hidden="true">λ</div>
+<h3><a href="../hyperelastic-material-modeling.html" hreflang="en">Hyperelastic Material Modeling</a></h3>
+<p>A practical guide to nonlinear hyperelastic materials, model selection and calibration, paired with MakeCoTech Hyperelastic Explorer v1.0.</p>
+<div class="resource-publication-docs">
+<a href="../hyperelastic-material-modeling.html#video-overview" hreflang="en">Watch Overview</a>
+<a href="../hyperelastic-explorer-help.html" hreflang="en">User guide</a>
+<a href="../hyperelastic-explorer-reference-manual-v1.0.html" hreflang="en">Reference manual</a>
+</div>
+<div class="resource-publication-links">
+<a href="../hyperelastic-material-modeling.html" hreflang="en">Read Guide</a>
+<a href="../MakeCoTech_Hyperelastic_Explorer_v1.0.html" hreflang="en">Open Interactive Tool</a>
+</div>
+</article>
 </div>
 </section>
 
@@ -243,6 +299,7 @@ des recommandations de conception pragmatiques et une valeur ajoutée mesurable.
 <div class="footer-links">
 <a href="#services">Services</a>
 <a href="#industries">Secteurs</a>
+<a href="#resources">Ressources techniques</a>
    
 <a href="#about">À propos</a>
 <a href="#fondateur">Fondateur</a>
