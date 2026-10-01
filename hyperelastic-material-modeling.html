@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nonlinear Hyperelastic Materials | MakeCoTech</title>
+<meta name="description" content="A practical engineering guide to nonlinear hyperelastic materials, model selection, compressibility, calibration and the MakeCoTech Hyperelastic Explorer."/>
+<link href="style.css" rel="stylesheet"/>
+<link rel="icon" href="makecotech_mc_icon.png"/>
+
+<style>
+.article-page{background:#fff}
+.article-hero{background:linear-gradient(135deg,#07172f 0%,#0b2a5b 60%,#164d82 100%);color:#fff;padding:42px 24px 36px}
+.article-container{width:100%;max-width:900px;margin:0 auto}
+.article-hero .eyebrow{margin:0 0 8px;color:#7ec8ff;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-hero h1{max-width:860px;margin:0;color:#fff;font-size:clamp(1.9rem,3.6vw,2.8rem);line-height:1.12;letter-spacing:-.02em}
+.article-hero .lead{max-width:790px;margin:14px 0 0;color:rgba(255,255,255,.86);font-size:1rem;line-height:1.65}
+.article-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.article-tag{padding:5px 9px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:600}
+.article-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.article-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:7px;text-decoration:none;font-size:.86rem;font-weight:800}
+.article-btn.primary{background:#fff;color:#0b2a5b}
+.article-btn.secondary{border:1px solid rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.06)}
+.article-btn:hover{text-decoration:none;filter:brightness(.97)}
+.article-body{max-width:900px;margin:0 auto;padding:40px 24px 56px}
+.article-body section{margin-bottom:44px}
+.article-section-label{display:block;margin-bottom:5px;color:#0074d9;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-body h2{margin:0 0 14px;color:#0b2a5b;font-size:1.55rem;line-height:1.28;text-align:left}
+.article-body h3{margin:24px 0 9px;color:#163a63;font-size:1.08rem}
+.article-body p{margin:0 0 14px;color:#334155;font-size:.96rem;line-height:1.72;text-align:left}
+.article-intro{color:#26384d!important;font-size:1.02rem!important}
+.equation-box{margin:18px 0;padding:14px 18px;border-left:3px solid #0074d9;border-radius:6px;background:#f5f8fc;color:#0b2a5b;font-family:Cambria,Georgia,serif;font-size:1.03rem;font-weight:700;text-align:left;overflow:auto}
+.callout{margin:22px 0;padding:18px 20px;border:1px solid #dce8f4;border-left:4px solid #0074d9;border-radius:8px;background:#f8fbff}
+.callout.warning{border-left-color:#d97706;background:#fffaf0}
+.callout p:last-child{margin-bottom:0}
+.model-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0 12px}
+.model-card{padding:18px;border:1px solid #dbe5f0;border-radius:9px;background:#fff;box-shadow:0 6px 18px rgba(11,42,91,.04)}
+.model-card h3{margin:0 0 7px;color:#0b2a5b;font-size:1rem}
+.model-card p{margin:0;font-size:.9rem;line-height:1.58}
+.comparison-table-wrapper{margin:24px 0;overflow-x:auto;border:1px solid #dce5ef;border-radius:10px}
+.comparison-table{width:100%;border-collapse:collapse;background:#fff}
+.comparison-table th{padding:12px 14px;background:#0b2a5b;color:#fff;font-size:.88rem;text-align:left}
+.comparison-table td{padding:12px 14px;border-bottom:1px solid #e5ebf1;color:#334155;font-size:.91rem;line-height:1.48;vertical-align:top}
+.comparison-table tr:last-child td{border-bottom:none}
+.comparison-table tbody tr:nth-child(even){background:#f8fafc}
+.tool-card{margin:22px 0;padding:22px;border:1px solid #cbdcec;border-radius:10px;background:linear-gradient(135deg,#f8fbff,#eef6ff)}
+.tool-card h3{margin-top:0;color:#0b2a5b}
+.tool-ref{font-size:.84rem;color:#5a6d82!important}
+.workflow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:22px 0}
+.workflow div{padding:12px 8px;border:1px solid #d6e2ee;border-radius:8px;background:#f8fbff;color:#163a63;text-align:center;font-size:.78rem;font-weight:800}
+.resource-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.resource-links a{display:inline-flex;padding:9px 12px;border-radius:7px;background:#0b2a5b;color:#fff;font-size:.82rem;font-weight:800;text-decoration:none}
+.resource-links a.alt{background:#fff;color:#0b2a5b;border:1px solid #9fbad3}
+.reference-list{font-size:.83rem;color:#66788d}
+.reference-list a{color:#0074d9}
+.help-step{display:grid;grid-template-columns:34px 1fr;gap:12px;margin:16px 0}
+.help-step .num{width:30px;height:30px;border-radius:50%;background:#0b2a5b;color:#fff;display:grid;place-items:center;font-weight:900;font-size:.83rem}
+.help-step h3{margin:2px 0 4px}
+.help-step p{margin:0}
+.help-nav{margin:0 auto 30px;max-width:900px;padding:0 24px}
+.help-nav-inner{display:flex;gap:8px;flex-wrap:wrap}
+.help-nav a{padding:6px 9px;border-radius:999px;background:#eef5fb;border:1px solid #d7e5f2;color:#164d82;font-size:.75rem;font-weight:700;text-decoration:none}
+.version-badge{display:inline-flex;margin-left:5px;padding:3px 7px;border-radius:999px;background:#e9f3fc;color:#0b2a5b;font-size:.72rem;font-weight:800;vertical-align:middle}
+@media(max-width:850px){
+ .model-grid{grid-template-columns:1fr}
+ .workflow{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .article-actions{flex-direction:column;align-items:stretch}
+ .workflow{grid-template-columns:1fr 1fr}
+}
+
+/* Navigation for the Hyperelastic Explorer publication. */
+.hyperelastic-nav{display:flex;flex-wrap:wrap;gap:8px;max-width:900px;margin:0 auto;padding:14px 24px;border-bottom:1px solid #dbe5f0;background:#fff;font:600 .875rem/1.4 Arial,Helvetica,sans-serif}
+.hyperelastic-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid #cbdcec;border-radius:6px;color:#164d82;text-decoration:none}
+.hyperelastic-nav a:hover{background:#edf6ff;border-color:#0074d9}
+.hyperelastic-nav a[aria-current="page"]{background:#0b2a5b;color:#fff;border-color:#0b2a5b}
+.hyperelastic-nav a:focus-visible,.resource-publication a:focus-visible{outline:3px solid #008cff;outline-offset:3px}
+#tool .hyperelastic-nav{max-width:none;margin:0 0 10px;padding:0 0 10px;border-color:#26364a;background:transparent}
+#tool .hyperelastic-nav a{border-color:#40536a;color:#dbeafe;background:#10233a}
+#tool .hyperelastic-nav a[aria-current="page"]{background:#dbeafe;color:#081d33}
+@media(max-width:560px){.hyperelastic-nav{padding:12px 16px;gap:6px}.hyperelastic-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
+@media print{.hyperelastic-nav{display:none}}
+
+</style>
+<link rel="canonical" href="https://www.makecotech.com/hyperelastic-material-modeling.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="MakeCoTech"/>
+<meta property="og:title" content="Nonlinear Hyperelastic Materials | MakeCoTech"/>
+<meta property="og:description" content="A practical engineering guide to nonlinear hyperelastic materials, model selection, compressibility, calibration and the MakeCoTech Hyperelastic Explorer."/>
+<meta property="og:url" content="https://www.makecotech.com/hyperelastic-material-modeling.html"/>
+<meta name="twitter:card" content="summary"/>
+</head>
+
+<body class="article-page">
+<header class="site-header">
+<a aria-label="MakeCoTech home" class="brand" href="index.html"><img alt="MakeCoTech logo" src="makecotech_logo.png"/></a>
+<button type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation" class="menu-toggle">☰</button>
+<nav class="nav" id="site-navigation" aria-label="Main navigation">
+<a href="index.html#home">Home</a>
+<a href="index.html#services">Services</a>
+<a href="index.html#industries">Industries</a>
+<a href="index.html#resources">Technical Resources</a>
+<a href="index.html#about">About</a>
+<a href="index.html#founder">Founder</a>
+<a href="index.html#contact">Contact</a>
+</nav>
+</header>
+<nav class="hyperelastic-nav" aria-label="Hyperelastic resources">
+<a href="hyperelastic-material-modeling.html" aria-current="page">Article</a>
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Interactive explorer</a>
+<a href="hyperelastic-explorer-help.html">User guide</a>
+<a href="hyperelastic-explorer-reference-manual-v1.0.html">Reference manual</a>
+</nav>
+
+<main>
+<section class="article-hero">
+<div class="article-container">
+<p class="eyebrow">Technical Resource</p>
+<h1>Nonlinear Hyperelastic Materials: From Experimental Data to Interactive Material Modeling</h1>
+<p class="lead">Why rubber-like materials need more than a linear stress-strain curve, why multiple deformation modes matter, and why MakeCoTech developed an interactive environment for understanding and fitting nonlinear hyperelastic material laws.</p>
+<div class="article-meta">
+<span class="article-tag">Hyperelasticity</span>
+<span class="article-tag">Nonlinear FEA</span>
+<span class="article-tag">Material Calibration</span>
+<span class="article-tag">Abaqus-Oriented Benchmarking</span>
+</div>
+<div class="article-actions">
+<a class="article-btn primary" href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open MakeCoTech Hyperelastic Explorer v1.0</a>
+<a class="article-btn secondary" href="hyperelastic-explorer-help.html">How to Use the Tool</a>
+</div>
+</div>
+</section>
+
+<div class="article-body">
+
+<section>
+<span class="article-section-label">Nonlinear Material Modeling</span>
+<h2>Why linear elasticity quickly becomes insufficient</h2>
+<p class="article-intro">Rubber-like materials can look deceptively simple. Pull an elastomeric component and it stretches; release it and, ideally, it returns to its original shape. Mechanically, however, this behavior is very different from the small-strain elasticity commonly used for metals and many structural materials.</p>
+<p>For an elastic metal operating below yield, a relationship such as</p>
+<div class="equation-box">σ = E ε</div>
+<p>may describe the response sufficiently well over a limited strain range. For an elastomer undergoing 50%, 100%, or several hundred percent strain, this assumption is no longer appropriate. Geometry changes substantially, the stress-strain response becomes strongly nonlinear, and deformation in one direction is coupled to deformation in the transverse directions.</p>
+<p>This is where <strong>hyperelastic material models</strong> become useful.</p>
+</section>
+
+<section>
+<span class="article-section-label">Energy-Based Constitutive Laws</span>
+<h2>From a stress-strain line to a strain-energy function</h2>
+<p>A hyperelastic material is described through a strain-energy density function. In terms of the principal stretches:</p>
+<div class="equation-box">W = W(λ₁, λ₂, λ₃)</div>
+<p>The stresses are then obtained from derivatives of this stored energy. Rather than defining only one nonlinear stress-strain curve, the constitutive law describes how the material stores energy for a complete deformation state.</p>
+<p>This framework is particularly useful for elastomers, rubber seals, soft polymers, polymer foams and other materials capable of large approximately reversible deformation.</p>
+</section>
+
+<section>
+<span class="article-section-label">Experimental Characterization</span>
+<h2>Why one tensile test is often not enough</h2>
+<p>A hyperelastic law must describe more than a single uniaxial loading path. Common calibration modes include uniaxial tension, equibiaxial tension, planar tension / pure shear, simple shear and—when compressibility matters—volumetric deformation.</p>
+<div class="model-grid">
+<div class="model-card"><h3>Uniaxial</h3><p>One principal direction stretches while the transverse directions contract.</p></div>
+<div class="model-card"><h3>Equibiaxial</h3><p>Two principal directions stretch simultaneously, strongly constraining large-strain behavior.</p></div>
+<div class="model-card"><h3>Planar / Pure Shear</h3><p>One direction stretches while another direction remains constrained.</p></div>
+<div class="model-card"><h3>Simple Shear</h3><p>A different deformation path that can expose behavior not visible in uniaxial testing.</p></div>
+</div>
+<div class="equation-box">J = det(F)</div>
+<p>For compressible materials, the volume ratio <strong>J</strong> becomes another independent part of the constitutive response.</p>
+<div class="callout"><p><strong>Two material models can fit the same uniaxial data well and still predict very different biaxial, shear or volumetric behavior.</strong> Hyperelastic calibration should therefore be treated as constitutive-model identification, not simply curve fitting.</p></div>
+</section>
+
+<section>
+<span class="article-section-label">Model Selection</span>
+<h2>The constitutive model changes the prediction</h2>
+<p>There is no universal hyperelastic law that is best for every material and every deformation range. Simpler models require fewer coefficients; richer models can reproduce more complex nonlinear behavior but demand sufficient experimental information to identify their parameters reliably.</p>
+
+<h3>Neo-Hookean</h3>
+<div class="equation-box">W = μ/2 (Ī₁ − 3)</div>
+<p>A useful baseline with one deviatoric stiffness parameter.</p>
+
+<h3>Mooney–Rivlin</h3>
+<div class="equation-box">W = C₁₀(Ī₁ − 3) + C₀₁(Ī₂ − 3)</div>
+<p>Introduces dependence on both the first and second deviatoric strain invariants.</p>
+
+<h3>Ogden</h3>
+<p>For the one-term Abaqus-style normalization used by the interactive tool:</p>
+<div class="equation-box">W = 2μ/α² (λ̄₁^α + λ̄₂^α + λ̄₃^α − 3)</div>
+<p>The parameter μ governs the initial shear stiffness while α strongly influences the nonlinear shape.</p>
+
+<div class="comparison-table-wrapper">
+<table class="comparison-table">
+<thead><tr><th>Model in MakeCoTech Hyperelastic Explorer</th><th>Main parameters</th><th>Typical motivation</th></tr></thead>
+<tbody>
+<tr><td>Neo-Hookean</td><td>μ</td><td>Simple baseline response</td></tr>
+<tr><td>Mooney–Rivlin</td><td>C10, C01</td><td>Two-invariant response</td></tr>
+<tr><td>Ogden, 1-term</td><td>μ, α</td><td>Flexible stretch-based nonlinearity</td></tr>
+<tr><td>Arruda–Boyce</td><td>μ, λm</td><td>Chain-locking-type behavior</td></tr>
+<tr><td>Yeoh</td><td>C10, C20, C30</td><td>Higher-order first-invariant response</td></tr>
+<tr><td>Reduced Polynomial N=2</td><td>C10, C20</td><td>Compact higher-order formulation</td></tr>
+<tr><td>Van der Waals / Kilian</td><td>μ, λm, a, β</td><td>Flexible network-type response</td></tr>
+<tr><td>Ogden Hyperfoam N=1</td><td>μ1, α1, ν1</td><td>Highly compressible cellular materials</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<section>
+<span class="article-section-label">Compressibility</span>
+<h2>Compressibility should not be treated as a secondary detail</h2>
+<p>Dense elastomers are frequently modeled as nearly incompressible:</p>
+<div class="equation-box">J ≈ 1</div>
+<p>For many applications this is a good approximation. But it is not appropriate for every rubber-like material. Foams, for example, can undergo substantial volume change because of their cellular structure.</p>
+<p>For several conventional Abaqus hyperelastic models, compressibility is introduced through a separate volumetric parameter such as D1:</p>
+<div class="equation-box">K₀ = 2 / D₁</div>
+
+<h3>Ogden Hyperfoam is different</h3>
+<p>Hyperfoam is inherently compressible and couples volumetric and distortional response in the same potential. For the one-term formulation implemented in the tool:</p>
+<div class="equation-box">U = 2μ₁/α₁² [ λ₁^α₁ + λ₂^α₁ + λ₃^α₁ − 3 + (1/β₁)(J^(−α₁β₁) − 1) ]</div>
+<div class="equation-box">β₁ = ν₁ / (1 − 2ν₁)</div>
+<p>This makes Hyperfoam especially relevant when large volume changes are physically expected rather than treated as a small numerical correction.</p>
+</section>
+
+<section>
+<span class="article-section-label">Engineering Applications</span>
+<h2>Where hyperelasticity appears in real products</h2>
+<div class="model-grid">
+<div class="model-card"><h3>Seals & O-rings</h3><p>Contact pressure, assembly squeeze, leakage risk and large local deformation.</p></div>
+<div class="model-card"><h3>Semiconductor Equipment</h3><p>Vacuum seals, compliant interfaces, isolation elements and polymer components.</p></div>
+<div class="model-card"><h3>Foams</h3><p>Large compression with substantial volumetric deformation.</p></div>
+<div class="model-card"><h3>Medical & Soft Structures</h3><p>Soft polymers, compliant devices and biological-material approximations.</p></div>
+<div class="model-card"><h3>Automotive</h3><p>Bushings, mounts, couplings, tires and flexible sealing systems.</p></div>
+<div class="model-card"><h3>General Polymer Design</h3><p>Highly deformable interfaces, damping elements and flexible products.</p></div>
+</div>
+<p>For a sealing problem, the engineering question is rarely just “how much does it move?” Contact pressure, local strain, compressibility, friction, temperature and extrapolation of the constitutive law may all influence the result.</p>
+</section>
+
+<section>
+<span class="article-section-label">Parameter Identification</span>
+<h2>What can the experiment actually identify?</h2>
+<p>More fitting coefficients do not automatically mean more information about the material. For incompressible Mooney–Rivlin behavior in simple shear:</p>
+<div class="equation-box">I₁ = I₂ = 3 + γ²</div>
+<p>and therefore</p>
+<div class="equation-box">W = (C₁₀ + C₀₁) γ²</div>
+<p>Simple-shear data can identify the sum <strong>C10 + C01</strong>, but not the two coefficients independently. Planar deformation has a similar limitation. Additional independent deformation modes such as uniaxial or biaxial data are needed to separate them.</p>
+<div class="callout"><p>An optimizer can always return numbers. The more important question is whether the experimental program contains enough independent information for those numbers to be meaningful.</p></div>
+</section>
+
+<section>
+<span class="article-section-label">Why We Built the Tool</span>
+<h2>Making nonlinear constitutive behavior easier to “feel”</h2>
+<p>Hyperelastic laws are often presented as equations and coefficient tables. An engineer may receive a parameter set such as</p>
+<div class="equation-box">C₁₀ = 0.40 MPa, &nbsp; C₀₁ = 0.10 MPa</div>
+<p>or</p>
+<div class="equation-box">μ = 0.80 MPa, &nbsp; α = 4</div>
+<p>without immediately developing an intuitive understanding of how those values change the material response.</p>
+<p>That motivated the development of <strong>MakeCoTech Hyperelastic Explorer v1.0</strong>: an interactive engineering environment in which the constitutive law can be explored before geometry, contact, meshing and solver settings are added to the problem.</p>
+
+<div class="workflow">
+<div>Experimental Data</div>
+<div>Model Choice</div>
+<div>Interactive Response</div>
+<div>Parameter Fitting</div>
+<div>Benchmark Check</div>
+<div>FEA Validation</div>
+</div>
+
+<div class="tool-card">
+<h3>MakeCoTech Hyperelastic Explorer <span class="version-badge">v1.0</span></h3>
+<p>The tool compares nonlinear material laws, visualizes stress and stored energy while deformation is changed interactively, accepts multi-mode experimental datasets, performs material fitting, includes Abaqus-oriented benchmark datasets and exports the resulting curves and parameters to Excel.</p>
+<p class="tool-ref"><strong>Reference name:</strong> MakeCoTech Hyperelastic Explorer v1.0, MakeCoTech, 2026.</p>
+<div class="resource-links">
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open Interactive Module</a>
+<a class="alt" href="hyperelastic-explorer-help.html">Read the User Guide</a>
+</div>
+</div>
+</section>
+
+<section>
+<span class="article-section-label">Benchmarking</span>
+<h2>Checking the fitting workflow against Abaqus examples</h2>
+<p>The tool includes two distinct benchmark presets:</p>
+<div class="model-grid">
+<div class="model-card"><h3>Abaqus SI Hypertest Benchmark</h3><p>Uniaxial, biaxial, planar and volumetric data for checking both deviatoric fitting and compressibility.</p></div>
+<div class="model-card"><h3>Abaqus 2016 Rubber-Fit Benchmark</h3><p>The historical Treloar fitting example in its original units, converted explicitly to MPa and stretch for reproduction of the incompressible calibration example.</p></div>
+</div>
+<p>The 2016 guide reports an all-data Arruda–Boyce fit of approximately μ = 3.28 kgf/cm² and locking stretch λm = 5.24, providing a useful published cross-check.</p>
+</section>
+
+<section>
+<span class="article-section-label">Engineering Limitations</span>
+<h2>A good fit is not the end of the engineering work</h2>
+<p>A parameter set can reproduce measured data closely and still behave poorly when extrapolated. Pure hyperelasticity also does not automatically represent rate dependence, hysteresis, Mullins softening, permanent deformation, temperature dependence or damage.</p>
+<div class="callout warning"><p><strong>Educational and preliminary engineering use.</strong> MakeCoTech Hyperelastic Explorer is intended for learning, constitutive-model exploration and preliminary calibration. Fitted coefficients and extrapolated behavior must be independently verified before design, safety-critical calculations or production finite element analysis. MakeCoTech provides no warranty for the suitability of a fitted material law in a particular application.</p></div>
+</section>
+
+<section>
+<span class="article-section-label">Conclusion</span>
+<h2>From equations to engineering intuition</h2>
+<p>The motivation behind the tool is to move from</p>
+<div class="equation-box">Equation → parameter table → solver</div>
+<p>toward a more transparent workflow:</p>
+<div class="equation-box">Experimental data → constitutive model → interactive understanding → calibration → verification → FEA</div>
+<p>When the material law is explored independently, it becomes easier to ask the questions that matter: Why do two fitted models diverge in another loading mode? Is a parameter actually identifiable? How much volume change is predicted? What happens beyond the experimental range?</p>
+</section>
+
+<section>
+<span class="article-section-label">References</span>
+<h2>Benchmark and formulation references</h2>
+<div class="reference-list">
+<p>Abaqus / SIMULIA, Hyperelastic Behavior of Rubberlike Materials.</p>
+<p><a href="https://docs.software.vt.edu/abaqusv2025/English/SIMACAEMATRefMap/simamat-c-hyperelastic.htm">SIMULIA hyperelastic material documentation</a></p>
+<p>Abaqus / SIMULIA, Rubber under uniaxial tension — hyperelastic benchmark.</p>
+<p><a href="https://docs.software.vt.edu/abaqusv2025/English/SIMACAEBMKRefMap/simabmk-c-hypertest.htm">SIMULIA SI hyperelastic benchmark</a></p>
+<p>Abaqus 2016 Benchmarks Guide, Fitting of rubber test data.</p>
+<p><a href="https://ceae-server.colorado.edu/v2016/books/bmk/ch03s01ach170.html">Abaqus 2016 benchmark mirror</a></p>
+</div>
+</section>
+
+</div>
+</main>
+<script>
+const menuToggle=document.querySelector('.menu-toggle');
+const nav=document.querySelector('.nav');
+if(menuToggle&&nav){
+ function setMenu(open){nav.classList.toggle('open',open);menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');}
+ menuToggle.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));
+ nav.addEventListener('click',event=>{if(event.target.closest('a'))setMenu(false);});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav.classList.contains('open')){setMenu(false);menuToggle.focus();}});
+}
+</script>
+</body>
+</html>
