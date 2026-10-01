@@ -801,23 +801,16 @@ b = min(50, max(6 t₀, 0.2)).
 </section>
 
 <section id="benchmarks">
-<span class="article-section-label">21 · Verification data</span>
-<h2>Built-in Abaqus benchmark presets</h2>
-
-<h3>Abaqus SI Hypertest Benchmark</h3>
-<p>The preset contains 23 uniaxial, 16 equibiaxial, 13 planar and 4 volumetric points. The tool stores/displays stress in MPa and selects compressible behavior plus the Abaqus relative-stress objective. The preset is intended to exercise both the deviatoric and volumetric fitting workflow.</p>
-
-<h3>Abaqus 2016 Rubber-Fit Benchmark</h3>
-<p>The second preset stores the older Treloar fitting data in their raw kgf/cm² stress and nominal-strain form, then converts them at load time:</p>
-<div class="eq small">
-λ = 1 + ε<sub>nominal</sub><br>
-1 kgf/cm² = 0.0981 MPa.
-</div>
-<p>It includes 23 uniaxial, 16 biaxial and 13 planar points, uses incompressible fitting and selects the relative-stress objective.</p>
-
-<p>The 2016 Abaqus benchmark documentation reports an all-data Arruda-Boyce fit near</p>
-<div class="eq">μ = 3.28 kgf/cm² ≈ 0.3218 MPa, &nbsp; λm = 5.24.</div>
-<p>This published result is useful as an external coefficient-level cross-check.</p>
+<span class="article-section-label">21 · Example data and verification</span>
+<h2>Hyperelastic benchmark and Hyperfoam demonstration</h2>
+<h3>Hyperelastic benchmark: Abaqus SI Hypertest</h3>
+<p>The preset contains 23 uniaxial, 16 equibiaxial, 13 planar and 4 volumetric points. Stress is stored and displayed in MPa. Loading this preset selects Neo-Hookean, compressible behavior and the Abaqus relative-stress objective; another hyperelastic model may then be selected for fitting.</p>
+<h3>Hyperfoam: synthetic parameter-fitting demonstration</h3>
+<p>This preset generates noiseless data using the implemented one-term Ogden Hyperfoam response with the following reference parameters:</p>
+<div class="eq">μ₁ = 0.5 MPa, &nbsp; α₁ = 2, &nbsp; ν₁ = 0.20.</div>
+<p>Uniaxial, equibiaxial and planar data each use 14 stretch values from 0.70 to 1.85. Shear uses 13 values from −1.2 to 1.2. Volumetric loading uses 9 volume ratios from 0.82 to 1.06. The loading-mode formulas described in the Hyperfoam section generate each stress or pressure value, rounded to eight decimal places in MPa.</p>
+<p>The loader selects Hyperfoam, compressible behavior, fitting of ν₁ and absolute least squares; all five test datasets are checked. It is a synthetic demonstration of the fitting workflow. Recovering its parameters checks internal consistency of generation and fitting; independent experimental or solver data are required for external validation.</p>
+<p>Both example loaders replace the current datasets, set the matching deformation/stress definitions, update the display and fitting ranges, and clear previous fit results.</p>
 </section>
 
 <section id="simplifications">
