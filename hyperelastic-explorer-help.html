@@ -210,13 +210,13 @@
 </section>
 
 <section id="benchmark">
-<span class="article-section-label">Verification Presets</span>
-<h2>What is the difference between the two Abaqus benchmark buttons?</h2>
+<span class="article-section-label">Example Datasets</span>
+<h2>Which example should I load?</h2>
 <div class="model-grid">
-<div class="model-card"><h3>Abaqus SI Hypertest Benchmark</h3><p>Loads 23 uniaxial, 16 biaxial, 13 planar and 4 volumetric points. The source data are SI-based and the tool displays stress in MPa. Compressible behavior and volumetric fitting are enabled.</p></div>
-<div class="model-card"><h3>Abaqus 2016 Rubber-Fit Benchmark</h3><p>Loads the raw Treloar values from the older fitting example. Nominal strain is converted with λ = 1 + ε and stress with 1 kgf/cm² = 0.0981 MPa. Only uniaxial, biaxial and planar data are used, and the example is treated as incompressible.</p></div>
+<div class="model-card"><h3>Load Hyperelastic Benchmark (Abaqus)</h3><p>Loads the SI Hypertest rubber dataset: 23 uniaxial, 16 biaxial, 13 planar and 4 volumetric points. Stress is displayed in MPa. The loader selects Neo-Hookean, compressible behavior and the Abaqus relative-stress objective. Select another hyperelastic model before fitting if required.</p></div>
+<div class="model-card"><h3>Load Hyperfoam Demo</h3><p>Loads synthetic one-term Ogden Hyperfoam data with μ₁ = 0.5 MPa, α₁ = 2 and ν₁ = 0.20: 14 points each for uniaxial, equibiaxial and planar loading, 13 shear points and 9 volumetric points. The loader selects Hyperfoam, compressible behavior, fitting of ν₁ and absolute least squares.</p></div>
 </div>
-<p>The 2016 guide reports an all-data Arruda–Boyce result near μ = 3.28 kgf/cm² (about 0.3218 MPa) and λm = 5.24, providing a useful published cross-check.</p>
+<p>The Hyperfoam example demonstrates parameter fitting using generated model data. It is separate from the published rubber benchmark and from measured material data. Both loaders replace the current datasets and clear previous fit results.</p>
 </section>
 
 <section id="export">
