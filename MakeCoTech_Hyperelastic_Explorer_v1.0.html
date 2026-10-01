@@ -13,7 +13,7 @@
   --red:#ef4444;--purple:#a855f7;--cell:#e6f3ff;--cellb:#9cc9ef;--celltx:#081d33
 }
 *{box-sizing:border-box}
-body{margin:0;padding:16px;background:#050816;color:var(--tx);font-family:Arial,Helvetica,sans-serif}
+body{margin:0;padding:0;background:#fff;color:var(--tx);font-family:Arial,Helvetica,sans-serif}
 button,input,select{font:inherit}
 #tool{max-width:1160px;margin:auto;background:var(--bg);border:1px solid var(--b);border-radius:12px;padding:10px}
 h1{font-size:19px;margin:0 0 4px}
@@ -265,6 +265,20 @@ summary{color:var(--gold);font-size:10px;font-weight:900;cursor:pointer;text-tra
 @media(max-width:560px){.hyperelastic-nav{padding:12px 16px;gap:6px}.hyperelastic-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
 @media print{.hyperelastic-nav{display:none}}
 
+
+/* Standard MakeCoTech website header, scoped to preserve the tool styling. */
+.explorer-site-header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:14px 7%;background:rgba(6,26,61,.96);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.12);font-family:Arial,Helvetica,sans-serif}
+.explorer-site-header .brand img{display:block;width:230px;max-width:42vw}
+.explorer-site-header .nav{display:flex;gap:28px;align-items:center}
+.explorer-site-header .nav a{color:#fff;text-decoration:none;text-transform:uppercase;font-size:13px;font-weight:700;letter-spacing:.08em;line-height:1.4}
+.explorer-site-header .nav a:hover{color:#22c4ff}
+.explorer-site-header .menu-toggle{display:none;color:#fff;background:none;border:0;padding:4px;font-size:28px;cursor:pointer}
+.explorer-site-header a:focus-visible,.explorer-site-header button:focus-visible{outline:3px solid #22c4ff;outline-offset:4px}
+.explorer-page{padding:16px;background:#fff}
+@media(max-width:1180px){.explorer-site-header .menu-toggle{display:block}.explorer-site-header .nav{display:none;position:absolute;left:0;right:0;top:100%;padding:20px 7%;flex-direction:column;align-items:flex-start;background:#061a3d}.explorer-site-header .nav.open{display:flex}}
+@media(max-width:560px){.explorer-site-header .brand img{width:180px}.explorer-page{padding:12px}}
+@media print{.explorer-site-header{display:none}}
+
 </style>
 <link rel="canonical" href="https://www.makecotech.com/MakeCoTech_Hyperelastic_Explorer_v1.0.html"/>
 <meta property="og:type" content="website"/>
@@ -275,12 +289,24 @@ summary{color:var(--gold);font-size:10px;font-weight:900;cursor:pointer;text-tra
 <meta name="twitter:card" content="summary"/>
 </head>
 <body>
+<header class="explorer-site-header">
+<a class="brand" href="index.html" aria-label="MakeCoTech home"><img src="makecotech_logo.png" alt="MakeCoTech logo"/></a>
+<button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="explorer-site-navigation">☰</button>
+<nav class="nav" id="explorer-site-navigation" aria-label="Main navigation">
+<a href="index.html#home">Home</a>
+<a href="index.html#services">Services</a>
+<a href="index.html#industries">Industries</a>
+<a href="index.html#resources">Technical Resources</a>
+<a href="index.html#about">About</a>
+<a href="index.html#founder">Founder</a>
+<a href="index.html#contact">Contact</a>
+</nav>
+</header>
+<main class="explorer-page">
+
 <div id="tool">
 <div class="tool-brandbar">
  <div class="tool-brand">
-  <a class="tool-brand-logo" href="index.html" aria-label="MakeCoTech home">
-   <img src="makecotech_logo.png" alt="MakeCoTech logo">
-  </a>
   <div class="tool-brand-title">
    <h1>MakeCoTech Hyperelastic Explorer</h1>
    <p>Interactive nonlinear hyperelastic visualization, experimental-data fitting and Abaqus-oriented benchmark comparison.</p>
@@ -590,6 +616,7 @@ summary{color:var(--gold);font-size:10px;font-weight:900;cursor:pointer;text-tra
 </div>
 </div>
 
+</main>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id),root=$('tool');
@@ -1911,6 +1938,18 @@ $('restrictFitRange').addEventListener('change',()=>{rangeState[currentMode].fit
 root.querySelectorAll('.use-fit').forEach(x=>x.addEventListener('change',()=>{}));
 let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(render,80)});
 loadDatasetUI();renderFitResults();updateBehaviorUI();updateModeUI();render();
+})();
+</script>
+
+<script>
+(()=>{
+ const header=document.querySelector('.explorer-site-header');
+ const button=header.querySelector('.menu-toggle');
+ const nav=header.querySelector('.nav');
+ function setMenu(open){nav.classList.toggle('open',open);button.setAttribute('aria-expanded',String(open));button.setAttribute('aria-label',open?'Close menu':'Open menu');}
+ button.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));
+ nav.addEventListener('click',event=>{if(event.target.closest('a'))setMenu(false);});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav.classList.contains('open')){setMenu(false);button.focus();}});
 })();
 </script>
 </body>
