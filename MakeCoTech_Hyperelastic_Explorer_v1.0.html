@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="MakeCoTech Hyperelastic Explorer v1.0 — interactive visualization, comparison and fitting of nonlinear hyperelastic material models.">
+<link rel="icon" href="makecotech_mc_icon.png">
+<title>MakeCoTech Hyperelastic Explorer v1.0 | MakeCoTech</title>
+<style>
+:root{
+  --bg:#030712;--p:#111827;--p2:#090d16;--b:#1f2937;--b2:#374151;
+  --tx:#fff;--mut:#9ca3af;--blue:#60a5fa;--green:#10b981;--gold:#fbbf24;
+  --red:#ef4444;--purple:#a855f7;--cell:#e6f3ff;--cellb:#9cc9ef;--celltx:#081d33
+}
+*{box-sizing:border-box}
+body{margin:0;padding:16px;background:#050816;color:var(--tx);font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+#tool{max-width:1160px;margin:auto;background:var(--bg);border:1px solid var(--b);border-radius:12px;padding:10px}
+h1{font-size:19px;margin:0 0 4px}
+p{margin:0}
+.sub{font-size:11px;color:var(--mut);line-height:1.4}
+
+.readouts{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:10px 0 9px;padding-bottom:9px;border-bottom:1px solid var(--b)}
+.ro{
+  background:linear-gradient(180deg,#edf7ff 0%,#cfe8fb 100%);
+  border:1px solid #9cc9ef;border-radius:7px;text-align:center;padding:8px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 7px rgba(0,0,0,.22)
+}
+.ro small{display:block;color:#294968;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.03em}
+.ro b{font-size:15px;color:#081d33}
+#rP{color:#006d55}#rW{color:#7047a5}
+
+.modebar{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 9px}
+.modebtn{
+  flex:1;min-width:145px;border:1px solid #40536a;border-radius:7px;background:#101a2a;color:#cbd5e1;
+  min-height:37px;font-size:10px;font-weight:900;cursor:pointer
+}
+.modebtn.active{background:linear-gradient(#fcd34d,#f59e0b);color:#3f2900;border-color:#f59e0b;box-shadow:0 3px 0 #92400e}
+.modebtn small{display:block;font-size:8px;font-weight:700;opacity:.8;margin-top:2px}
+
+.grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(310px,.85fr);gap:12px}
+.stack{display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel{background:var(--p);border:1px solid var(--b);border-radius:8px;padding:10px}
+.ttl{color:var(--gold);font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+canvas{display:block;width:100%;background:var(--p2);border:1px solid var(--b);border-radius:7px}
+
+.slider{background:var(--gold);color:#030712;border:1px solid #d97706;border-radius:7px;padding:8px}
+.slider strong{display:block;text-align:center;font-size:10px;color:#78350f;text-transform:uppercase}
+.srow{display:grid;grid-template-columns:48px 1fr 48px;gap:7px;align-items:center;font-size:9px;font-weight:bold;text-align:center;color:#78350f}
+#deformSlider{width:100%;height:28px;accent-color:#78350f}
+.sv{text-align:center;color:#78350f;font-size:10px;font-weight:900}.sv span{background:#78350f;color:#fff;padding:2px 7px;border-radius:3px}
+
+.legend{display:flex;flex-wrap:wrap;gap:8px 12px;margin-top:7px}
+.legend label{font-size:10px;font-weight:bold;color:#d1d5db;display:flex;gap:5px;align-items:center}
+.sw{width:14px;height:3px}.lin{background:var(--blue)}.neo{background:var(--green)}.mr{background:var(--gold)}.og{background:var(--red)}.ab{background:#22d3ee}.yeoh{background:#f472b6}.rp{background:#fb923c}.vdw{background:#a3e635}.hf{background:#818cf8}
+.exp-dot{width:8px;height:8px;border:2px solid #f3e8ff;background:var(--purple);border-radius:50%;display:inline-block}
+
+.row{display:grid;grid-template-columns:1fr 118px;gap:8px;align-items:center;padding:5px;border:1px solid transparent;border-radius:6px}
+.row label{font-size:10px;font-weight:bold;color:#d1d5db}
+.row input,.row select{
+  width:100%;height:32px;background:var(--cell);color:var(--celltx);border:1px solid var(--cellb);
+  border-radius:5px;text-align:center;font-weight:900;font-size:11px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.85),0 1px 4px rgba(0,0,0,.15)
+}
+.row select{text-align:left;background:#d6ebfc}
+.row.off{opacity:.32;background:#070a10;border-color:#151c28}
+.row.off input{color:#6b7280;cursor:not-allowed;background:#080d16;box-shadow:none;border-color:#202938}
+.actions{display:flex;gap:7px;margin-top:8px}
+.btn{min-height:36px;border:1px solid #1a2b47;border-radius:7px;color:#fff;font-size:10px;font-weight:900;cursor:pointer;padding:7px 10px}
+.match{flex:1;background:linear-gradient(#46679d,#29456f);box-shadow:0 3px 0 #172a47}
+.reset{width:100px;background:linear-gradient(#4b5563,#273244);box-shadow:0 3px 0 #141d2c}
+.export{width:100%;margin-top:8px;background:linear-gradient(#17806f,#0f5f55);border-color:#0d4d45;box-shadow:0 3px 0 #093c36}
+.note{font-size:9px;color:var(--mut);line-height:1.45;margin-top:7px}
+
+.info{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.ic{background:linear-gradient(#eaf6ff,#d4eafb);border:1px solid #9cc9ef;border-radius:7px;padding:7px;color:#081d33}
+.ic small{display:block;color:#335d82;font-size:8px;font-weight:900;text-transform:uppercase}
+.ic b{font-size:10px;color:#081d33}
+
+details{background:var(--p);border:1px solid var(--b);border-radius:8px;padding:9px}
+summary{color:var(--gold);font-size:10px;font-weight:900;cursor:pointer;text-transform:uppercase}
+.f{background:var(--bg);border:1px solid var(--b);border-radius:5px;padding:7px;margin-top:7px;font:10px/1.5 Consolas,monospace;color:#e5e7eb}
+.f strong{color:var(--blue)}
+.warn{margin-top:7px;border-left:3px solid var(--gold);background:#151006;padding:6px;font-size:9px;color:#d6c79a;line-height:1.45}
+
+/* fitting */
+.fit-panel{margin-top:12px}
+.fit-grid{display:grid;grid-template-columns:minmax(370px,1.05fr) minmax(330px,.95fr);gap:12px;align-items:start}
+.fit-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+.fit-controls .frow{display:flex;flex-direction:column;gap:4px}
+.fit-controls label{font-size:9px;font-weight:900;color:#d1d5db;text-transform:uppercase}
+.fit-controls select{height:35px;background:var(--cell);color:var(--celltx);border:1px solid var(--cellb);border-radius:6px;padding:0 8px;font-size:12px;font-weight:900}
+.usefit{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:8px 0}
+.usefit label{display:flex;gap:5px;align-items:center;justify-content:center;background:#0c1b2b;border:1px solid #35546f;border-radius:6px;padding:7px 4px;font-size:9px;font-weight:900;color:#dbeafe}
+.usefit input{accent-color:#fbbf24}
+.data-tools{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0}
+.fitbtn{background:linear-gradient(#4b72a3,#2e4f78);box-shadow:0 3px 0 #1c3554}
+.fitall{background:linear-gradient(#8a6a24,#665019);box-shadow:0 3px 0 #46360f}
+.clearbtn{background:linear-gradient(#4b5563,#273244);box-shadow:0 3px 0 #141d2c}
+.demobtn{background:linear-gradient(#227a68,#14594d);box-shadow:0 3px 0 #0c3d35}
+.data-wrap{max-height:560px;overflow:auto;border:1px solid #5d7b96;border-radius:8px;background:#0b1624}
+.exp-table{width:100%;border-collapse:separate;border-spacing:0;font-size:10px}
+.exp-table th{position:sticky;top:0;z-index:2;background:#2d5d86;color:#fff;padding:7px 5px;border-bottom:1px solid #a7cce9;font-size:9px;text-transform:uppercase}
+.exp-table td{border-bottom:1px solid #2b4058;border-right:1px solid #2b4058;padding:3px;background:#14304a}
+.exp-table td:first-child{width:36px;text-align:center;color:#fff;font-weight:900;background:#2a5377}
+.exp-input{width:100%;height:30px;border:1px solid #a8cbee;border-radius:4px;background:#f4faff;color:#071a2f;text-align:right;padding:0 7px;font-size:12px;font-weight:900;outline:none}
+.exp-input:focus{background:#fff;border-color:#fbbf24;box-shadow:0 0 0 2px rgba(251,191,36,.22)}
+.paste-note{font-size:9px;color:#b6c7da;line-height:1.45;margin-top:6px}
+.fit-status{background:#0c1b2b;border:1px solid #35546f;border-radius:7px;padding:8px;font-size:10px;color:#dbeafe;line-height:1.45;margin:8px 0}
+.results-table{width:100%;border-collapse:collapse;font-size:10px}
+.results-table th{background:#173d61;color:#fff;text-align:left;padding:6px;border:1px solid #35546f}
+.results-table td{padding:6px;border:1px solid #2b4058;color:#e5e7eb;vertical-align:top}
+.results-table td.metric{font-variant-numeric:tabular-nums;color:#f8fafc}
+.results-table tr.active-fit td{background:#172e48}
+.fit-warning{color:#fcd34d;font-size:9px;line-height:1.45;margin-top:7px}
+
+@media(max-width:820px){
+ body{padding:7px}.grid,.fit-grid{grid-template-columns:1fr}.readouts{grid-template-columns:repeat(2,1fr)}
+ .modebtn{min-width:120px}.usefit{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:440px){
+ .row{grid-template-columns:1fr}.row input,.row select{height:42px;font-size:16px}
+ .actions{flex-direction:column}.reset{width:100%}.fit-controls{grid-template-columns:1fr}
+}
+
+.fit-select-help{
+  margin:8px 0 6px;
+  padding:8px 10px;
+  border:1px solid #446786;
+  border-left:3px solid #60a5fa;
+  border-radius:7px;
+  background:#0b1b2c;
+  color:#d7e7f5;
+  font-size:9px;
+  line-height:1.45
+}
+.fit-select-help strong{color:#fff}
+.fit-select-help .hint{color:#fbbf24;font-weight:900}
+
+
+.modebtn:disabled{opacity:.32;cursor:not-allowed;box-shadow:none}
+.compress-note{
+  margin:7px 0 4px;padding:7px 9px;border:1px solid #496984;border-left:3px solid #fbbf24;
+  border-radius:6px;background:#0b1928;color:#d8e7f3;font-size:9px;line-height:1.45
+}
+.row.bulk-off{opacity:.32;background:#070a10;border-color:#151c28}
+.row.bulk-off input{color:#6b7280!important;background:#080d16!important;box-shadow:none!important;border-color:#202938!important}
+
+
+.ogden-convention{
+  margin-top:8px;
+  padding:8px 10px;
+  border:1px solid #5c7fa3;
+  border-left:3px solid #60a5fa;
+  border-radius:7px;
+  background:#0b1d30;
+  color:#dcecff;
+  font-size:9px;
+  line-height:1.45
+}
+.ogden-convention strong{color:#ffffff}
+.ogden-convention .eq{color:#fbbf24;font-weight:900}
+
+
+.range-panel{
+  background:#0d1827;border:1px solid #31465d;border-radius:8px;padding:9px 10px
+}
+.range-head{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:7px
+}
+.range-head strong{
+  color:#fbbf24;font-size:10px;text-transform:uppercase;letter-spacing:.04em
+}
+.range-head span{color:#9fb4c8;font-size:9px}
+.range-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(80px,1fr));gap:7px
+}
+.range-field{display:flex;flex-direction:column;gap:4px}
+.range-field label{
+  color:#cbd5e1;font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.03em
+}
+.range-field input{
+  width:100%;height:33px;background:#e6f3ff;color:#081d33;border:1px solid #9cc9ef;
+  border-radius:5px;text-align:center;font-size:11px;font-weight:900;outline:none
+}
+.range-field input:focus{border-color:#fbbf24;box-shadow:0 0 0 2px rgba(251,191,36,.16)}
+.range-actions{
+  display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-top:8px
+}
+.range-actions .btn{min-height:32px}
+.range-auto{background:linear-gradient(#267d6d,#175a50);box-shadow:0 2px 0 #0d413a}
+.range-reset{background:linear-gradient(#4b5563,#273244);box-shadow:0 2px 0 #141d2c}
+.fit-range-toggle{
+  margin-left:auto;display:flex;gap:6px;align-items:center;background:#12263a;border:1px solid #35546f;
+  border-radius:6px;padding:6px 8px;color:#dbeafe;font-size:9px;font-weight:900
+}
+.fit-range-toggle input{accent-color:#fbbf24}
+.range-help{
+  color:#9fb4c8;font-size:8.5px;line-height:1.45;margin-top:6px
+}
+.range-error{
+  display:none;margin-top:6px;padding:6px 8px;border-radius:5px;background:#3b1515;border:1px solid #7f1d1d;
+  color:#fecaca;font-size:9px;font-weight:800
+}
+@media(max-width:700px){
+  .range-grid{grid-template-columns:repeat(2,minmax(90px,1fr))}
+  .fit-range-toggle{margin-left:0;width:100%;justify-content:center}
+}
+
+
+.educational-disclaimer{
+  margin:10px 0 12px;
+  padding:10px 12px;
+  border:1px solid #6b4f12;
+  border-left:4px solid #fbbf24;
+  border-radius:7px;
+  background:#211b0b;
+  color:#f8e7b0;
+  font-size:9px;
+  line-height:1.5;
+}
+.educational-disclaimer strong{color:#fff3c4}
+
+
+.tool-brandbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:10px;padding:8px 10px;border:1px solid #26364a;border-radius:9px;background:#08101c
+}
+.tool-brand{
+  display:flex;align-items:center;gap:11px;min-width:0
+}
+.tool-brand-logo{
+  display:flex;align-items:center;justify-content:center;background:#fff;border-radius:7px;padding:5px 8px;
+  min-width:118px;height:48px;overflow:hidden
+}
+.tool-brand-logo img{display:block;max-width:108px;max-height:38px;width:auto;height:auto}
+.tool-brand-title{min-width:0}
+.tool-brand-title h1{font-size:18px;margin:0 0 2px;color:#fff}
+.tool-brand-title p{font-size:9px;color:#9ca3af;line-height:1.35}
+.tool-version{
+  flex:0 0 auto;border:1px solid #3d5875;background:#10233a;color:#dbeafe;border-radius:999px;
+  padding:5px 9px;font-size:9px;font-weight:900;letter-spacing:.05em;text-transform:uppercase
+}
+.tool-refline{
+  margin:0 0 9px;padding:7px 9px;border:1px solid #253a52;border-radius:6px;background:#0b1726;
+  color:#9fb3c7;font-size:8.5px;line-height:1.4
+}
+.tool-refline strong{color:#dbeafe}
+@media(max-width:560px){
+ .tool-brandbar{align-items:flex-start;flex-wrap:wrap}
+ .tool-brand-logo{min-width:100px;height:44px}.tool-brand-logo img{max-width:92px}
+ .tool-brand-title h1{font-size:16px}
+}
+
+
+/* Navigation for the Hyperelastic Explorer publication. */
+.hyperelastic-nav{display:flex;flex-wrap:wrap;gap:8px;max-width:900px;margin:0 auto;padding:14px 24px;border-bottom:1px solid #dbe5f0;background:#fff;font:600 .875rem/1.4 Arial,Helvetica,sans-serif}
+.hyperelastic-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid #cbdcec;border-radius:6px;color:#164d82;text-decoration:none}
+.hyperelastic-nav a:hover{background:#edf6ff;border-color:#0074d9}
+.hyperelastic-nav a[aria-current="page"]{background:#0b2a5b;color:#fff;border-color:#0b2a5b}
+.hyperelastic-nav a:focus-visible,.resource-publication a:focus-visible{outline:3px solid #008cff;outline-offset:3px}
+#tool .hyperelastic-nav{max-width:none;margin:0 0 10px;padding:0 0 10px;border-color:#26364a;background:transparent}
+#tool .hyperelastic-nav a{border-color:#40536a;color:#dbeafe;background:#10233a}
+#tool .hyperelastic-nav a[aria-current="page"]{background:#dbeafe;color:#081d33}
+@media(max-width:560px){.hyperelastic-nav{padding:12px 16px;gap:6px}.hyperelastic-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
+@media print{.hyperelastic-nav{display:none}}
+
+</style>
+<link rel="canonical" href="https://www.makecotech.com/MakeCoTech_Hyperelastic_Explorer_v1.0.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="MakeCoTech"/>
+<meta property="og:title" content="MakeCoTech Hyperelastic Explorer v1.0 | MakeCoTech"/>
+<meta property="og:description" content="MakeCoTech Hyperelastic Explorer v1.0 — interactive visualization, comparison and fitting of nonlinear hyperelastic material models."/>
+<meta property="og:url" content="https://www.makecotech.com/MakeCoTech_Hyperelastic_Explorer_v1.0.html"/>
+<meta name="twitter:card" content="summary"/>
+</head>
+<body>
+<div id="tool">
+<div class="tool-brandbar">
+ <div class="tool-brand">
+  <a class="tool-brand-logo" href="index.html" aria-label="MakeCoTech home">
+   <img src="makecotech_logo.png" alt="MakeCoTech logo">
+  </a>
+  <div class="tool-brand-title">
+   <h1>MakeCoTech Hyperelastic Explorer</h1>
+   <p>Interactive nonlinear hyperelastic visualization, experimental-data fitting and Abaqus-oriented benchmark comparison.</p>
+  </div>
+ </div>
+ <div class="tool-version">Version 1.0</div>
+</div>
+<nav class="hyperelastic-nav" aria-label="Hyperelastic resources">
+<a href="hyperelastic-material-modeling.html">Article</a>
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html" aria-current="page">Interactive explorer</a>
+<a href="hyperelastic-explorer-help.html">User guide</a>
+<a href="hyperelastic-explorer-reference-manual-v1.0.html">Reference manual</a>
+</nav>
+<div class="tool-refline"><strong>Reference name:</strong> MakeCoTech Hyperelastic Explorer v1.0 (MakeCoTech, 2026). Use this name and version when documenting results generated with the tool.</div>
+
+<div class="readouts">
+ <div class="ro"><small id="readXLabel">Stretch λ</small><b id="rX">1.000</b></div>
+ <div class="ro"><small id="readStrainLabel">Engineering strain</small><b id="rStrain">0.0 %</b></div>
+ <div class="ro"><small id="readStressLabel">Selected nominal stress</small><b id="rP">0.000 MPa</b></div>
+ <div class="ro"><small>Selected strain energy density</small><b id="rW">0.000 MJ/m³</b></div>
+</div>
+
+<div class="educational-disclaimer">
+ <strong>Educational / engineering exploration use only.</strong>
+ This tool is provided for learning, preliminary material-model evaluation and engineering comparison.
+ Hyperelastic model fitting can be sensitive to test quality, loading modes, parameter identifiability, extrapolation and solver implementation.
+ The user is responsible for independently validating all fitted parameters and material behavior before use in design, safety-critical work or production FEA.
+ MakeCoTech provides no warranty that a fitted model will remain stable, accurate or suitable outside the calibrated range and accepts no responsibility for losses, damage, analysis failure or material-model failure resulting from use of the tool or its outputs.
+</div>
+<div class="modebar">
+ <button class="modebtn active" data-mode="uniaxial">Uniaxial<small>λ, λ⁻¹ᐟ², λ⁻¹ᐟ²</small></button>
+ <button class="modebtn" data-mode="biaxial">Equibiaxial<small>λ, λ, λ⁻²</small></button>
+ <button class="modebtn" data-mode="planar">Planar / Pure Shear<small>λ, 1, λ⁻¹</small></button>
+ <button class="modebtn" data-mode="shear">Simple Shear<small>shear amount γ</small></button>
+ <button class="modebtn" data-mode="volumetric">Volumetric<small>volume ratio J</small></button>
+</div>
+
+<div class="grid">
+<div class="stack">
+ <div class="slider">
+  <strong id="sliderTitle">↔ Drag Handle To Apply Uniaxial Stretch</strong>
+  <div class="srow"><span id="sliderMin">0.60</span><input id="deformSlider" type="range" min=".60" max="2" value="1" step=".005"><span id="sliderMax">2.00</span></div>
+  <div class="sv"><span id="sliderValue">1.000</span></div>
+  <div style="margin-top:5px;color:#93a9bd;font-size:8.5px;line-height:1.35">Dragging the handle moves the live cursor and markers along all enabled material curves.</div>
+ </div>
+ <div class="range-panel">
+  <div class="range-head">
+   <strong id="rangeTitle">Stretch range</strong>
+   <span>Per loading mode</span>
+  </div>
+  <div class="range-grid">
+   <div class="range-field"><label>Display min</label><input id="displayMin" type="number" step="0.01" value="0.60"></div>
+   <div class="range-field"><label>Display max</label><input id="displayMax" type="number" step="0.01" value="2.00"></div>
+   <div class="range-field"><label>Fit min</label><input id="fitMin" type="number" step="0.01" value="0.60"></div>
+   <div class="range-field"><label>Fit max</label><input id="fitMax" type="number" step="0.01" value="2.00"></div>
+  </div>
+  <div class="range-actions">
+   <button class="btn range-auto" id="useExperimentalRange" type="button">Use Experimental Range</button>
+   <button class="btn range-reset" id="resetRange" type="button">Reset Range</button>
+   <label class="fit-range-toggle"><input id="restrictFitRange" type="checkbox"> Restrict fit to Fit Min / Max</label>
+  </div>
+  <div class="range-help">Display range controls the graph, slider, generated curves and Excel curve range. Fit range filters experimental points only when “Restrict fit” is checked. “Use Experimental Range” reads the currently selected test data and sets both ranges automatically.</div>
+  <div class="range-error" id="rangeError"></div>
+ </div>
+
+ <div class="panel">
+  <div class="ttl" id="stressPanelTitle">Nominal Stress vs Stretch</div>
+  <canvas id="stress" height="330"></canvas>
+  <div class="legend">
+   <label><input class="toggle" data-m="linear" type="checkbox" checked><span class="sw lin"></span>Linear elastic — small-strain reference</label>
+   <label><input class="toggle" data-m="neo" type="checkbox" checked><span class="sw neo"></span>Neo-Hookean</label>
+   <label><input class="toggle" data-m="mr" type="checkbox" checked><span class="sw mr"></span>Mooney–Rivlin</label>
+   <label><input class="toggle" data-m="ogden" type="checkbox" checked><span class="sw og"></span>Ogden (Abaqus norm.)</label>
+   <label><input class="toggle" data-m="arruda" type="checkbox"><span class="sw ab"></span>Arruda–Boyce</label>
+   <label><input class="toggle" data-m="yeoh" type="checkbox"><span class="sw yeoh"></span>Yeoh</label>
+   <label><input class="toggle" data-m="rpoly" type="checkbox"><span class="sw rp"></span>Reduced Polynomial N=2</label>
+   <label><input class="toggle" data-m="vdw" type="checkbox"><span class="sw vdw"></span>Van der Waals</label>
+   <label><input class="toggle" data-m="hyperfoam" type="checkbox"><span class="sw hf"></span>Ogden Hyperfoam N=1</label>
+   <label><span class="exp-dot"></span>Experimental</label>
+  </div>
+ </div>
+
+ <div class="panel">
+  <div class="ttl">Stored Strain Energy Density</div>
+  <canvas id="energy" height="270"></canvas>
+ </div>
+</div>
+
+<div class="stack">
+ <div class="panel">
+  <div class="ttl" id="specimenTitle">Uniaxial Specimen</div>
+  <p class="sub" id="specimenSub">Incompressible: lateral stretches = λ⁻¹ᐟ².</p>
+  <canvas id="specimen" height="250"></canvas>
+ </div>
+
+ <div class="panel">
+  <div class="ttl">Material Configuration</div>
+  <div class="row"><label>Selected model / readout</label><select id="model"><option value="linear">Linear elastic — small-strain reference</option><option value="neo" selected>Neo-Hookean</option><option value="mr">Mooney–Rivlin</option><option value="ogden">Ogden (1-term, Abaqus norm.)</option>
+<option value="arruda">Arruda–Boyce</option>
+<option value="yeoh">Yeoh</option>
+<option value="rpoly">Reduced Polynomial N=2</option>
+<option value="vdw">Van der Waals (Kilian)</option>
+<option value="hyperfoam">Ogden Hyperfoam (Abaqus HYPERFOAM, N=1)</option></select></div>
+  <div class="row" id="rowBehavior"><label>Volume behavior</label><select id="behavior"><option value="incompressible" selected>Incompressible (J = 1)</option><option value="compressible">Compressible — Abaqus volumetric term</option></select></div>
+  <div class="row" data-g="base"><label>Reference Young's modulus E (MPa)</label><input id="E" type="number" min=".001" step=".1" value="3"></div>
+  <div class="row" id="rowK0"><label>Initial bulk modulus K0 (MPa)</label><input id="K0" type="number" min=".001" step="1" value="100"></div>
+  <div class="row" id="rowD1"><label id="volParamLabel">Abaqus D1 (1/MPa)</label><input id="D1" type="number" min=".000001" step=".001" value=".02"></div>
+  <div class="compress-note" id="compressNote">In incompressible mode, K0 and the Abaqus volumetric parameter are inactive.</div>
+  <div class="row" data-g="neo"><label>Neo-Hookean μ (MPa)</label><input id="muN" type="number" min=".0001" step=".05" value="1"></div>
+  <div class="row" data-g="mr"><label>Mooney–Rivlin C10 (MPa)</label><input id="c10" type="number" step=".05" value=".35"></div>
+  <div class="row" data-g="mr"><label>Mooney–Rivlin C01 (MPa)</label><input id="c01" type="number" step=".05" value=".15"></div>
+  <div class="row" data-g="ogden"><label>Ogden μ (MPa)</label><input id="muO" type="number" min=".0001" step=".05" value="1"></div>
+  <div class="row" data-g="ogden"><label>Ogden α</label><input id="alpha" type="number" min="-20" max="20" step=".2" value="4"></div>
+  <div class="row" data-g="arruda"><label>Arruda–Boyce μ (MPa)</label><input id="muAB" type="number" min=".0001" step=".05" value=".98765"></div>
+  <div class="row" data-g="arruda"><label>Arruda–Boyce locking stretch λm</label><input id="lmAB" type="number" min="1.05" step=".1" value="7"></div>
+  <div class="row" data-g="yeoh"><label>Yeoh C10 (MPa)</label><input id="yC10" type="number" step=".05" value=".5"></div>
+  <div class="row" data-g="yeoh"><label>Yeoh C20 (MPa)</label><input id="yC20" type="number" step=".01" value=".05"></div>
+  <div class="row" data-g="yeoh"><label>Yeoh C30 (MPa)</label><input id="yC30" type="number" step=".005" value=".01"></div>
+  <div class="row" data-g="rpoly"><label>Reduced Polynomial C10 (MPa)</label><input id="rC10" type="number" step=".05" value=".5"></div>
+  <div class="row" data-g="rpoly"><label>Reduced Polynomial C20 (MPa)</label><input id="rC20" type="number" step=".01" value=".05"></div>
+  <div class="row" data-g="vdw"><label>Van der Waals μ (MPa)</label><input id="vMu" type="number" min=".0001" step=".05" value="1"></div>
+  <div class="row" data-g="vdw"><label>Van der Waals locking stretch λm</label><input id="vLm" type="number" min="1.75" step=".1" value="7"></div>
+  <div class="row" data-g="vdw"><label>Van der Waals interaction a</label><input id="vA" type="number" step=".02" value=".1"></div>
+  <div class="row" data-g="vdw"><label>Van der Waals β (0–1)</label><input id="vBeta" type="number" min="0" max="1" step=".05" value="0"></div>
+  <div class="row" data-g="vdw"><label>Van der Waals β handling</label><select id="vBetaMode"><option value="fit" selected>Fit β</option><option value="fixed">Hold β fixed</option></select></div>
+  <div class="row" data-g="hyperfoam"><label>Hyperfoam μ₁ (MPa)</label><input id="hMu" type="number" min=".000001" step=".05" value="1"></div>
+  <div class="row" data-g="hyperfoam"><label>Hyperfoam α₁</label><input id="hAlpha" type="number" min="-20" max="20" step=".2" value="2"></div>
+  <div class="row" data-g="hyperfoam"><label>Hyperfoam effective ν₁</label><input id="hNu" type="number" min="-.95" max=".49" step=".01" value=".20"></div>
+  <div class="row" data-g="hyperfoam"><label>Derived β₁ = ν₁/(1−2ν₁)</label><input id="hBeta" type="number" value=".333333" disabled></div>
+  <div class="row" data-g="hyperfoam"><label>Hyperfoam ν₁ handling</label><select id="hNuMode"><option value="fixed" selected>Hold ν₁ fixed</option><option value="fit">Fit ν₁</option></select></div>
+  <div class="actions"><button class="btn match" id="match">Match Initial Stiffness</button><button class="btn reset" id="reset">Reset</button></div>
+  <button class="btn export" id="exportXlsx">Download Data + Curves — Excel (.xlsx)</button>
+  <div class="note">E remains editable as the reference small-strain modulus. For J = 1, matching uses μ = E/3 for Neo-Hookean and for the one-term Ogden convention used here. For compressible behavior, μ is matched using E = 9K0μ/(3K0+μ). The Excel export contains original inputs, converted inputs, all loading-mode curves, fit results and charts.</div>
+  <div class="ogden-convention">
+   <strong>Ogden convention used in this tool (Abaqus-style normalization)</strong><br>
+   Uiso = (2μ/α²) Σ(λ̄ᵢ<sup>α</sup> − 1), therefore <span class="eq">G₀ = μ</span> for one term and, for J = 1, <span class="eq">E₀ = 3μ</span>.
+   The exponent α controls the nonlinear curve shape; it does not multiply the initial shear modulus in this normalization. Positive or negative α values are allowed; the fitter excludes only a narrow neighborhood around α = 0 for numerical conditioning.
+   Alternative Ogden formulations use different prefactors, so their parameter called μ is not numerically equivalent.
+  </div>
+  <div class="ogden-convention">
+   <strong>Ogden Hyperfoam / Abaqus HYPERFOAM (N=1)</strong><br>
+   This is a separate, inherently compressible foam law—not the ordinary compressible Ogden model with D₁.
+   It uses the actual principal stretches and couples distortional and volumetric response:
+   U = (2μ₁/α₁²)[Σ λᵢ<sup>α₁</sup> − 3 + (1/β₁)(J<sup>−α₁β₁</sup> − 1)],
+   with β₁ = ν₁/(1−2ν₁). It has <span class="eq">no D or D₁ parameter</span>.
+  </div>
+ </div>
+
+ <div class="info">
+  <div class="ic"><small>Current initial slope</small><b id="slope">3.000 MPa</b></div>
+  <div class="ic"><small>Kinematics</small><b id="kinematics">λ₂ = λ₃ = 1.000</b></div>
+  <div class="ic"><small>Current model</small><b id="name">Neo-Hookean</b></div>
+ </div>
+
+ <details>
+  <summary>Formulas & Loading Modes</summary>
+  <div class="f"><strong>Incompressible:</strong> J = 1. Transverse stretches follow the exact incompressible kinematics.</div>
+  <div class="f"><strong>Compressible hyperelastic models:</strong> most models use a separate Abaqus D/D1 volumetric term. <strong>Hyperfoam is different:</strong> its volumetric and distortional response are coupled directly in the HYPERFOAM potential and no D/D1 is entered.</div>
+  <div class="f"><strong>Uniaxial:</strong> λ₁=λ. For compressible behavior, λ₂=λ₃ are solved from zero transverse traction.</div>
+  <div class="f"><strong>Equibiaxial:</strong> λ₁=λ₂=λ. The thickness stretch λ₃ is solved from zero transverse traction.</div>
+  <div class="f"><strong>Planar / pure shear:</strong> λ₁=λ, λ₂=1. The thickness stretch λ₃ is solved from zero transverse traction.</div>
+  <div class="f"><strong>Simple shear:</strong> F₁₂=γ and J=1, so the volumetric D1 term does not contribute.</div>
+  <div class="f"><strong>Mooney–Rivlin identifiability in simple shear:</strong> for incompressible simple shear, I₁ = I₂ = 3 + γ². Therefore the full Mooney–Rivlin energy reduces exactly to W = (C10 + C01)γ² and τ = 2(C10 + C01)γ. Simple-shear data alone can identify only the sum C10 + C01, not C10 and C01 independently.</div>
+  <div class="f"><strong>Mooney–Rivlin identifiability in planar / pure shear:</strong> with λ₁=λ, λ₂=1, λ₃=λ⁻¹, I₁ = I₂ = λ² + 1 + λ⁻². Planar data alone therefore also constrains only C10 + C01. Combining uniaxial and/or equibiaxial data is needed to separate the two parameters.</div>
+  <div class="f"><strong>Volumetric:</strong> J is prescribed. For the quadratic Abaqus volumetric term, compression pressure p = K0(1 − J). The sign convention used here is pressure positive in compression: J&lt;1 → p&gt;0, J=1 → p=0, J&gt;1 → p&lt;0.</div>
+  <div class="f"><strong>Isochoric Neo-Hookean:</strong> Uiso = ½μ(Ī₁ − 3) = C10(Ī₁ − 3), with μ = 2C10.</div>
+  <div class="f"><strong>Isochoric Mooney–Rivlin:</strong> Uiso = C10(Ī₁ − 3) + C01(Ī₂ − 3).</div>
+  <div class="f"><strong>Isochoric one-term Ogden:</strong> Uiso = (2μ/α²)(λ̄₁^α + λ̄₂^α + λ̄₃^α − 3).</div>
+  <div class="f"><strong>Arruda–Boyce:</strong> Abaqus eight-chain form using μ and locking stretch λm, with a fifth-order series in Ī₁. The Abaqus parameter μ is not exactly the initial shear modulus; μ₀ = μ[1 + 3/(5λm²) + 99/(175λm⁴) + 513/(875λm⁶) + 42039/(67375λm⁸)].</div>
+  <div class="f"><strong>Yeoh:</strong> Uiso = C10(Ī₁−3) + C20(Ī₁−3)² + C30(Ī₁−3)³. Initial shear modulus μ₀ = 2C10.</div>
+  <div class="f"><strong>Reduced Polynomial N=2:</strong> Uiso = C10(Ī₁−3) + C20(Ī₁−3)². Initial shear modulus μ₀ = 2C10.</div>
+  <div class="f"><strong>Van der Waals / Kilian:</strong> Abaqus form based on Ĩ = (1−β)Ī₁ + βĪ₂, locking stretch λm, initial shear modulus μ, global interaction parameter a and mixture parameter β.</div>
+  <div class="f"><strong>Ogden Hyperfoam / Abaqus HYPERFOAM, N=1:</strong> U = (2μ₁/α₁²)[λ₁^α₁ + λ₂^α₁ + λ₃^α₁ − 3 + (1/β₁)(J^(−α₁β₁) − 1)]. The law is inherently compressible and uses the total mechanical principal stretches, not isochoric stretches. β₁ = ν₁/(1−2ν₁). For N=1, G₀ = μ₁ and K₀ = 2μ₁(β₁ + 1/3). No D/D₁ parameter is used.</div>
+    <div class="f"><strong>Abaqus-style calibration convention:</strong> non-volumetric hyperelastic coefficients are fitted under full incompressibility; volumetric pressure–volume data identify D1 or D separately. The fitting objective can reproduce Abaqus' relative stress-error measure or use ordinary absolute least squares.</div>
+<div class="f"><strong>Abaqus-family scope in this version:</strong> coefficient-based Neo-Hookean, Mooney–Rivlin, Ogden (1-term), Arruda–Boyce, Yeoh, Reduced Polynomial N=2, Van der Waals and Abaqus Ogden Hyperfoam N=1 are implemented. Marlow and Valanis–Landel are test-data-defined forms and are intentionally left for a later dedicated implementation; Hencky is also not included in the fitter.</div>
+  <div class="f"><strong>Ogden parameter convention used here:</strong> this is the Abaqus-style normalization in which the initial shear modulus is G₀ = Σμᵢ. For one term, G₀ = μ, so for an incompressible material E₀ = 3μ. The exponent α changes the nonlinear shape but does not change the initial shear modulus in this convention. Do not mix this μ with alternative Ogden normalizations that use a different prefactor.</div>
+  <div class="warn">
+   <strong>Compressibility does not require FEA here.</strong><br>
+   These tests are homogeneous, so the tool evaluates the constitutive energy directly. For uniaxial, biaxial and planar loading it numerically solves the free transverse stretch before calculating the nominal stress.<br><br>
+   <strong>Linear elastic curve:</strong> this is a small-strain reference only. It is deliberately extrapolated on the same axes for comparison and should not be interpreted as a finite-strain constitutive law.<br><br>
+   In compressible mode, axial Cauchy-stress input is intentionally not offered because converting Cauchy stress to nominal stress requires J. Without measured lateral strain/volume change, J is not known from the axial data alone.<br><br>
+   <strong>Fit-quality warning:</strong> a low RMSE or high R² does not guarantee constitutive stability outside the calibration range. Fitted parameters should be checked for stability and sensible extrapolation before use in large-strain FEA.<br><br>
+   W is strain-energy density. With stress parameters in MPa, W is numerically in MPa = MJ/m³.
+  </div>
+ </details>
+</div>
+</div>
+
+<div class="panel fit-panel">
+ <div class="ttl">Experimental Curve Fitting</div>
+ <p class="sub">Each loading mode stores its own 30-point table. Paste two columns directly from Excel. Use the checkboxes to decide which datasets participate in a combined fit.</p>
+
+ <div class="fit-grid">
+  <div>
+   <div class="fit-controls">
+    <div class="frow"><label>Experimental dataset</label>
+     <select id="datasetMode">
+      <option value="uniaxial">Uniaxial</option>
+      <option value="biaxial">Equibiaxial</option>
+      <option value="planar">Planar / pure shear</option>
+      <option value="shear">Simple shear</option>
+      <option value="volumetric">Volumetric compression</option>
+     </select>
+    </div>
+    <div class="frow"><label id="xTypeLabel">Input deformation</label><select id="inputXType"></select></div>
+    <div class="frow"><label>Input stress</label><select id="inputStressType"></select></div>
+    <div class="frow"><label>Fit objective</label>
+     <select id="fitObjective">
+      <option value="abaqus" selected>Abaqus relative stress error</option>
+      <option value="absolute">Standard least squares / RMSE</option>
+     </select>
+    </div>
+   </div>
+
+   <div class="fit-select-help">
+    <strong>Which test data should be used for fitting?</strong><br>
+    The checkboxes below control which experimental datasets are included together when you press
+    <span class="hint">Fit Selected Model</span> or <span class="hint">Fit All Models</span>.
+    The dataset selector above only chooses which 30-point table you are currently viewing/editing.
+    Unticking a test excludes it from the fit without deleting its entered data. In compressible mode, volumetric data can identify K0/D1 independently.
+   </div>
+
+   <div class="usefit">
+    <label><input class="use-fit" data-mode="uniaxial" type="checkbox" checked>Uniaxial</label>
+    <label><input class="use-fit" data-mode="biaxial" type="checkbox" checked>Equibiaxial</label>
+    <label><input class="use-fit" data-mode="planar" type="checkbox" checked>Planar</label>
+    <label><input class="use-fit" data-mode="shear" type="checkbox" checked>Simple shear</label>
+    <label><input class="use-fit" data-mode="volumetric" type="checkbox">Volumetric</label>
+   </div>
+
+   <div class="data-tools">
+    <button class="btn demobtn" id="loadDemo">Load Demo for This Mode</button>
+    <button class="btn demobtn" id="loadTreloar">Load Abaqus SI Hypertest Benchmark</button>
+    <button class="btn demobtn" id="loadTreloar2016">Load Abaqus 2016 Rubber-Fit Benchmark</button>
+    <button class="btn clearbtn" id="clearMode">Clear This Mode</button>
+    <button class="btn clearbtn" id="clearAll">Clear All</button>
+   </div>
+   <div class="fit-select-help" style="margin-top:7px">
+    <strong>Two different Abaqus checks are provided:</strong><br>
+    <strong>SI Hypertest Benchmark</strong> reproduces the SI dataset used by the Abaqus “Rubber under uniaxial tension” benchmark: 23 uniaxial, 16 biaxial, 13 planar and 4 volumetric points. The source stresses are in Pa and are converted here to MPa. This preset is useful for checking both deviatoric fitting and compressibility.<br><br>
+    <strong>2016 Rubber-Fit Benchmark</strong> reproduces the older “Fitting of rubber test data” example using the raw Treloar values in kgf/cm². The raw stresses are converted with <strong>1 kgf/cm² = 0.0981 MPa</strong>, the raw nominal strains are converted to stretch λ = 1 + ε, and only uniaxial, biaxial and planar datasets are used. This preset is intended for reproducing the published incompressible curve-fitting example and coefficients.
+   </div>
+
+   <div class="data-wrap">
+    <table class="exp-table">
+     <thead><tr><th>#</th><th id="xHeader">Stretch λ</th><th id="stressHeader">Stress (MPa)</th></tr></thead>
+     <tbody>
+<tr><td>1</td><td><input class="exp-input exp-cell" data-row="0" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="0" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>2</td><td><input class="exp-input exp-cell" data-row="1" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="1" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>3</td><td><input class="exp-input exp-cell" data-row="2" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="2" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>4</td><td><input class="exp-input exp-cell" data-row="3" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="3" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>5</td><td><input class="exp-input exp-cell" data-row="4" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="4" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>6</td><td><input class="exp-input exp-cell" data-row="5" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="5" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>7</td><td><input class="exp-input exp-cell" data-row="6" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="6" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>8</td><td><input class="exp-input exp-cell" data-row="7" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="7" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>9</td><td><input class="exp-input exp-cell" data-row="8" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="8" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>10</td><td><input class="exp-input exp-cell" data-row="9" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="9" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>11</td><td><input class="exp-input exp-cell" data-row="10" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="10" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>12</td><td><input class="exp-input exp-cell" data-row="11" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="11" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>13</td><td><input class="exp-input exp-cell" data-row="12" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="12" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>14</td><td><input class="exp-input exp-cell" data-row="13" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="13" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>15</td><td><input class="exp-input exp-cell" data-row="14" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="14" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>16</td><td><input class="exp-input exp-cell" data-row="15" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="15" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>17</td><td><input class="exp-input exp-cell" data-row="16" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="16" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>18</td><td><input class="exp-input exp-cell" data-row="17" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="17" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>19</td><td><input class="exp-input exp-cell" data-row="18" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="18" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>20</td><td><input class="exp-input exp-cell" data-row="19" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="19" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>21</td><td><input class="exp-input exp-cell" data-row="20" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="20" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>22</td><td><input class="exp-input exp-cell" data-row="21" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="21" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>23</td><td><input class="exp-input exp-cell" data-row="22" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="22" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>24</td><td><input class="exp-input exp-cell" data-row="23" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="23" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>25</td><td><input class="exp-input exp-cell" data-row="24" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="24" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>26</td><td><input class="exp-input exp-cell" data-row="25" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="25" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>27</td><td><input class="exp-input exp-cell" data-row="26" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="26" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>28</td><td><input class="exp-input exp-cell" data-row="27" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="27" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>29</td><td><input class="exp-input exp-cell" data-row="28" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="28" data-col="1" inputmode="decimal"></td></tr>
+<tr><td>30</td><td><input class="exp-input exp-cell" data-row="29" data-col="0" inputmode="decimal"></td><td><input class="exp-input exp-cell" data-row="29" data-col="1" inputmode="decimal"></td></tr>
+     </tbody>
+    </table>
+   </div>
+   <div class="paste-note">Paste from Excel: copy deformation + stress columns, click the first light-blue cell, then Ctrl+V. Blank rows are ignored. Decimal commas are accepted.</div>
+  </div>
+
+  <div>
+   <div class="data-tools">
+    <button class="btn fitbtn" id="fitSelected">Fit Selected Model</button>
+    <button class="btn fitall" id="fitAll">Fit All Models</button>
+   </div>
+   <div class="fit-status" id="fitStatus">Enter or paste experimental data. The active loading-mode data will appear as purple markers on the stress plot.</div>
+   <table class="results-table">
+    <thead><tr><th>Model</th><th>Fitted parameters</th><th>RMSE</th><th>R²</th></tr></thead>
+    <tbody>
+     <tr id="fitRow_linear"><td>Linear elastic — small-strain reference</td><td id="fitParam_linear">—</td><td class="metric" id="fitRmse_linear">—</td><td class="metric" id="fitR2_linear">—</td></tr>
+     <tr id="fitRow_neo"><td>Neo-Hookean</td><td id="fitParam_neo">—</td><td class="metric" id="fitRmse_neo">—</td><td class="metric" id="fitR2_neo">—</td></tr>
+     <tr id="fitRow_mr"><td>Mooney–Rivlin</td><td id="fitParam_mr">—</td><td class="metric" id="fitRmse_mr">—</td><td class="metric" id="fitR2_mr">—</td></tr>
+     <tr id="fitRow_ogden"><td>Ogden (1-term, Abaqus norm.)</td><td id="fitParam_ogden">—</td><td class="metric" id="fitRmse_ogden">—</td><td class="metric" id="fitR2_ogden">—</td></tr>
+     <tr id="fitRow_arruda"><td>Arruda–Boyce</td><td id="fitParam_arruda">—</td><td class="metric" id="fitRmse_arruda">—</td><td class="metric" id="fitR2_arruda">—</td></tr>
+     <tr id="fitRow_yeoh"><td>Yeoh</td><td id="fitParam_yeoh">—</td><td class="metric" id="fitRmse_yeoh">—</td><td class="metric" id="fitR2_yeoh">—</td></tr>
+     <tr id="fitRow_rpoly"><td>Reduced Polynomial N=2</td><td id="fitParam_rpoly">—</td><td class="metric" id="fitRmse_rpoly">—</td><td class="metric" id="fitR2_rpoly">—</td></tr>
+     <tr id="fitRow_vdw"><td>Van der Waals</td><td id="fitParam_vdw">—</td><td class="metric" id="fitRmse_vdw">—</td><td class="metric" id="fitR2_vdw">—</td></tr>
+     <tr id="fitRow_hyperfoam"><td>Ogden Hyperfoam N=1</td><td id="fitParam_hyperfoam">—</td><td class="metric" id="fitRmse_hyperfoam">—</td><td class="metric" id="fitR2_hyperfoam">—</td></tr>
+    </tbody>
+   </table>
+   <div class="fit-warning">Combined fitting uses only the checked datasets. <strong>Abaqus relative stress error</strong> minimizes Σ(1 − Tmodel/Ttest)², matching the Abaqus calibration objective; exact zero-stress points are omitted from that relative objective because the denominator is undefined, but they remain in RMSE/R² reporting. Standard least squares minimizes absolute stress residuals. For the standard hyperelastic coefficient models, this tool follows the Abaqus convention of assuming full incompressibility for the non-volumetric tests and fitting volumetric data separately to K0/D or D1. Ogden Hyperfoam is treated separately as an inherently compressible coupled law; if volumetric data are checked, those data participate directly in the Hyperfoam fit. For incompressible stretch modes, Cauchy stress is converted to nominal stress using P = σ/λ. <strong>Simple shear and planar / pure shear each identify only C10 + C01 for Mooney–Rivlin;</strong> uniaxial and/or equibiaxial data are required to separate C10 and C01. Fit All keeps K0 fixed so the deviatoric models can be compared consistently. Abaqus performs a full Drucker stability check; this browser tool does not reproduce the full tangent positive-definiteness test, so fitted parameters should still be checked in Abaqus before production FEA.</div>
+  </div>
+ </div>
+</div>
+</div>
+
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id),root=$('tool');
+const TOOL_NAME='MakeCoTech Hyperelastic Explorer',TOOL_VERSION='1.0';
+const slider=$('deformSlider'),sel=$('model');
+const inp={E:$('E'),K0:$('K0'),D1:$('D1'),muN:$('muN'),c10:$('c10'),c01:$('c01'),muO:$('muO'),a:$('alpha'),muAB:$('muAB'),lmAB:$('lmAB'),yC10:$('yC10'),yC20:$('yC20'),yC30:$('yC30'),rC10:$('rC10'),rC20:$('rC20'),vMu:$('vMu'),vLm:$('vLm'),vA:$('vA'),vBeta:$('vBeta'),hMu:$('hMu'),hAlpha:$('hAlpha'),hNu:$('hNu'),hBeta:$('hBeta')};
+const fitObjective=$('fitObjective'),vBetaMode=$('vBetaMode'),hNuMode=$('hNuMode');
+const behavior=$('behavior');
+const C={bg:'#090d16',grid:'#181e2e',border:'#1f2937',text:'#fff',mut:'#9ca3af',linear:'#60a5fa',neo:'#10b981',mr:'#fbbf24',ogden:'#ef4444',arruda:'#22d3ee',yeoh:'#f472b6',rpoly:'#fb923c',vdw:'#a3e635',hyperfoam:'#818cf8'};
+const labels={linear:'Linear elastic — small-strain reference',neo:'Neo-Hookean',mr:'Mooney–Rivlin',ogden:'Ogden (1-term, Abaqus norm.)',arruda:'Arruda–Boyce',yeoh:'Yeoh',rpoly:'Reduced Polynomial N=2',vdw:'Van der Waals (Kilian)',hyperfoam:'Ogden Hyperfoam (Abaqus HYPERFOAM, N=1)'};
+const modelOrder=['linear','neo','mr','ogden','arruda','yeoh','rpoly','vdw','hyperfoam'];
+const modeLabels={uniaxial:'Uniaxial',biaxial:'Equibiaxial',planar:'Planar / pure shear',shear:'Simple shear',volumetric:'Volumetric compression'};
+const cfg={
+ uniaxial:{min:.6,max:2,step:.005,x:'Stretch λ',stress:'Nominal stress P (MPa)',title:'Uniaxial nominal stress vs stretch'},
+ biaxial:{min:.6,max:2,step:.005,x:'Stretch λ',stress:'Nominal stress P (MPa)',title:'Equibiaxial nominal stress vs stretch'},
+ planar:{min:.6,max:2,step:.005,x:'Stretch λ',stress:'Nominal stress P (MPa)',title:'Planar nominal stress vs stretch'},
+ shear:{min:-1.5,max:1.5,step:.01,x:'Shear γ',stress:'Shear stress τ (MPa)',title:'Simple shear stress vs shear amount'},
+ volumetric:{min:.70,max:1.12,step:.002,x:'Volume ratio J',stress:'Compression pressure p (MPa)',title:'Volumetric pressure vs volume ratio'}
+};
+const rangeState={
+ uniaxial:{displayMin:.60,displayMax:2.00,fitMin:.60,fitMax:2.00,fitEnabled:false},
+ biaxial:{displayMin:.60,displayMax:2.00,fitMin:.60,fitMax:2.00,fitEnabled:false},
+ planar:{displayMin:.60,displayMax:2.00,fitMin:.60,fitMax:2.00,fitEnabled:false},
+ shear:{displayMin:-1.50,displayMax:1.50,fitMin:-1.50,fitMax:1.50,fitEnabled:false},
+ volumetric:{displayMin:.70,displayMax:1.12,fitMin:.70,fitMax:1.12,fitEnabled:false}
+};
+let currentMode='uniaxial';
+
+const DATA_ROWS=30;
+const datasets={
+ uniaxial:{xType:'stretch',stressType:'nominal',rows:Array.from({length:DATA_ROWS},()=>['',''])},
+ biaxial:{xType:'stretch',stressType:'nominal',rows:Array.from({length:DATA_ROWS},()=>['',''])},
+ planar:{xType:'stretch',stressType:'nominal',rows:Array.from({length:DATA_ROWS},()=>['',''])},
+ shear:{xType:'gamma',stressType:'shear',rows:Array.from({length:DATA_ROWS},()=>['',''])},
+ volumetric:{xType:'J',stressType:'pressure',rows:Array.from({length:DATA_ROWS},()=>['',''])}
+};
+const fitResults={};
+
+function n(el,f,min,max){let v=+el.value;if(!Number.isFinite(v))v=f;if(min!=null)v=Math.max(min,v);if(max!=null)v=Math.min(max,v);el.value=v;return v}
+function ogdenAlpha(){let v=+inp.a.value;if(!Number.isFinite(v))v=4;v=Math.max(-20,Math.min(20,v));if(Math.abs(v)<.2)v=v<0?-.2:.2;inp.a.value=v;return v}
+function hyperfoamAlpha(){
+ let v=+inp.hAlpha.value;if(!Number.isFinite(v))v=2;
+ v=Math.max(-20,Math.min(20,v));if(Math.abs(v)<.15)v=v<0?-.15:.15;
+ inp.hAlpha.value=v;return v;
+}
+function hyperfoamNu(){
+ let v=+inp.hNu.value;if(!Number.isFinite(v))v=.2;
+ v=Math.max(-.95,Math.min(.49,v));inp.hNu.value=v;return v;
+}
+function hyperfoamBetaFromNu(nu){return nu/(1-2*nu)}
+function hyperfoamK0(mu,nu){const beta=hyperfoamBetaFromNu(nu);return 2*mu*(beta+1/3)}
+
+function par(){
+ const K=n(inp.K0,100,.0001),D=2/K;
+ return{
+  E:n(inp.E,3,.0001),K0:K,D1:D,compressible:behavior.value==='compressible',
+  muN:n(inp.muN,1,.0001),c10:n(inp.c10,.35),c01:n(inp.c01,.15),
+  muO:n(inp.muO,1,.0001),a:ogdenAlpha(),
+  muAB:n(inp.muAB,.98765,.0001),lmAB:n(inp.lmAB,7,1.01),
+  yC10:n(inp.yC10,.5),yC20:n(inp.yC20,.05),yC30:n(inp.yC30,.01),
+  rC10:n(inp.rC10,.5),rC20:n(inp.rC20,.05),
+  vMu:n(inp.vMu,1,.0001),vLm:n(inp.vLm,7,1.733),vA:n(inp.vA,.1),vBeta:n(inp.vBeta,0,0,1),
+  hMu:n(inp.hMu,1,.000001),hAlpha:hyperfoamAlpha(),hNu:hyperfoamNu()
+ }
+}
+function modeRange(mode=currentMode){
+ const r=rangeState[mode],q=cfg[mode];
+ return{...q,min:r.displayMin,max:r.displayMax}
+}
+function safeRangeValue(v,fallback){const n=Number(v);return Number.isFinite(n)?n:fallback}
+function modeRequiresPositiveX(mode){return mode!=='shear'}
+function validateRange(mode,dmin,dmax,fmin,fmax){
+ if(modeRequiresPositiveX(mode) && (dmin<=0||dmax<=0||fmin<=0||fmax<=0))return 'Stretch and volume-ratio ranges must remain greater than zero.';
+ if(!(dmin<dmax))return 'Display Min must be smaller than Display Max.';
+ if(!(fmin<fmax))return 'Fit Min must be smaller than Fit Max.';
+ const safety=mode==='shear'?50:25;
+ if(Math.abs(dmin)>safety||Math.abs(dmax)>safety||Math.abs(fmin)>safety||Math.abs(fmax)>safety)return 'The requested range is outside the numerical safety limit for this browser tool.';
+ return '';
+}
+function rangeLabel(mode){
+ return mode==='shear'?'Shear range (γ)':mode==='volumetric'?'Volume-ratio range (J)':'Stretch range (λ)';
+}
+function rangeDigits(mode){return mode==='shear'?3:mode==='volumetric'?3:3}
+function syncRangeControls(){
+ const r=rangeState[currentMode],digits=rangeDigits(currentMode);
+ $('rangeTitle').textContent=rangeLabel(currentMode);
+ $('displayMin').value=r.displayMin.toFixed(digits);
+ $('displayMax').value=r.displayMax.toFixed(digits);
+ $('fitMin').value=r.fitMin.toFixed(digits);
+ $('fitMax').value=r.fitMax.toFixed(digits);
+ $('restrictFitRange').checked=!!r.fitEnabled;
+ $('rangeError').style.display='none';
+}
+function applyRangeControls(showError=true){
+ const r=rangeState[currentMode];
+ const dmin=safeRangeValue($('displayMin').value,r.displayMin);
+ const dmax=safeRangeValue($('displayMax').value,r.displayMax);
+ const fmin=safeRangeValue($('fitMin').value,r.fitMin);
+ const fmax=safeRangeValue($('fitMax').value,r.fitMax);
+ const err=validateRange(currentMode,dmin,dmax,fmin,fmax);
+ if(err){
+  if(showError){$('rangeError').textContent=err;$('rangeError').style.display='block'}
+  return false;
+ }
+ $('rangeError').style.display='none';
+ Object.assign(r,{displayMin:dmin,displayMax:dmax,fitMin:fmin,fitMax:fmax,fitEnabled:$('restrictFitRange').checked});
+ const q=modeRange(currentMode);
+ slider.min=q.min;slider.max=q.max;
+
+ // Keep the visible slider end labels synchronized with the user-defined display range.
+ const digits=currentMode==='shear'?2:currentMode==='volumetric'?3:2;
+ $('sliderMin').textContent=q.min.toFixed(digits);
+ $('sliderMax').textContent=q.max.toFixed(digits);
+
+ const neutral=currentMode==='shear'?0:1;
+ let v=+slider.value;
+ if(v<q.min||v>q.max)v=(neutral>=q.min&&neutral<=q.max)?neutral:(q.min+q.max)/2;
+ slider.value=v;
+
+ // Update the current slider value immediately as well, before the full redraw.
+ $('sliderValue').textContent=(currentMode==='shear'?'γ = ':currentMode==='volumetric'?'J = ':'λ = ')+Number(slider.value).toFixed(3);
+ return true;
+}
+function pointInsideFitRange(mode,x){
+ const r=rangeState[mode];
+ return !r.fitEnabled || (x>=r.fitMin && x<=r.fitMax);
+}
+
+function arrudaFactor(lm){
+ const l2=lm*lm,l4=l2*l2,l6=l4*l2,l8=l4*l4;
+ return 1+3/(5*l2)+99/(175*l4)+513/(875*l6)+42039/(67375*l8);
+}
+function isoEnergy(model,Ib1,Ib2,b1,b2,b3,p){
+ if(model==='neo')return .5*p.muN*(Ib1-3);
+ if(model==='mr')return p.c10*(Ib1-3)+p.c01*(Ib2-3);
+ if(model==='ogden')return (2*p.muO/(p.a*p.a))*(b1**p.a+b2**p.a+b3**p.a-3);
+ if(model==='yeoh'){
+  const x=Ib1-3;return p.yC10*x+p.yC20*x*x+p.yC30*x*x*x;
+ }
+ if(model==='rpoly'){
+  const x=Ib1-3;return p.rC10*x+p.rC20*x*x;
+ }
+ if(model==='arruda'){
+  const lm=p.lmAB,l2=lm*lm,l4=l2*l2,l6=l4*l2,l8=l4*l4;
+  return p.muAB*(.5*(Ib1-3)+(Ib1*Ib1-9)/(20*l2)+11*(Ib1**3-27)/(1050*l4)+19*(Ib1**4-81)/(7000*l6)+519*(Ib1**5-243)/(673750*l8));
+ }
+ if(model==='vdw'){
+  const lm2=p.vLm*p.vLm,den=lm2-3;
+  if(!(den>0))return 1e30;
+  const It=(1-p.vBeta)*Ib1+p.vBeta*Ib2;
+  const z=Math.max(0,It-3);
+  const eta=Math.sqrt(z/den);
+  if(!(eta<.999999))return 1e30;
+  return p.vMu*(-den*(Math.log(1-eta)+eta)-(2/3)*p.vA*Math.pow(z/2,1.5));
+ }
+ return 0;
+}
+function volEnergy(model,J,p){
+ if(!p.compressible)return 0;
+ if(model==='arruda'||model==='vdw'){
+  return .5*p.K0*((J*J-1)/2-Math.log(J));
+ }
+ return .5*p.K0*(J-1)*(J-1);
+}
+function volPressure(model,J,p){
+ if(!p.compressible)return 0;
+ if(model==='arruda'||model==='vdw')return .5*p.K0*(1/J-J);
+ return p.K0*(1-J);
+}
+function energyDiag(model,l1,l2,l3,p){
+ const J=l1*l2*l3;if(!(J>0))return 1e30;
+ const j23=J**(-2/3),j43=J**(-4/3);
+ const I1=l1*l1+l2*l2+l3*l3,I2=l1*l1*l2*l2+l2*l2*l3*l3+l3*l3*l1*l1;
+ const Ib1=j23*I1,Ib2=j43*I2,jb=J**(-1/3),b1=l1*jb,b2=l2*jb,b3=l3*jb;
+ return isoEnergy(model,Ib1,Ib2,b1,b2,b3,p)+volEnergy(model,J,p);
+}
+function incompState(mode,x){
+ if(mode==='uniaxial')return[x,x**-.5,x**-.5];
+ if(mode==='biaxial')return[x,x,x**-2];
+ return[x,1,x**-1];
+}
+function shearEnergy(model,g,p){
+ if(model==='ogden'){
+  const eta=Math.asinh(g/2),a=p.a;
+  return (4*p.muO/(a*a))*(Math.cosh(a*eta)-1);
+ }
+ const I=3+g*g;
+ return isoEnergy(model,I,I,1,1,1,p);
+}
+function genericIncompressibleResponse(model,x,p,mode){
+ if(mode==='volumetric'){
+  const J=x;return{P:volPressure(model,J,p),W:volEnergy(model,J,p),J,t:J**(1/3),kin:p.compressible?'J = '+J.toFixed(3):'J = 1 assumption'};
+ }
+ if(mode==='shear'){
+  const h=Math.max(1e-6,Math.abs(x)*2e-5+1e-6),Wp=shearEnergy(model,x+h,p),Wm=shearEnergy(model,x-h,p),W=shearEnergy(model,x,p);
+  return{P:(Wp-Wm)/(2*h),W,J:1,t:1,kin:'J = 1'};
+ }
+ const s=incompState(mode,x),W=energyDiag(model,s[0],s[1],s[2],{...p,compressible:false});
+ const h=Math.max(1e-6,Math.abs(x)*2e-5),xp=x+h,xm=Math.max(1e-5,x-h),sp=incompState(mode,xp),sm=incompState(mode,xm);
+ let P=(energyDiag(model,sp[0],sp[1],sp[2],{...p,compressible:false})-energyDiag(model,sm[0],sm[1],sm[2],{...p,compressible:false}))/(xp-xm);
+ if(mode==='biaxial')P*=.5;
+ const t=mode==='uniaxial'?x**-.5:mode==='biaxial'?x**-2:x**-1;
+ const kin=mode==='uniaxial'?'λ₂ = λ₃ = '+t.toFixed(3):mode==='biaxial'?'λ₃ = '+t.toFixed(3):'λ₂ = 1, λ₃ = '+t.toFixed(3);
+ return{P,W,J:1,t,kin};
+}
+function diagState(mode,x,t){
+ if(mode==='uniaxial')return[x,t,t];
+ if(mode==='biaxial')return[x,x,t];
+ return[x,1,t];
+}
+function solveTransverse(model,mode,x,p){
+ const guess=mode==='uniaxial'?x**-.5:mode==='biaxial'?x**-2:x**-1;
+ let a=Math.max(1e-5,guess*.12),b=Math.min(50,Math.max(guess*6,.2));
+ const phi=(Math.sqrt(5)-1)/2;
+ const E=t=>{const s=diagState(mode,x,t);return energyDiag(model,s[0],s[1],s[2],p)};
+ let c=b-phi*(b-a),d=a+phi*(b-a),fc=E(c),fd=E(d);
+ for(let i=0;i<82;i++){
+  if(fc<fd){b=d;d=c;fd=fc;c=b-phi*(b-a);fc=E(c)}
+  else{a=c;c=d;fc=fd;d=a+phi*(b-a);fd=E(d)}
+ }
+ return .5*(a+b);
+}
+function minimizedDiagState(model,mode,x,p){
+ const t=solveTransverse(model,mode,x,p),s=diagState(mode,x,t);
+ return{t,s,W:energyDiag(model,s[0],s[1],s[2],p)};
+}
+function hyperCompressibleResponse(model,x,p,mode){
+ if(mode==='volumetric'){
+  const J=x;return{P:volPressure(model,J,p),W:volEnergy(model,J,p),J,t:J**(1/3),kin:'J = '+J.toFixed(3)};
+ }
+ if(mode==='shear'){
+  const h=Math.max(1e-6,Math.abs(x)*2e-5+1e-6),Wp=shearEnergy(model,x+h,p),Wm=shearEnergy(model,x-h,p),W=shearEnergy(model,x,p);
+  return{P:(Wp-Wm)/(2*h),W,J:1,t:1,kin:'J = 1'};
+ }
+ const st=minimizedDiagState(model,mode,x,p),t=st.t,s=st.s,J=s[0]*s[1]*s[2];
+ const hx=Math.max(2e-6,Math.abs(x)*1e-5),xp=x+hx,xm=Math.max(.0001,x-hx);
+ const sp=minimizedDiagState(model,mode,xp,p),sm=minimizedDiagState(model,mode,xm,p);
+ let P=(sp.W-sm.W)/(xp-xm);
+ if(mode==='biaxial')P*=.5;
+ const W=st.W;
+ const kin=mode==='uniaxial'?'λ₂ = λ₃ = '+t.toFixed(3)+', J = '+J.toFixed(3):mode==='biaxial'?'λ₃ = '+t.toFixed(3)+', J = '+J.toFixed(3):'λ₂ = 1, λ₃ = '+t.toFixed(3)+', J = '+J.toFixed(3);
+ return{P,W,J,t,kin};
+}
+
+function hyperfoamEnergyDiag(l1,l2,l3,p){
+ const J=l1*l2*l3;if(!(J>0))return 1e30;
+ const mu=p.hMu,a=p.hAlpha,nu=p.hNu,b=hyperfoamBetaFromNu(nu);
+ const stretch=l1**a+l2**a+l3**a-3;
+ const vol=Math.abs(b)<1e-9?(-a*Math.log(J)):(Math.exp(-a*b*Math.log(J))-1)/b;
+ const U=(2*mu/(a*a))*(stretch+vol);
+ return Number.isFinite(U)?U:1e30;
+}
+function hyperfoamResponse(x,p,mode){
+ const mu=p.hMu,a=p.hAlpha,nu=p.hNu,b=hyperfoamBetaFromNu(nu);
+
+ if(mode==='volumetric'){
+  const J=x,lam=J**(1/3);
+  const W=hyperfoamEnergyDiag(lam,lam,lam,p);
+  const pressure=(2*mu/a)*(J**(-a*b-1)-J**(a/3-1));
+  return{P:pressure,W,J,t:lam,kin:'Hyperfoam: J = '+J.toFixed(3)+', ν₁ = '+nu.toFixed(3)};
+ }
+
+ if(mode==='shear'){
+  const g=x,eta=Math.asinh(g/2);
+  const W=(4*mu/(a*a))*(Math.cosh(a*eta)-1);
+  const tau=(4*mu/a)*Math.sinh(a*eta)/Math.sqrt(4+g*g);
+  return{P:tau,W,J:1,t:1,kin:'Hyperfoam simple shear: J = 1'};
+ }
+
+ let l1=x,l2,l3;
+ if(mode==='uniaxial'){
+  const t=x**(-nu);l2=t;l3=t;
+ }else if(mode==='biaxial'){
+  l2=x;l3=x**(-2*nu/(1-nu));
+ }else{
+  l2=1;l3=x**(-nu/(1-nu));
+ }
+ const J=l1*l2*l3;
+ const q=J**(-a*b);
+ const P1=(2*mu/a)*(l1**a-q)/l1;
+ const W=hyperfoamEnergyDiag(l1,l2,l3,p);
+ const kin=mode==='uniaxial'
+  ?'Hyperfoam: λ₂ = λ₃ = '+l2.toFixed(3)+', J = '+J.toFixed(3)
+  :mode==='biaxial'
+   ?'Hyperfoam: λ₃ = '+l3.toFixed(3)+', J = '+J.toFixed(3)
+   :'Hyperfoam: λ₂ = 1, λ₃ = '+l3.toFixed(3)+', J = '+J.toFixed(3);
+ return{P:P1,W,J,t:l3,kin};
+}
+function response(model,x,p,mode=currentMode){
+ if(model==='hyperfoam')return hyperfoamResponse(x,p,mode);
+ if(mode==='volumetric'){
+  if(model==='linear'){const J=x,pressure=p.compressible?p.K0*(1-J):0,W=p.compressible?.5*p.K0*(J-1)*(J-1):0;return{P:pressure,W,J,t:J**(1/3),kin:p.compressible?'J = '+J.toFixed(3):'J = 1 assumption'}}
+  return genericIncompressibleResponse(model,x,p,mode);
+ }
+ if(model==='linear'){
+  const e=mode==='shear'?x:x-1;
+  let nu=.5;
+  if(p.compressible)nu=Math.max(-.99,Math.min(.499,(3*p.K0-p.E)/(6*p.K0)));
+  const G=p.E/(2*(1+nu));
+  if(mode==='shear')return{P:G*x,W:.5*G*x*x,J:1,t:1,kin:'γ = '+x.toFixed(3)};
+  let stress,W;
+  if(mode==='uniaxial'){stress=p.E*e;W=.5*p.E*e*e}
+  else if(mode==='biaxial'){const M=p.E/(1-nu);stress=M*e;W=M*e*e}
+  else{const M=p.E/(1-nu*nu);stress=M*e;W=.5*M*e*e}
+  const t=p.compressible
+   ?(mode==='uniaxial'?Math.max(.05,1-nu*e):mode==='biaxial'?Math.max(.05,1-2*nu*e):Math.max(.05,1-nu*e))
+   :(mode==='uniaxial'?1/Math.sqrt(x):mode==='biaxial'?x**-2:x**-1);
+  const J=mode==='uniaxial'?x*t*t:mode==='biaxial'?x*x*t:x*t;
+  return{P:stress,W,J,t,kin:'linear reference, J ≈ '+J.toFixed(3)};
+ }
+ if(p.compressible)return hyperCompressibleResponse(model,x,p,mode);
+ if(['arruda','yeoh','rpoly','vdw'].includes(model))return genericIncompressibleResponse(model,x,p,mode);
+
+ // Incompressible closed-form response
+ const l=x,e=l-1;
+ if(mode==='shear'){
+  const g=x;
+  if(model==='neo')return{P:p.muN*g,W:.5*p.muN*g*g,J:1,t:1,kin:'J = 1'};
+  if(model==='mr')return{P:2*(p.c10+p.c01)*g,W:(p.c10+p.c01)*g*g,J:1,t:1,kin:'J = 1'};
+  const eta=Math.asinh(g/2),a=p.a;
+  return{P:(4*p.muO/a)*Math.sinh(a*eta)/Math.sqrt(4+g*g),W:(4*p.muO/(a*a))*(Math.cosh(a*eta)-1),J:1,t:1,kin:'J = 1'};
+ }
+ if(mode==='uniaxial'){
+  const I1=l*l+2/l,I2=2*l+1/(l*l);
+  if(model==='neo')return{P:p.muN*(l-l**-2),W:.5*p.muN*(I1-3),J:1,t:1/Math.sqrt(l),kin:'λ₂ = λ₃ = '+(1/Math.sqrt(l)).toFixed(3)};
+  if(model==='mr')return{P:2*p.c10*(l-l**-2)+2*p.c01*(1-l**-3),W:p.c10*(I1-3)+p.c01*(I2-3),J:1,t:1/Math.sqrt(l),kin:'λ₂ = λ₃ = '+(1/Math.sqrt(l)).toFixed(3)};
+  const a=p.a;return{P:(2*p.muO/a)*(l**(a-1)-l**(-a/2-1)),W:(2*p.muO/(a*a))*(l**a+2*l**(-a/2)-3),J:1,t:1/Math.sqrt(l),kin:'λ₂ = λ₃ = '+(1/Math.sqrt(l)).toFixed(3)};
+ }
+ if(mode==='biaxial'){
+  const I1=2*l*l+l**-4,I2=l**4+2*l**-2;
+  if(model==='neo')return{P:p.muN*(l-l**-5),W:.5*p.muN*(I1-3),J:1,t:l**-2,kin:'λ₃ = '+(l**-2).toFixed(3)};
+  if(model==='mr')return{P:2*p.c10*(l-l**-5)+2*p.c01*(l**3-l**-3),W:p.c10*(I1-3)+p.c01*(I2-3),J:1,t:l**-2,kin:'λ₃ = '+(l**-2).toFixed(3)};
+  const a=p.a;return{P:(2*p.muO/a)*(l**(a-1)-l**(-2*a-1)),W:(2*p.muO/(a*a))*(2*l**a+l**(-2*a)-3),J:1,t:l**-2,kin:'λ₃ = '+(l**-2).toFixed(3)};
+ }
+ const I=l*l+1+l**-2;
+ if(model==='neo')return{P:p.muN*(l-l**-3),W:.5*p.muN*(I-3),J:1,t:1/l,kin:'λ₂ = 1, λ₃ = '+(1/l).toFixed(3)};
+ if(model==='mr')return{P:2*(p.c10+p.c01)*(l-l**-3),W:(p.c10+p.c01)*(I-3),J:1,t:1/l,kin:'λ₂ = 1, λ₃ = '+(1/l).toFixed(3)};
+ const a=p.a;return{P:(2*p.muO/a)*(l**(a-1)-l**(-a-1)),W:(2*p.muO/(a*a))*(l**a+l**(-a)-2),J:1,t:1/l,kin:'λ₂ = 1, λ₃ = '+(1/l).toFixed(3)};
+}
+function initialSlope(model,p,mode=currentMode){
+ if(mode==='volumetric')return model==='hyperfoam'?hyperfoamK0(p.hMu,p.hNu):(p.compressible?p.K0:0);
+ const x0=mode==='shear'?0:1,h=1e-4;
+ const rp=response(model,x0+h,p,mode).P,rm=response(model,x0-h,p,mode).P;
+ return (rp-rm)/(2*h);
+}
+function enabled(){return[...root.querySelectorAll('.toggle')].filter(x=>x.checked).map(x=>x.dataset.m)}
+function gray(){
+ const m=sel.value,hf=m==='hyperfoam';
+ if(hf)behavior.value='compressible';
+ const comp=behavior.value==='compressible';
+ behavior.disabled=hf;
+ root.querySelectorAll('.row[data-g]').forEach(r=>{const on=r.dataset.g==='base'||r.dataset.g===m;r.classList.toggle('off',!on);r.querySelectorAll('input,select').forEach(i=>{if(i.id!=='hBeta')i.disabled=!on})});
+ [$('rowK0'),$('rowD1')].forEach(r=>{
+  r.style.display=hf?'none':'';
+  r.classList.toggle('bulk-off',!comp);
+  r.querySelectorAll('input').forEach(i=>i.disabled=!comp||hf);
+ });
+ const vb=root.querySelector('.modebtn[data-mode="volumetric"]');if(vb)vb.disabled=!comp;
+ const vopt=$('datasetMode').querySelector('option[value="volumetric"]');if(vopt)vopt.disabled=!comp;
+ const vcb=root.querySelector('.use-fit[data-mode="volumetric"]');if(vcb){vcb.disabled=!comp;if(!comp)vcb.checked=false}
+}
+function size(cv,H){const d=Math.max(1,devicePixelRatio||1),w=Math.max(280,cv.clientWidth);cv.width=w*d;cv.height=H*d;cv.style.height=H+'px';const c=cv.getContext('2d');c.setTransform(d,0,0,d,0,0);return{c,w,h:H}}
+
+function parseCellNumber(v){
+ const s=String(v??'').trim().replace(/\u00a0/g,'');if(!s)return NaN;
+ let t=s.replace(/\s+/g,'');if(t.includes(',')&&!t.includes('.'))t=t.replace(',','.');
+ return Number(t);
+}
+function saveVisibleDataset(){
+ const m=$('datasetMode').value,d=datasets[m];
+ d.xType=$('inputXType').value;d.stressType=$('inputStressType').value;
+ root.querySelectorAll('.exp-cell').forEach(el=>{d.rows[+el.dataset.row][+el.dataset.col]=el.value});
+}
+function convertedData(mode,onlyValid=true){
+ if($('datasetMode').value===mode)saveVisibleDataset();
+ const d=datasets[mode],out=[];
+ d.rows.forEach((row,i)=>{
+  const xr=parseCellNumber(row[0]),yr=parseCellNumber(row[1]);
+  if(!Number.isFinite(xr)||!Number.isFinite(yr)){if(!onlyValid)out.push({row:i+1,xRaw:row[0],yRaw:row[1],valid:false});return}
+  if(mode==='shear'){
+   const g=d.xType==='gammaPct'?xr/100:xr;if(Number.isFinite(g))out.push({row:i+1,xRaw:xr,yRaw:yr,x:g,P:yr,valid:true});
+  }else if(mode==='volumetric'){
+   const J=d.xType==='volPct'?1+xr/100:xr;if(J>0)out.push({row:i+1,xRaw:xr,yRaw:yr,x:J,P:yr,valid:true});
+  }else{
+   const l=d.xType==='strainPct'?1+xr/100:xr;
+   if(!Number.isFinite(l)||l<=0){if(!onlyValid)out.push({row:i+1,xRaw:xr,yRaw:yr,valid:false});return}
+   let P=yr;
+   if(d.stressType==='cauchy'){
+    if(behavior.value==='compressible'){if(!onlyValid)out.push({row:i+1,xRaw:xr,yRaw:yr,valid:false});return}
+    P=yr/l;
+   }
+   out.push({row:i+1,xRaw:xr,yRaw:yr,x:l,P,valid:true});
+  }
+ });
+ return out;
+}
+function activeExp(){return convertedData(currentMode,true)}
+
+function chart(cv,key){
+ const H=key==='P'?330:270,{c,w,h}=size(cv,H),p=par(),mods=enabled(),range=modeRange(),D={};let lo=0,hi=0;
+ const N=currentMode==='shear'?240:currentMode==='volumetric'?180:(p.compressible?120:220);
+ mods.forEach(m=>{
+  D[m]=[];
+  for(let i=0;i<=N;i++){
+   const x=range.min+(range.max-range.min)*i/N,v=response(m,x,p,currentMode)[key];
+   D[m].push([x,v]);lo=Math.min(lo,v);hi=Math.max(hi,v);
+  }
+ });
+ const exp=key==='P'?activeExp():[];
+ if(key==='P')exp.forEach(pt=>{if(pt.x>=range.min&&pt.x<=range.max){lo=Math.min(lo,pt.P);hi=Math.max(hi,pt.P)}});
+ if(!mods.length&&!exp.length){lo=-1;hi=1}
+ if(key==='W')lo=0;
+ let rg=hi-lo;if(rg<1e-9){rg=1;hi=lo+1}const pd=.12*rg;if(key==='W')hi+=pd;else{lo-=pd;hi+=pd}
+ const L=58,R=14,T=18,B=38,xmap=x=>L+(x-range.min)/(range.max-range.min)*(w-L-R),ymap=v=>T+(hi-v)/(hi-lo)*(h-T-B);
+ c.fillStyle=C.bg;c.fillRect(0,0,w,h);c.font='10px Arial';c.textBaseline='middle';
+
+ for(let i=0;i<=4;i++){
+  const yy=T+i*(h-T-B)/4;c.strokeStyle=C.grid;c.beginPath();c.moveTo(L,yy);c.lineTo(w-R,yy);c.stroke();
+  const v=hi-i*(hi-lo)/4;c.fillStyle=C.mut;c.textAlign='right';c.fillText(v.toFixed(Math.abs(v)<10?2:1),L-6,yy);
+ }
+ for(let i=0;i<=4;i++){
+  const xv=range.min+(range.max-range.min)*i/4,xx=xmap(xv);c.strokeStyle=C.grid;c.beginPath();c.moveTo(xx,T);c.lineTo(xx,h-B);c.stroke();
+  c.fillStyle=C.mut;c.textAlign='center';c.fillText(xv.toFixed(currentMode==='shear'?2:1),xx,h-18);
+ }
+ c.strokeStyle=C.border;c.beginPath();c.moveTo(L,T);c.lineTo(L,h-B);c.lineTo(w-R,h-B);c.stroke();
+ if(lo<=0&&hi>=0){c.strokeStyle='#334155';c.beginPath();c.moveTo(L,ymap(0));c.lineTo(w-R,ymap(0));c.stroke()}
+ c.fillStyle=C.text;c.font='bold 10px Arial';c.textAlign='left';
+ c.fillText(key==='P'?cfg[currentMode].stress:'Strain Energy Density W (MJ/m³)',6,10);
+ c.textAlign='center';c.fillText(cfg[currentMode].x,(L+w-R)/2,h-5);
+
+ mods.forEach(m=>{
+  c.strokeStyle=C[m];c.lineWidth=m===sel.value?3.2:2;c.beginPath();
+  D[m].forEach((pt,i)=>i?c.lineTo(xmap(pt[0]),ymap(pt[1])):c.moveTo(xmap(pt[0]),ymap(pt[1])));c.stroke();
+ });
+ if(key==='P'){
+  exp.forEach(pt=>{
+   if(pt.x<range.min||pt.x>range.max)return;
+   c.fillStyle='#a855f7';c.strokeStyle='#f3e8ff';c.lineWidth=1.5;c.beginPath();c.arc(xmap(pt.x),ymap(pt.P),4.3,0,Math.PI*2);c.fill();c.stroke();
+  });
+ }
+ const xv=+slider.value,m=sel.value;
+
+ // Live deformation cursor: makes slider motion visible on both charts.
+ if(xv>=range.min&&xv<=range.max){
+  c.save();
+  c.strokeStyle='rgba(255,255,255,.30)';
+  c.lineWidth=1;
+  c.setLineDash([4,4]);
+  c.beginPath();c.moveTo(xmap(xv),T);c.lineTo(xmap(xv),h-B);c.stroke();
+  c.restore();
+
+  // Move a marker along every enabled material curve.
+  mods.forEach(mod=>{
+   const v=response(mod,xv,p,currentMode)[key];
+   if(!Number.isFinite(v)||v<lo||v>hi)return;
+   const selected=mod===m;
+   c.save();
+   c.fillStyle=C[mod]||C.text;
+   c.strokeStyle=selected?'#ffffff':(C[mod]||C.text);
+   c.lineWidth=selected?2.2:1.2;
+   if(selected){
+    c.shadowBlur=12;
+    c.shadowColor=C[mod]||'#ffffff';
+   }
+   c.beginPath();
+   c.arc(xmap(xv),ymap(v),selected?6:4,0,Math.PI*2);
+   c.fill();c.stroke();
+   c.restore();
+  });
+ }
+
+ if(currentMode!=='shear'){c.strokeStyle='#475569';c.setLineDash([3,4]);c.beginPath();c.moveTo(xmap(1),T);c.lineTo(xmap(1),h-B);c.stroke();c.setLineDash([])}
+}
+
+function arrow(c,x1,y1,x2,y2){
+ c.strokeStyle='#fbbf24';c.fillStyle='#fbbf24';c.lineWidth=2.5;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();
+ const a=Math.atan2(y2-y1,x2-x1),s=7;c.beginPath();c.moveTo(x2,y2);c.lineTo(x2-s*Math.cos(a-Math.PI/6),y2-s*Math.sin(a-Math.PI/6));c.lineTo(x2-s*Math.cos(a+Math.PI/6),y2-s*Math.sin(a+Math.PI/6));c.closePath();c.fill();
+}
+function specimen(){
+ const {c,w,h}=size($('specimen'),250),p=par(),x=+slider.value,r=response(sel.value,x,p,currentMode),cx=w/2,cy=h/2;
+ const bg=c.createLinearGradient(0,0,w,h);bg.addColorStop(0,'#1d4c74');bg.addColorStop(.55,'#3c7cad');bg.addColorStop(1,'#173b5d');c.fillStyle=bg;c.fillRect(0,0,w,h);
+ c.fillStyle='rgba(255,255,255,.06)';c.fillRect(8,42,w-16,h-52);
+ c.strokeStyle='#d5e9f8';c.fillStyle='#eaf6ff';c.lineWidth=2;
+
+ if(currentMode==='volumetric'){
+  const base=104,s=Math.max(55,Math.min(150,base*Math.pow(x,1/3)));
+  c.setLineDash([5,4]);c.strokeRect(cx-base/2,cy-base/2,base,base);c.setLineDash([]);
+  let g=c.createLinearGradient(cx-s/2,0,cx+s/2,0);g.addColorStop(0,'#6c9bc6');g.addColorStop(.5,'#fff');g.addColorStop(1,'#6c9bc6');c.fillStyle=g;c.fillRect(cx-s/2,cy-s/2,s,s);c.strokeRect(cx-s/2,cy-s/2,s,s);
+  const inward=x<1;
+  arrow(c,cx-s/2-(inward?28:5),cy,cx-s/2-(inward?5:28),cy);
+  arrow(c,cx+s/2+(inward?28:5),cy,cx+s/2+(inward?5:28),cy);
+  arrow(c,cx,cy-s/2-(inward?28:5),cx,cy-s/2-(inward?5:28));
+  arrow(c,cx,cy+s/2+(inward?28:5),cx,cy+s/2+(inward?5:28));
+ }else if(currentMode==='uniaxial'){
+  const bh=120,bw=74,H=Math.max(58,Math.min(185,bh*x)),lat=p.compressible?r.t:1/Math.sqrt(x),W=Math.max(34,Math.min(130,bw*lat)),top=cy-H/2;
+  c.setLineDash([5,4]);c.strokeRect(cx-bw/2,cy-bh/2,bw,bh);c.setLineDash([]);
+  let g=c.createLinearGradient(cx-W/2,0,cx+W/2,0);g.addColorStop(0,'#6c9bc6');g.addColorStop(.5,'#fff');g.addColorStop(1,'#6c9bc6');c.fillStyle=g;c.beginPath();c.roundRect(cx-W/2,top,W,H,8);c.fill();c.stroke();
+  c.fillStyle='#647b92';c.fillRect(cx-50,top-14,100,12);c.fillRect(cx-50,top+H+2,100,12);
+  if(x>=1){arrow(c,cx,top-16,cx,Math.max(8,top-42));arrow(c,cx,top+H+16,cx,Math.min(h-8,top+H+42))}
+  else{arrow(c,cx,Math.max(8,top-42),cx,top-16);arrow(c,cx,Math.min(h-8,top+H+42),cx,top+H+16)}
+ }else if(currentMode==='biaxial'){
+  const base=90,S=Math.max(45,Math.min(155,base*x));
+  c.setLineDash([5,4]);c.strokeRect(cx-base/2,cy-base/2,base,base);c.setLineDash([]);
+  let g=c.createLinearGradient(cx-S/2,cy-S/2,cx+S/2,cy+S/2);g.addColorStop(0,'#6c9bc6');g.addColorStop(.5,'#eff8ff');g.addColorStop(1,'#78a9d2');c.fillStyle=g;c.fillRect(cx-S/2,cy-S/2,S,S);c.strokeRect(cx-S/2,cy-S/2,S,S);
+  arrow(c,cx-S/2-5,cy,cx-S/2-32,cy);arrow(c,cx+S/2+5,cy,cx+S/2+32,cy);arrow(c,cx,cy-S/2-5,cx,cy-S/2-32);arrow(c,cx,cy+S/2+5,cx,cy+S/2+32);
+ }else if(currentMode==='planar'){
+  const bw=105,bh=85,W=Math.max(48,Math.min(175,bw*x)),lat=p.compressible?r.t:1/x,H=Math.max(38,Math.min(145,bh*lat));
+  c.setLineDash([5,4]);c.strokeRect(cx-bw/2,cy-bh/2,bw,bh);c.setLineDash([]);
+  let g=c.createLinearGradient(cx-W/2,0,cx+W/2,0);g.addColorStop(0,'#6c9bc6');g.addColorStop(.5,'#eff8ff');g.addColorStop(1,'#6c9bc6');c.fillStyle=g;c.fillRect(cx-W/2,cy-H/2,W,H);c.strokeRect(cx-W/2,cy-H/2,W,H);
+  arrow(c,cx-W/2-5,cy,cx-W/2-34,cy);arrow(c,cx+W/2+5,cy,cx+W/2+34,cy);
+ }else{
+  const s=105,shift=Math.max(-75,Math.min(75,x*42));
+  c.setLineDash([5,4]);c.strokeRect(cx-s/2,cy-s/2,s,s);c.setLineDash([]);
+  c.fillStyle='rgba(235,247,255,.88)';c.beginPath();c.moveTo(cx-s/2,cy+s/2);c.lineTo(cx+s/2,cy+s/2);c.lineTo(cx+s/2+shift,cy-s/2);c.lineTo(cx-s/2+shift,cy-s/2);c.closePath();c.fill();c.stroke();
+  arrow(c,cx-s/2+shift,cy-s/2-12,cx-s/2+shift+(x>=0?34:-34),cy-s/2-12);
+  arrow(c,cx+s/2,cy+s/2+12,cx+s/2+(x>=0?-34:34),cy+s/2+12);
+ }
+ c.fillStyle='#fff';c.font='bold 10px Arial';c.fillText(currentMode==='shear'?'γ = '+x.toFixed(3):currentMode==='volumetric'?'J = '+x.toFixed(3):'λ = '+x.toFixed(3),8,15);
+ c.fillStyle='#e5f2ff';c.font='10px Arial';c.fillText(r.kin,8,31);
+}
+function updateModeUI(){
+ const comp=behavior.value==='compressible';
+ document.querySelectorAll('.modebtn').forEach(b=>b.classList.toggle('active',b.dataset.mode===currentMode));
+ const q=modeRange(currentMode);slider.min=q.min;slider.max=q.max;slider.step=q.step;
+ if(currentMode==='shear' && (+slider.value<q.min||+slider.value>q.max||+slider.value===1))slider.value=0;
+ if(currentMode==='volumetric' && (+slider.value<q.min||+slider.value>q.max))slider.value=1;
+ if(!['shear','volumetric'].includes(currentMode) && (+slider.value<q.min||+slider.value>q.max||+slider.value===0))slider.value=1;
+ $('sliderMin').textContent=q.min.toFixed(2);$('sliderMax').textContent=q.max.toFixed(2);
+ $('sliderTitle').textContent=currentMode==='shear'?'↔ Drag Handle To Apply Simple Shear':currentMode==='volumetric'?'↔ Drag Handle To Change Volume':'↔ Drag Handle To Apply '+modeLabels[currentMode]+' Stretch';
+ $('stressPanelTitle').textContent=q.title;
+ $('specimenTitle').textContent=modeLabels[currentMode]+' Deformation';
+ $('specimenSub').textContent=currentMode==='uniaxial'?(comp?'Compressible: lateral stretches are solved from zero transverse traction.':'Incompressible: lateral stretches = λ⁻¹ᐟ².'):currentMode==='biaxial'?(comp?'Compressible: thickness stretch is solved from zero transverse traction.':'Incompressible: thickness stretch λ₃ = λ⁻².'):currentMode==='planar'?(comp?'Compressible planar mode: λ₂ = 1 and λ₃ is traction-free.':'Incompressible planar mode: λ₂ = 1 and λ₃ = λ⁻¹.'):currentMode==='volumetric'?'Uniform volume change. Pressure is positive in compression.':'Simple shear has J = 1, so the volumetric term is inactive.';
+ $('readXLabel').textContent=q.x;
+ $('readStrainLabel').textContent=currentMode==='shear'?'Engineering shear':currentMode==='volumetric'?'Volume change':'Engineering strain';
+ $('readStressLabel').textContent=currentMode==='shear'?'Selected shear stress':currentMode==='volumetric'?'Compression pressure':'Selected nominal stress';
+ if($('datasetMode').value!==currentMode){saveVisibleDataset();$('datasetMode').value=currentMode;loadDatasetUI()}
+ syncRangeControls();
+ gray();
+}
+function read(){
+ const p=par(),x=+slider.value,m=sel.value,r=response(m,x,p,currentMode);
+ $('rX').textContent=x.toFixed(3);
+ $('rStrain').textContent=currentMode==='shear'?(x*100).toFixed(1)+' %':currentMode==='volumetric'?((x-1)*100).toFixed(1)+' %':((x-1)*100).toFixed(1)+' %';
+ $('rP').textContent=r.P.toFixed(3)+' MPa';$('rW').textContent=r.W.toFixed(3)+' MJ/m³';
+ $('sliderValue').textContent=(currentMode==='shear'?'γ = ':currentMode==='volumetric'?'J = ':'λ = ')+x.toFixed(3);
+ $('slope').textContent=(currentMode==='volumetric'?'K₀ = ':'E₀ = ')+initialSlope(m,p,currentMode).toFixed(3)+' MPa';
+ $('kinematics').textContent=r.kin;$('name').textContent=labels[m];
+}
+function render(){gray();read();chart($('stress'),'P');chart($('energy'),'W');specimen()}
+
+function setMainMode(mode){
+ saveVisibleDataset();currentMode=mode;updateModeUI();render();
+}
+
+function xTypeOptions(mode){
+ if(mode==='shear')return[['gamma','Shear amount γ'],['gammaPct','Engineering shear (%)']];
+ if(mode==='volumetric')return[['J','Volume ratio J'],['volPct','Volume change (%)']];
+ return[['stretch','Stretch ratio λ'],['strainPct','Engineering strain (%)']];
+}
+function stressTypeOptions(mode){
+ if(mode==='shear')return[['shear','Shear stress τ (MPa)']];
+ if(mode==='volumetric')return[['pressure','Compression pressure p (MPa)']];
+ if(behavior.value==='compressible')return[['nominal','Nominal / engineering stress (MPa)']];
+ return[['nominal','Nominal / engineering stress (MPa)'],['cauchy','Cauchy / true stress (MPa)']];
+}
+function fillSelect(el,opts,value){el.innerHTML='';opts.forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;el.appendChild(o)});el.value=value}
+function loadDatasetUI(){
+ const mode=$('datasetMode').value,d=datasets[mode];
+ fillSelect($('inputXType'),xTypeOptions(mode),d.xType);fillSelect($('inputStressType'),stressTypeOptions(mode),d.stressType);
+ $('xHeader').textContent=mode==='shear'?(d.xType==='gammaPct'?'Engineering shear (%)':'Shear γ'):mode==='volumetric'?(d.xType==='volPct'?'Volume change (%)':'Volume ratio J'):(d.xType==='strainPct'?'Engineering strain (%)':'Stretch λ');
+ $('stressHeader').textContent=mode==='shear'?'Shear stress τ (MPa)':mode==='volumetric'?'Compression pressure p (MPa)':'Stress (MPa)';
+ root.querySelectorAll('.exp-cell').forEach(el=>el.value=d.rows[+el.dataset.row][+el.dataset.col]??'');
+}
+function updateDatasetSelectors(){
+ const mode=$('datasetMode').value,d=datasets[mode];d.xType=$('inputXType').value;d.stressType=$('inputStressType').value;
+ $('xHeader').textContent=mode==='shear'?(d.xType==='gammaPct'?'Engineering shear (%)':'Shear γ'):mode==='volumetric'?(d.xType==='volPct'?'Volume change (%)':'Volume ratio J'):(d.xType==='strainPct'?'Engineering strain (%)':'Stretch λ');
+ $('stressHeader').textContent=mode==='shear'?'Shear stress τ (MPa)':mode==='volumetric'?'Compression pressure p (MPa)':'Stress (MPa)';
+ render();
+}
+function handlePaste(ev){
+ const target=ev.target;if(!target.classList.contains('exp-cell'))return;
+ const txt=ev.clipboardData?.getData('text');if(!txt)return;ev.preventDefault();
+ const sr=+target.dataset.row,sc=+target.dataset.col,lines=txt.replace(/\r/g,'').split('\n').filter((x,i,a)=>x.trim()!==''||i<a.length-1);
+ lines.forEach((line,ri)=>{const rr=sr+ri;if(rr>=DATA_ROWS)return;let vals=line.split('\t');if(vals.length===1&&line.includes(';'))vals=line.split(';');vals.slice(0,2-sc).forEach((v,ci)=>{const el=root.querySelector('.exp-cell[data-row="'+rr+'"][data-col="'+(sc+ci)+'"]');if(el)el.value=v.trim()})});
+ saveVisibleDataset();render();
+}
+
+function allFitData(){
+ saveVisibleDataset();let all=[];
+ root.querySelectorAll('.use-fit').forEach(cb=>{
+  if(!cb.checked)return;
+  const mode=cb.dataset.mode;
+  convertedData(mode,true).forEach(pt=>{
+   if(pointInsideFitRange(mode,pt.x))all.push({...pt,mode});
+  });
+ });
+ return all;
+}
+function fitUsed(data){return data.filter(d=>d.mode!=='volumetric')}
+function fitWeight(y){
+ if(fitObjective.value!=='abaqus')return 1;
+ return Math.abs(y)>1e-12?1/(y*y):0;
+}
+function fitResidualScore(pred,y){
+ if(fitObjective.value!=='abaqus'){const e=pred-y;return e*e}
+ if(Math.abs(y)<=1e-12)return 0;
+ const r=1-pred/y;return r*r;
+}
+function metrics(data,predict){
+ const ys=data.map(d=>d.P),mean=ys.reduce((a,b)=>a+b,0)/Math.max(1,ys.length);
+ let sse=0,sst=0,fitScore=0,objN=0;
+ data.forEach(d=>{
+  const pr=predict(d),e=d.P-pr;sse+=e*e;const z=d.P-mean;sst+=z*z;
+  if(fitObjective.value!=='abaqus'||Math.abs(d.P)>1e-12){fitScore+=fitResidualScore(pr,d.P);objN++}
+ });
+ return{sse,rmse:Math.sqrt(sse/Math.max(1,data.length)),r2:sst>1e-20?1-sse/sst:NaN,fitScore,objN};
+}
+function fitParamPack(model,params){
+ const b={...par(),compressible:false};
+ if(model==='linear')b.E=params.E;
+ if(model==='neo')b.muN=params.mu;
+ if(model==='mr'){b.c10=params.c10;b.c01=params.c01}
+ if(model==='ogden'){b.muO=params.mu;b.a=params.alpha}
+ if(model==='arruda'){b.muAB=params.mu;b.lmAB=params.lambdaM}
+ if(model==='yeoh'){b.yC10=params.C10;b.yC20=params.C20;b.yC30=params.C30}
+ if(model==='rpoly'){b.rC10=params.C10;b.rC20=params.C20}
+ if(model==='vdw'){b.vMu=params.mu;b.vLm=params.lambdaM;b.vA=params.a;b.vBeta=params.beta}
+ return b;
+}
+function fitPredict(model,params){
+ const pp=fitParamPack(model,params);
+ return d=>response(model,d.x,{...pp,compressible:false},d.mode).P;
+}
+function weightedSingleCoefficient(used,basis){
+ let num=0,den=0,n=0;
+ used.forEach(d=>{const q=basis(d),w=fitWeight(d.P);if(w<=0)return;num+=w*q*d.P;den+=w*q*q;n++});
+ if(den<=1e-24||!n)return null;
+ return num/den;
+}
+function solveLinearSystem(A,b){
+ const n=b.length,M=A.map((r,i)=>r.slice().concat([b[i]]));
+ for(let i=0;i<n;i++){
+  let piv=i;for(let r=i+1;r<n;r++)if(Math.abs(M[r][i])>Math.abs(M[piv][i]))piv=r;
+  if(Math.abs(M[piv][i])<1e-18)return null;
+  [M[i],M[piv]]=[M[piv],M[i]];
+  const s=M[i][i];for(let c=i;c<=n;c++)M[i][c]/=s;
+  for(let r=0;r<n;r++){if(r===i)continue;const f=M[r][i];for(let c=i;c<=n;c++)M[r][c]-=f*M[i][c]}
+ }
+ return M.map(r=>r[n]);
+}
+function weightedLinearFit(used,basisFn,nc){
+ const A=Array.from({length:nc},()=>Array(nc).fill(0)),b=Array(nc).fill(0);
+ let n=0;
+ used.forEach(d=>{
+  const q=basisFn(d),w=fitWeight(d.P);if(w<=0)return;n++;
+  for(let i=0;i<nc;i++){b[i]+=w*q[i]*d.P;for(let j=0;j<nc;j++)A[i][j]+=w*q[i]*q[j]}
+ });
+ if(n<nc)return null;
+ return solveLinearSystem(A,b);
+}
+function fitBulkIfAvailable(data,model='neo'){
+ if(model==='hyperfoam')return null;
+ if(behavior.value!=='compressible')return null;
+ const vd=data.filter(d=>d.mode==='volumetric');
+ if(!vd.length)return null;
+ let num=0,den=0,n=0;
+ vd.forEach(d=>{
+  const q=(model==='arruda'||model==='vdw')?.5*(1/d.x-d.x):(1-d.x),w=fitWeight(d.P);
+  if(w<=0)return;num+=w*q*d.P;den+=w*q*q;n++;
+ });
+ if(den<=1e-20||!n)return null;
+ const K=Math.max(.0001,num/den);
+ inp.K0.value=K.toFixed(8);inp.D1.value=(2/K).toFixed(8);
+ return K;
+}
+function linearBasis(d){
+ if(d.mode==='uniaxial')return d.x-1;
+ if(d.mode==='biaxial')return 2*(d.x-1);
+ if(d.mode==='planar')return 4*(d.x-1)/3;
+ return d.x/3;
+}
+function fitLinearIncompressible(data){
+ const used=fitUsed(data),E=weightedSingleCoefficient(used,linearBasis);if(E==null)return null;
+ const params={E:Math.max(0,E)},m=metrics(used,fitPredict('linear',params));return{model:'linear',params,...m,n:used.length};
+}
+function neoBasis(d){
+ if(d.mode==='uniaxial')return d.x-d.x**-2;
+ if(d.mode==='biaxial')return d.x-d.x**-5;
+ if(d.mode==='planar')return d.x-d.x**-3;
+ return d.x;
+}
+function fitNeoIncompressible(data){
+ const used=fitUsed(data),mu=weightedSingleCoefficient(used,neoBasis);if(mu==null||mu<=0)return null;
+ const params={mu},m=metrics(used,fitPredict('neo',params));return{model:'neo',params,...m,n:used.length};
+}
+function mrBasis(mode,x){
+ if(mode==='uniaxial')return[2*(x-x**-2),2*(1-x**-3)];
+ if(mode==='biaxial')return[2*(x-x**-5),2*(x**3-x**-3)];
+ if(mode==='planar')return[2*(x-x**-3),2*(x-x**-3)];
+ return[2*x,2*x];
+}
+function fitMRIncompressible(data){
+ const used=fitUsed(data),c=weightedLinearFit(used,d=>mrBasis(d.mode,d.x),2);if(!c)return null;
+ const params={c10:c[0],c01:c[1]},m=metrics(used,fitPredict('mr',params));return{model:'mr',params,...m,n:used.length};
+}
+function i1Minus3(mode,x){
+ if(mode==='uniaxial')return x*x+2/x-3;
+ if(mode==='biaxial')return 2*x*x+x**-4-3;
+ if(mode==='planar')return x*x+1+x**-2-3;
+ return x*x;
+}
+function firstInvariantStressFactor(mode,x){
+ if(mode==='uniaxial')return x-x**-2;
+ if(mode==='biaxial')return x-x**-5;
+ if(mode==='planar')return x-x**-3;
+ return x;
+}
+function yeohBasis(d){
+ const X=i1Minus3(d.mode,d.x),A=firstInvariantStressFactor(d.mode,d.x);
+ return[2*A,4*X*A,6*X*X*A];
+}
+function fitYeohIncompressible(data){
+ const used=fitUsed(data),c=weightedLinearFit(used,yeohBasis,3);if(!c)return null;
+ const params={C10:c[0],C20:c[1],C30:c[2]},m=metrics(used,fitPredict('yeoh',params));return{model:'yeoh',params,...m,n:used.length};
+}
+function fitRpolyIncompressible(data){
+ const used=fitUsed(data),c=weightedLinearFit(used,d=>yeohBasis(d).slice(0,2),2);if(!c)return null;
+ const params={C10:c[0],C20:c[1]},m=metrics(used,fitPredict('rpoly',params));return{model:'rpoly',params,...m,n:used.length};
+}
+function ogdenBasis(d,a){
+ if(d.mode==='uniaxial')return(2/a)*(d.x**(a-1)-d.x**(-a/2-1));
+ if(d.mode==='biaxial')return(2/a)*(d.x**(a-1)-d.x**(-2*a-1));
+ if(d.mode==='planar')return(2/a)*(d.x**(a-1)-d.x**(-a-1));
+ const eta=Math.asinh(d.x/2);return(4/a)*Math.sinh(a*eta)/Math.sqrt(4+d.x*d.x);
+}
+function fitOgdenIncompressible(data){
+ const used=fitUsed(data);let best=null;
+ function test(a){
+  if(Math.abs(a)<.15)return;
+  const mu=weightedSingleCoefficient(used,d=>ogdenBasis(d,a));if(mu==null||mu<=0)return;
+  const params={mu,alpha:a},m=metrics(used,fitPredict('ogden',params));
+  if(!best||m.fitScore<best.fitScore)best={model:'ogden',params,...m,n:used.length};
+ }
+ for(let a=-12;a<=-.2;a+=.08)test(a);
+ for(let a=.2;a<=12.0001;a+=.08)test(a);
+ if(best){
+  const c=best.params.alpha;
+  for(let a=c-.20;a<=c+.20;a+=.004)if(Math.abs(a)>=.15&&Math.abs(a)<=20)test(a);
+ }
+ return best;
+}
+function nelderMead(fn,start,steps,maxIter=90){
+ const n=start.length,simplex=[start.slice()];
+ for(let i=0;i<n;i++){const x=start.slice();x[i]+=steps[i];simplex.push(x)}
+ const val=x=>{const v=fn(x);return Number.isFinite(v)?v:1e99};
+ let vals=simplex.map(val);
+ for(let it=0;it<maxIter;it++){
+  const idx=simplex.map((_,i)=>i).sort((a,b)=>vals[a]-vals[b]);
+  const S=idx.map(i=>simplex[i]),V=idx.map(i=>vals[i]);simplex.splice(0,simplex.length,...S);vals.splice(0,vals.length,...V);
+  const spread=Math.max(...vals)-Math.min(...vals);if(spread<1e-11*Math.max(1,Math.abs(vals[0])))break;
+  const centroid=new Array(n).fill(0);for(let i=0;i<n;i++)for(let j=0;j<n;j++)centroid[j]+=simplex[i][j]/n;
+  const worst=simplex[n],reflect=centroid.map((c,j)=>c+(c-worst[j])),fr=val(reflect);
+  if(fr<vals[0]){
+   const expand=centroid.map((c,j)=>c+2*(reflect[j]-c)),fe=val(expand);
+   if(fe<fr){simplex[n]=expand;vals[n]=fe}else{simplex[n]=reflect;vals[n]=fr}
+  }else if(fr<vals[n-1]){simplex[n]=reflect;vals[n]=fr}
+  else{
+   const contract=centroid.map((c,j)=>c+.5*(worst[j]-c)),fc=val(contract);
+   if(fc<vals[n]){simplex[n]=contract;vals[n]=fc}
+   else{for(let i=1;i<=n;i++){simplex[i]=simplex[0].map((v,j)=>v+.5*(simplex[i][j]-v));vals[i]=val(simplex[i])}}
+  }
+ }
+ let best=0;for(let i=1;i<vals.length;i++)if(vals[i]<vals[best])best=i;
+ return{point:simplex[best],value:vals[best]};
+}
+function candidateScale(model,used,pp){
+ const q=[];
+ for(const d of used){
+  const pred=response(model,d.x,{...pp,compressible:false},d.mode).P;
+  if(!Number.isFinite(pred)||Math.abs(pred)>1e14)return null;
+  q.push(pred);
+ }
+ let num=0,den=0,n=0;
+ for(let i=0;i<used.length;i++){
+  const w=fitWeight(used[i].P);if(w<=0)continue;
+  num+=w*q[i]*used[i].P;den+=w*q[i]*q[i];n++;
+ }
+ if(den<=1e-22||!n)return null;
+ return num/den;
+}
+function fitArrudaIncompressible(data){
+ const used=fitUsed(data),base=par();let best=null;
+ function test(lm){
+  if(!(lm>1.01))return;
+  const pp={...base,compressible:false,muAB:1,lmAB:lm},mu=candidateScale('arruda',used,pp);
+  if(mu==null||mu<=0)return;
+  const params={mu,lambdaM:lm},m=metrics(used,fitPredict('arruda',params));
+  if(!best||m.fitScore<best.fitScore)best={model:'arruda',params,...m,n:used.length};
+ }
+ const lo=Math.log(1.05),hi=Math.log(25);
+ for(let i=0;i<=150;i++)test(Math.exp(lo+(hi-lo)*i/150));
+ if(best){
+  const c=Math.log(best.params.lambdaM);
+  for(let i=-80;i<=80;i++)test(Math.exp(c+i*.0015));
+ }
+ return best;
+}
+function logistic(z){return 1/(1+Math.exp(-z))}
+function logit(x){x=Math.min(.999999,Math.max(.000001,x));return Math.log(x/(1-x))}
+function fitVanDerWaalsIncompressible(data){
+ const used=fitUsed(data),base=par(),fitBeta=vBetaMode.value==='fit';
+ let best=null;
+ function unpack(z){
+  const lm=Math.sqrt(3)+Math.exp(z[0]),a=.95*Math.tanh(z[1]),beta=fitBeta?logistic(z[2]):base.vBeta;
+  return{lm,a,beta};
+ }
+ function evalZ(z,returnResult=false){
+  const u=unpack(z),unit={...base,compressible:false,vMu:1,vLm:u.lm,vA:u.a,vBeta:u.beta};
+  const mu=candidateScale('vdw',used,unit);if(mu==null||mu<=0)return returnResult?null:1e90;
+  const params={mu,lambdaM:u.lm,a:u.a,beta:u.beta},m=metrics(used,fitPredict('vdw',params));
+  if(returnResult)return{model:'vdw',params,...m,n:used.length};
+  return m.fitScore;
+ }
+ const starts=[];
+ const lmSeeds=[2.2,3.2,5,7,12],aSeeds=[-.25,.1,.4];
+ const bSeeds=fitBeta?[.03,.25,.6]:[base.vBeta];
+ for(const lm of lmSeeds)for(const a of aSeeds)for(const b of bSeeds){
+  if(starts.length>=24)break;
+  const z=[Math.log(Math.max(.03,lm-Math.sqrt(3))),Math.atanh(Math.max(-.98,Math.min(.98,a/.95)))];
+  if(fitBeta)z.push(logit(b));starts.push(z);
+ }
+ const ui=[Math.log(Math.max(.03,base.vLm-Math.sqrt(3))),Math.atanh(Math.max(-.98,Math.min(.98,base.vA/.95)))];
+ if(fitBeta)ui.push(logit(base.vBeta||.05));starts.unshift(ui);
+ const steps=fitBeta?[.28,.35,.65]:[.28,.35];
+ for(const st of starts){
+  const opt=nelderMead(z=>evalZ(z,false),st,steps,110),r=evalZ(opt.point,true);
+  if(r&&(!best||r.fitScore<best.fitScore))best=r;
+ }
+ return best;
+}
+
+function fitHyperfoam(data){
+ const used=data.slice();
+ if(!used.length)return null;
+ const base=par(),fitNu=hNuMode.value==='fit';
+ let best=null;
+
+ function unitScale(a,nu){
+  const pp={...base,hMu:1,hAlpha:a,hNu:nu,compressible:true};
+  let num=0,den=0,n=0;
+  for(const d of used){
+   const q=response('hyperfoam',d.x,pp,d.mode).P,w=fitWeight(d.P);
+   if(!Number.isFinite(q)||Math.abs(q)>1e14)return null;
+   if(w<=0)continue;
+   num+=w*q*d.P;den+=w*q*q;n++;
+  }
+  if(den<=1e-22||!n)return null;
+  const mu=num/den;
+  return mu>0&&Number.isFinite(mu)?mu:null;
+ }
+
+ function nuFromZ(z){return -.95+1.44*logistic(z)}
+ function nuToZ(nu){return logit((Math.max(-.949999,Math.min(.489999,nu))+.95)/1.44)}
+
+ function evaluate(sign,z,returnResult=false){
+  const mag=.15+Math.exp(z[0]),a=sign*mag;
+  const nu=fitNu?nuFromZ(z[1]):base.hNu;
+  const mu=unitScale(a,nu);
+  if(mu==null)return returnResult?null:1e90;
+  const pp={...base,hMu:mu,hAlpha:a,hNu:nu,compressible:true};
+  const m=metrics(used,d=>response('hyperfoam',d.x,pp,d.mode).P);
+  if(returnResult){
+   const beta=hyperfoamBetaFromNu(nu),K0=hyperfoamK0(mu,nu);
+   return{model:'hyperfoam',params:{mu,alpha:a,nu,beta,K0},...m,n:used.length};
+  }
+  return m.fitScore;
+ }
+
+ const aSeeds=[-8,-4,-2,2,4,8],nuSeeds=fitNu?[-.1,.05,.2,.35,.45]:[base.hNu];
+ for(const a0 of aSeeds){
+  const sign=a0<0?-1:1;
+  for(const nu0 of nuSeeds){
+   const z=[Math.log(Math.max(.02,Math.abs(a0)-.15))];
+   if(fitNu)z.push(nuToZ(nu0));
+   const steps=fitNu?[.32,.55]:[.32];
+   const opt=nelderMead(zv=>evaluate(sign,zv,false),z,steps,120);
+   const r=evaluate(sign,opt.point,true);
+   if(r&&(!best||r.fitScore<best.fitScore))best=r;
+  }
+ }
+ return best;
+}
+function performFit(model,data){
+ if(model==='linear')return fitLinearIncompressible(data);
+ if(model==='neo')return fitNeoIncompressible(data);
+ if(model==='mr')return fitMRIncompressible(data);
+ if(model==='ogden')return fitOgdenIncompressible(data);
+ if(model==='arruda')return fitArrudaIncompressible(data);
+ if(model==='yeoh')return fitYeohIncompressible(data);
+ if(model==='rpoly')return fitRpolyIncompressible(data);
+ if(model==='vdw')return fitVanDerWaalsIncompressible(data);
+ if(model==='hyperfoam')return fitHyperfoam(data);
+ return null;
+}
+function ptext(r){
+ if(!r)return'—';const p=r.params;let s='—';
+ if(r.model==='linear')s='E = '+p.E.toFixed(5)+' MPa';
+ if(r.model==='neo')s='μ = '+p.mu.toFixed(5)+' MPa';
+ if(r.model==='mr')s='C10 = '+p.c10.toFixed(5)+', C01 = '+p.c01.toFixed(5)+' MPa';
+ if(r.model==='ogden')s='μ = '+p.mu.toFixed(5)+' MPa, α = '+p.alpha.toFixed(4);
+ if(r.model==='arruda')s='μ = '+p.mu.toFixed(5)+' MPa, λm = '+p.lambdaM.toFixed(4);
+ if(r.model==='yeoh')s='C10 = '+p.C10.toFixed(5)+', C20 = '+p.C20.toFixed(5)+', C30 = '+p.C30.toFixed(5)+' MPa';
+ if(r.model==='rpoly')s='C10 = '+p.C10.toFixed(5)+', C20 = '+p.C20.toFixed(5)+' MPa';
+ if(r.model==='vdw')s='μ = '+p.mu.toFixed(5)+' MPa, λm = '+p.lambdaM.toFixed(4)+', a = '+p.a.toFixed(4)+', β = '+p.beta.toFixed(4);
+ if(r.model==='hyperfoam')s='μ₁ = '+p.mu.toFixed(5)+' MPa, α₁ = '+p.alpha.toFixed(4)+', ν₁ = '+p.nu.toFixed(4)+', β₁ = '+p.beta.toFixed(4)+', K₀ = '+p.K0.toFixed(5)+' MPa';
+ if(behavior.value==='compressible'&&r.model!=='hyperfoam')s+='; K0 = '+par().K0.toFixed(4)+' MPa, '+volumetricParamSymbol(r.model)+' = '+par().D1.toExponential(3)+' 1/MPa';
+ return s;
+}
+function applyFit(r){
+ if(!r)return;fitResults[r.model]=r;
+ if(r.model==='linear')inp.E.value=r.params.E.toFixed(6);
+ if(r.model==='neo')inp.muN.value=r.params.mu.toFixed(6);
+ if(r.model==='mr'){inp.c10.value=r.params.c10.toFixed(6);inp.c01.value=r.params.c01.toFixed(6)}
+ if(r.model==='ogden'){inp.muO.value=r.params.mu.toFixed(6);inp.a.value=r.params.alpha.toFixed(5)}
+ if(r.model==='arruda'){inp.muAB.value=r.params.mu.toFixed(6);inp.lmAB.value=r.params.lambdaM.toFixed(5)}
+ if(r.model==='yeoh'){inp.yC10.value=r.params.C10.toFixed(6);inp.yC20.value=r.params.C20.toFixed(6);inp.yC30.value=r.params.C30.toFixed(6)}
+ if(r.model==='rpoly'){inp.rC10.value=r.params.C10.toFixed(6);inp.rC20.value=r.params.C20.toFixed(6)}
+ if(r.model==='vdw'){inp.vMu.value=r.params.mu.toFixed(6);inp.vLm.value=r.params.lambdaM.toFixed(5);inp.vA.value=r.params.a.toFixed(6);inp.vBeta.value=r.params.beta.toFixed(6)}
+ if(r.model==='hyperfoam'){inp.hMu.value=r.params.mu.toFixed(6);inp.hAlpha.value=r.params.alpha.toFixed(5);inp.hNu.value=r.params.nu.toFixed(6);inp.hBeta.value=r.params.beta.toFixed(6)}
+ const cb=root.querySelector('.toggle[data-m="'+r.model+'"]');if(cb)cb.checked=true;
+}
+function renderFitResults(){
+ modelOrder.forEach(m=>{
+  const r=fitResults[m],pEl=$('fitParam_'+m);if(!pEl)return;
+  pEl.textContent=ptext(r);$('fitRmse_'+m).textContent=r?r.rmse.toFixed(6):'—';$('fitR2_'+m).textContent=r&&Number.isFinite(r.r2)?r.r2.toFixed(6):'—';$('fitRow_'+m).classList.toggle('active-fit',m===sel.value&&!!r)
+ })
+}
+function fitRequiredPoints(model){
+ return model==='vdw'?5:model==='yeoh'?4:model==='hyperfoam'?4:['mr','ogden','arruda','rpoly'].includes(model)?3:2;
+}
+function runFit(model){
+ const data=allFitData(),nonVol=data.filter(d=>d.mode!=='volumetric'),min=fitRequiredPoints(model);
+ if(nonVol.length<min){$('fitStatus').textContent='Please provide at least '+min+' valid non-volumetric points across the checked loading modes.';return}
+ const Kfit=model==='hyperfoam'?null:fitBulkIfAvailable(data,model),r=performFit(model,data);
+ if(!r){$('fitStatus').textContent='Fit could not be determined from the selected datasets.';return}
+ applyFit(r);renderFitResults();
+ $('fitStatus').textContent=labels[model]+' fitted to '+r.n+(model==='hyperfoam'?' selected points':' non-volumetric points')+' using '+(fitObjective.value==='abaqus'?'Abaqus relative stress error':'absolute least squares')+'. RMSE = '+r.rmse.toFixed(6)+' MPa, R² = '+(Number.isFinite(r.r2)?r.r2.toFixed(6):'—')+', objective = '+r.fitScore.toExponential(4)+(Kfit?' | Volumetric fit: K0 = '+Kfit.toFixed(5)+' MPa.':'');
+ render();
+}
+function fitAll(){
+ const data=allFitData(),nonVol=data.filter(d=>d.mode!=='volumetric');if(nonVol.length<5){$('fitStatus').textContent='Please provide at least five valid non-volumetric points before fitting all models.';return}
+ modelOrder.forEach(m=>{const r=performFit(m,data);if(r)applyFit(r)});
+ renderFitResults();
+ $('fitStatus').textContent='All implemented models fitted to the checked datasets using '+(fitObjective.value==='abaqus'?'Abaqus relative stress error':'absolute least squares')+'. Fit All keeps the current K0/D value fixed for the standard hyperelastic models; Hyperfoam uses its coupled compressibility directly and includes checked volumetric data.';
+ render();
+}
+
+const ABAQUS_2016_RUBBERFIT_RAW_KGF={
+ uniaxial:[
+  [1.5506,.1338],[2.4367,.2675],[3.1013,.3567],[4.2089,.6242],[5.3165,.8917],
+  [5.9810,1.1592],[6.8671,1.4268],[8.8608,2.0510],[10.6329,2.5860],[12.4051,3.0318],
+  [16.1709,3.7898],[19.9367,4.3694],[23.4810,4.8153],[27.4684,5.1720],[31.0127,5.4395],
+  [34.5570,5.7070],[38.3228,5.9299],[42.0886,6.0637],[45.6329,6.1975],[49.3987,6.3312],
+  [53.1646,6.4650],[56.9304,6.5541],[64.2405,6.6433]
+ ],
+ biaxial:[
+  [.9384,.0200],[1.5900,.0600],[2.4087,.1100],[2.6220,.1400],[3.3240,.2000],
+  [4.4278,.3100],[5.1830,.4200],[6.6024,.6800],[7.7794,.9400],[9.7857,1.4900],
+  [12.6351,2.0300],[14.6804,2.4300],[17.4000,2.7500],[20.1058,3.0700],[22.4502,3.2600],
+  [24.6530,3.4500]
+ ],
+ planar:[
+  [.6000,.0690],[1.6000,.1034],[2.4000,.1724],[3.3600,.2828],[4.2000,.4276],
+  [6.0000,.8483],[7.8000,1.3862],[9.6000,2.0000],[11.1200,2.4897],[12.9600,3.0345],
+  [14.8800,3.4483],[16.5800,3.7793],[18.2000,4.0621]
+ ]
+};
+function abaqus2016Converted(mode){
+ return ABAQUS_2016_RUBBERFIT_RAW_KGF[mode].map(v=>[1+v[1],v[0]*0.0981]);
+}
+
+const TRELOAR_ABAQUS={
+ uniaxial:[
+  [1.1338,.15506],[1.2675,.24367],[1.3567,.31013],[1.6242,.42089],[1.8917,.53165],[2.1592,.59810],[2.4268,.68671],[3.0510,.88608],[3.5860,1.06329],[4.0318,1.24051],[4.7898,1.61709],[5.3694,1.99367],[5.8153,2.34810],[6.1720,2.74684],[6.4395,3.10127],[6.7070,3.45570],[6.9299,3.83228],[7.0637,4.20886],[7.1975,4.56329],[7.3312,4.93987],[7.4650,5.31646],[7.5541,5.69304],[7.6433,6.42405]
+ ],
+ biaxial:[
+  [1.0200,.09384],[1.0600,.15900],[1.1100,.24087],[1.1400,.26220],[1.2000,.33240],[1.3100,.44278],[1.4200,.51830],[1.6800,.66024],[1.9400,.77794],[2.4900,.97857],[3.0300,1.26351],[3.4300,1.46804],[3.7500,1.74000],[4.0700,2.01058],[4.2600,2.24502],[4.4500,2.46530]
+ ],
+ planar:[
+  [1.0690,.06000],[1.1034,.16000],[1.1724,.24000],[1.2828,.33600],[1.4276,.42000],[1.8483,.60000],[2.3862,.78000],[3.0000,.96000],[3.4897,1.11200],[4.0345,1.29600],[4.4483,1.48800],[4.7793,1.65800],[5.0621,1.82000]
+ ],
+ volumetric:[[.9703,6.00],[.9412,11.82],[.9127,17.52],[.8847,23.11]]
+};
+function setRangeFromBenchmark(mode,rows){
+ if(!rows||!rows.length)return;
+ const xs=rows.map(v=>v[0]),mn=Math.min(...xs),mx=Math.max(...xs),span=Math.max(1e-6,mx-mn),pad=.035*span;
+ const r=rangeState[mode];r.fitMin=mn;r.fitMax=mx;r.fitEnabled=true;
+ r.displayMin=modeRequiresPositiveX(mode)?Math.max(1e-5,mn-pad):mn-pad;r.displayMax=mx+pad;
+}
+function loadTreloarBenchmark(){
+ saveVisibleDataset();
+ Object.values(datasets).forEach(d=>d.rows=Array.from({length:DATA_ROWS},()=>['','']));
+
+ ['uniaxial','biaxial','planar'].forEach(mode=>{
+  datasets[mode].xType='stretch';datasets[mode].stressType='nominal';
+  TRELOAR_ABAQUS[mode].forEach((v,i)=>datasets[mode].rows[i]=[v[0].toFixed(4),v[1].toFixed(6)]);
+ });
+
+ datasets.volumetric.xType='J';datasets.volumetric.stressType='pressure';
+ TRELOAR_ABAQUS.volumetric.forEach((v,i)=>datasets.volumetric.rows[i]=[v[0].toFixed(4),v[1].toFixed(6)]);
+ datasets.shear.xType='gamma';datasets.shear.stressType='shear';
+
+ behavior.value='compressible';fitObjective.value='abaqus';
+ root.querySelectorAll('.use-fit').forEach(cb=>cb.checked=['uniaxial','biaxial','planar','volumetric'].includes(cb.dataset.mode));
+ currentMode='uniaxial';$('datasetMode').value='uniaxial';
+
+ ['uniaxial','biaxial','planar','volumetric'].forEach(mode=>setRangeFromBenchmark(mode,TRELOAR_ABAQUS[mode]));
+
+ updateBehaviorUI();syncRangeControls();loadDatasetUI();
+ $('fitStatus').textContent=
+  'Abaqus SI Hypertest benchmark loaded: 23 uniaxial, 16 biaxial, 13 planar and 4 volumetric points. '+
+  'The Abaqus input file stores stresses in Pa; this tool displays them in MPa. Compressible behavior and the Abaqus relative-stress fitting objective are selected.';
+ render();
+}
+function loadTreloar2016Benchmark(){
+ saveVisibleDataset();
+ Object.values(datasets).forEach(d=>d.rows=Array.from({length:DATA_ROWS},()=>['','']));
+
+ ['uniaxial','biaxial','planar'].forEach(mode=>{
+  datasets[mode].xType='stretch';datasets[mode].stressType='nominal';
+  const converted=abaqus2016Converted(mode);
+  converted.forEach((v,i)=>datasets[mode].rows[i]=[v[0].toFixed(4),v[1].toFixed(6)]);
+  setRangeFromBenchmark(mode,converted);
+ });
+
+ datasets.shear.xType='gamma';datasets.shear.stressType='shear';
+ datasets.volumetric.xType='J';datasets.volumetric.stressType='pressure';
+
+ behavior.value='incompressible';fitObjective.value='abaqus';
+ root.querySelectorAll('.use-fit').forEach(cb=>cb.checked=['uniaxial','biaxial','planar'].includes(cb.dataset.mode));
+ currentMode='uniaxial';$('datasetMode').value='uniaxial';
+
+ updateBehaviorUI();syncRangeControls();loadDatasetUI();
+ $('fitStatus').textContent=
+  'Abaqus 2016 Rubber-Fit benchmark loaded from the raw Treloar values in the Abaqus input file: 23 uniaxial, 16 biaxial and 13 planar points. '+
+  'Nominal strain was converted with λ = 1 + ε and stress with 1 kgf/cm² = 0.0981 MPa. '+
+  'The example is treated as incompressible and uses the Abaqus relative-stress fitting objective. '+
+  'The 2016 guide reports an all-data Arruda–Boyce fit near μ = 3.28 kgf/cm² (≈0.3218 MPa) and λm = 5.24.';
+ render();
+}
+function loadDemo(){
+ saveVisibleDataset();const mode=$('datasetMode').value,d=datasets[mode];d.rows=Array.from({length:DATA_ROWS},()=>['','']);
+ if(mode==='shear'){
+  d.xType='gamma';d.stressType='shear';[-1.2,-1,-.8,-.6,-.4,-.2,0,.2,.4,.6,.8,1,1.2].forEach((g,i)=>{d.rows[i]=[g.toFixed(4),(1.2*g).toFixed(6)]});
+ }else if(mode==='volumetric'){
+  d.xType='J';d.stressType='pressure';[.82,.85,.88,.91,.94,.97,1,1.03,1.06].forEach((J,i)=>{d.rows[i]=[J.toFixed(4),(100*(1-J)).toFixed(6)]});
+ }else{
+  d.xType='stretch';d.stressType='nominal';const pp={...par(),muN:1.2};
+  [.7,.78,.86,.94,1,1.08,1.16,1.25,1.35,1.45,1.55,1.65,1.75,1.85].forEach((l,i)=>{d.rows[i]=[l.toFixed(4),response('neo',l,pp,mode).P.toFixed(6)]});
+ }
+ loadDatasetUI();$('fitStatus').textContent='Demo data loaded for '+modeLabels[mode]+'.';render();
+}
+function clearMode(){saveVisibleDataset();datasets[$('datasetMode').value].rows=Array.from({length:DATA_ROWS},()=>['','']);loadDatasetUI();render()}
+function clearAll(){Object.values(datasets).forEach(d=>d.rows=Array.from({length:DATA_ROWS},()=>['','']));Object.keys(fitResults).forEach(k=>delete fitResults[k]);loadDatasetUI();renderFitResults();$('fitStatus').textContent='All experimental datasets cleared.';render()}
+function useExperimentalRange(){
+ saveVisibleDataset();
+ const pts=convertedData(currentMode,true);
+ if(!pts.length){
+  $('rangeError').textContent='No valid experimental points are available for '+modeLabels[currentMode]+'.';
+  $('rangeError').style.display='block';
+  return;
+ }
+ let mn=Math.min(...pts.map(p=>p.x)),mx=Math.max(...pts.map(p=>p.x));
+ if(!(mn<mx)){
+  const pad=currentMode==='shear'?0.1:Math.max(.01,Math.abs(mn)*.02);
+  mn-=pad;mx+=pad;
+ }
+ if(modeRequiresPositiveX(currentMode))mn=Math.max(1e-4,mn);
+ const r=rangeState[currentMode];
+ r.displayMin=mn;r.displayMax=mx;r.fitMin=mn;r.fitMax=mx;r.fitEnabled=true;
+ syncRangeControls();
+ applyRangeControls(false);
+ $('fitStatus').textContent='Display and fit ranges set from '+pts.length+' valid '+modeLabels[currentMode]+' experimental points.';
+ render();
+}
+function resetCurrentRange(){
+ const q=cfg[currentMode],r=rangeState[currentMode];
+ r.displayMin=q.min;r.displayMax=q.max;r.fitMin=q.min;r.fitMax=q.max;r.fitEnabled=false;
+ syncRangeControls();applyRangeControls(false);render();
+}
+function match(){
+ const E=n(inp.E,3,.0001),p=par();
+ let G=E/3;
+ if(p.compressible){
+  if(9*p.K0<=E){$('fitStatus').textContent='K0 is too low relative to E for a stable isotropic small-strain match. Increase K0.';return}
+  G=3*E*p.K0/(9*p.K0-E);
+ }
+ inp.muN.value=G.toFixed(6);
+ inp.muO.value=G.toFixed(6);
+ const sum=G/2;inp.c10.value=(.70*sum).toFixed(6);inp.c01.value=(.30*sum).toFixed(6);
+ inp.yC10.value=(G/2).toFixed(6);
+ inp.rC10.value=(G/2).toFixed(6);
+ const lm=Math.max(1.01,+inp.lmAB.value||7);inp.muAB.value=(G/arrudaFactor(lm)).toFixed(6);
+ inp.vMu.value=G.toFixed(6);
+ const hnu=hyperfoamNu();inp.hMu.value=(E/(2*(1+hnu))).toFixed(6);inp.hBeta.value=hyperfoamBetaFromNu(hnu).toFixed(6);
+ render();
+}
+function reset(){
+ currentMode='uniaxial';slider.value=1;sel.value='neo';behavior.value='incompressible';fitObjective.value='abaqus';vBetaMode.value='fit';inp.E.value=3;inp.K0.value=100;inp.D1.value=.02;inp.muN.value=1;inp.c10.value=.35;inp.c01.value=.15;inp.muO.value=1;inp.a.value=4;inp.muAB.value=.98765;inp.lmAB.value=7;inp.yC10.value=.5;inp.yC20.value=.05;inp.yC30.value=.01;inp.rC10.value=.5;inp.rC20.value=.05;inp.vMu.value=1;inp.vLm.value=7;inp.vA.value=.1;inp.vBeta.value=0;inp.hMu.value=1;inp.hAlpha.value=2;inp.hNu.value=.20;inp.hBeta.value=.333333;hNuMode.value='fixed';
+ Object.keys(rangeState).forEach(mode=>{const q=cfg[mode],r=rangeState[mode];r.displayMin=q.min;r.displayMax=q.max;r.fitMin=q.min;r.fitMax=q.max;r.fitEnabled=false});
+ root.querySelectorAll('.toggle').forEach(x=>x.checked=true);Object.values(datasets).forEach(d=>{d.rows=Array.from({length:DATA_ROWS},()=>['',''])});
+ Object.keys(fitResults).forEach(k=>delete fitResults[k]);$('datasetMode').value='uniaxial';loadDatasetUI();renderFitResults();updateVolumetricParamUI();updateBehaviorUI();updateModeUI();render();
+}
+
+/* ---------- XLSX writer ---------- */
+function xmlEsc(v){return String(v).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
+function colName(n){let s='';while(n>0){n--;s=String.fromCharCode(65+n%26)+s;n=Math.floor(n/26)}return s}
+function sheetXml(rows,widths,withDrawing){
+ let cols='';if(widths?.length)cols='<cols>'+widths.map((w,i)=>'<col min="'+(i+1)+'" max="'+(i+1)+'" width="'+w+'" customWidth="1"/>').join('')+'</cols>';
+ let out='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+cols+'<sheetData>';
+ rows.forEach((row,ri)=>{out+='<row r="'+(ri+1)+'">';row.forEach((v,ci)=>{const ref=colName(ci+1)+(ri+1),sty=ri===0?' s="1"':'';if(typeof v==='number'&&Number.isFinite(v))out+='<c r="'+ref+'"'+sty+'><v>'+v+'</v></c>';else out+='<c r="'+ref+'" t="inlineStr"'+sty+'><is><t>'+xmlEsc(v==null?'':v)+'</t></is></c>'});out+='</row>'});
+ out+='</sheetData>'+(withDrawing?'<drawing r:id="rId1"/>':'')+'</worksheet>';return out;
+}
+function u16(v){return new Uint8Array([v&255,(v>>>8)&255])}function u32(v){return new Uint8Array([v&255,(v>>>8)&255,(v>>>16)&255,(v>>>24)&255])}
+function cat(a){let n=0;a.forEach(x=>n+=x.length);const o=new Uint8Array(n);let p=0;a.forEach(x=>{o.set(x,p);p+=x.length});return o}
+const crcT=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+function crc32(b){let c=0xffffffff;for(const x of b)c=crcT[(c^x)&255]^(c>>>8);return(c^0xffffffff)>>>0}
+function zipStore(files){
+ const enc=new TextEncoder(),L=[],Cen=[];let off=0;const dt=new Date(),tm=((dt.getHours()&31)<<11)|((dt.getMinutes()&63)<<5)|(Math.floor(dt.getSeconds()/2)&31),dd=(((dt.getFullYear()-1980)&127)<<9)|(((dt.getMonth()+1)&15)<<5)|(dt.getDate()&31);
+ files.forEach(f=>{const nm=enc.encode(f.name),da=typeof f.data==='string'?enc.encode(f.data):f.data,cr=crc32(da),lo=cat([u32(0x04034b50),u16(20),u16(0),u16(0),u16(tm),u16(dd),u32(cr),u32(da.length),u32(da.length),u16(nm.length),u16(0),nm,da]);L.push(lo);Cen.push(cat([u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(tm),u16(dd),u32(cr),u32(da.length),u32(da.length),u16(nm.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(off),nm]));off+=lo.length});
+ const l=cat(L),c=cat(Cen),e=cat([u32(0x06054b50),u16(0),u16(0),u16(files.length),u16(files.length),u32(c.length),u32(l.length),u16(0)]);return cat([l,c,e]);
+}
+function sheetQuote(name){return "'"+name.replace(/'/g,"''")+"'"}
+function seriesXml(idx,sheet,nameCell,yCol,color,lastRow){
+ return '<c:ser><c:idx val="'+idx+'"/><c:order val="'+idx+'"/><c:tx><c:strRef><c:f>'+sheetQuote(sheet)+'!$'+nameCell+'$1</c:f></c:strRef></c:tx><c:marker><c:symbol val="none"/></c:marker><c:spPr><a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" w="22000"><a:solidFill><a:srgbClr val="'+color+'"/></a:solidFill></a:ln></c:spPr><c:xVal><c:numRef><c:f>'+sheetQuote(sheet)+'!$A$2:$A$'+lastRow+'</c:f></c:numRef></c:xVal><c:yVal><c:numRef><c:f>'+sheetQuote(sheet)+'!$'+yCol+'$2:$'+yCol+'$'+lastRow+'</c:f></c:numRef></c:yVal><c:smooth val="1"/></c:ser>';
+}
+function expSeriesXml(idx,sheet,endRow,xCol,yCol){
+ if(endRow<2)return'';
+ return '<c:ser><c:idx val="'+idx+'"/><c:order val="'+idx+'"/><c:tx><c:v>Experimental</c:v></c:tx><c:marker><c:symbol val="circle"/><c:size val="7"/><c:spPr><a:solidFill xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:srgbClr val="A855F7"/></a:solidFill><a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:solidFill><a:srgbClr val="F3E8FF"/></a:solidFill></a:ln></c:spPr></c:marker><c:spPr><a:ln xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:noFill/></a:ln></c:spPr><c:xVal><c:numRef><c:f>'+sheetQuote(sheet)+'!$'+xCol+'$2:$'+xCol+'$'+endRow+'</c:f></c:numRef></c:xVal><c:yVal><c:numRef><c:f>'+sheetQuote(sheet)+'!$'+yCol+'$2:$'+yCol+'$'+endRow+'</c:f></c:numRef></c:yVal></c:ser>';
+}
+function chartXml(title,xTitle,yTitle,series,ax){
+ const x=ax,y=ax+1;return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><c:chart><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>'+xmlEsc(title)+'</a:t></a:r></a:p></c:rich></c:tx></c:title><c:plotArea><c:layout/><c:scatterChart><c:scatterStyle val="smoothMarker"/><c:varyColors val="0"/>'+series+'<c:axId val="'+x+'"/><c:axId val="'+y+'"/></c:scatterChart><c:valAx><c:axId val="'+x+'"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="b"/><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>'+xmlEsc(xTitle)+'</a:t></a:r></a:p></c:rich></c:tx></c:title><c:crossAx val="'+y+'"/><c:crosses val="autoZero"/></c:valAx><c:valAx><c:axId val="'+y+'"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="l"/><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>'+xmlEsc(yTitle)+'</a:t></a:r></a:p></c:rich></c:tx></c:title><c:majorGridlines/><c:crossAx val="'+x+'"/><c:crosses val="autoZero"/></c:valAx></c:plotArea><c:legend><c:legendPos val="b"/><c:layout/></c:legend><c:plotVisOnly val="1"/><c:dispBlanksAs val="gap"/></c:chart></c:chartSpace>';
+}
+function drawingXml(stressRid,energyRid){
+ return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">'+
+ '<xdr:twoCellAnchor><xdr:from><xdr:col>12</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>1</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>22</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>20</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="2" name="Stress chart"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" r:id="'+stressRid+'"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor>'+
+ '<xdr:twoCellAnchor><xdr:from><xdr:col>12</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>22</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>22</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>41</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="3" name="Energy chart"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" r:id="'+energyRid+'"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>';
+}
+
+function downloadExcel(){
+ saveVisibleDataset();const p=par();
+ const modes=['uniaxial','biaxial','planar','shear','volumetric'],sheetNames={uniaxial:'Uniaxial',biaxial:'Equibiaxial',planar:'Planar',shear:'Simple Shear',volumetric:'Volumetric'};
+ const files=[],curveMeta=[];
+ const exportModels=modelOrder;
+ const short={linear:'Linear Ref.',neo:'Neo-Hookean',mr:'Mooney-Rivlin',ogden:'Ogden',arruda:'Arruda-Boyce',yeoh:'Yeoh',rpoly:'Reduced Poly N2',vdw:'Van der Waals',hyperfoam:'Hyperfoam N1'};
+ modes.forEach((mode,mi)=>{
+  const q=modeRange(mode),N=mode==='shear'?240:mode==='volumetric'?180:(p.compressible?100:180);
+  const header=[q.x,...exportModels.map(m=>short[m]+' stress (MPa)'),...exportModels.map(m=>short[m]+' W (MJ/m³)'),'Experimental x','Experimental stress / pressure (MPa)'];
+  const rows=[header];
+  for(let i=0;i<=N;i++){
+   const x=q.min+(q.max-q.min)*i/N,rr=exportModels.map(m=>response(m,x,p,mode));
+   rows.push([x,...rr.map(r=>r.P),...rr.map(r=>r.W),'','']);
+  }
+  const exp=convertedData(mode,true),expXCol=1+2*exportModels.length,expYCol=expXCol+1;
+  exp.forEach((pt,i)=>{const rr=i+1;if(rows[rr]){rows[rr][expXCol]=pt.x;rows[rr][expYCol]=pt.P}});
+  curveMeta.push({mode,sheet:sheetNames[mode],last:N+2,expEnd:exp.length?exp.length+1:1,expXCol,expYCol});
+  files.push({name:'xl/worksheets/sheet'+(mi+1)+'.xml',data:sheetXml(rows,new Array(header.length).fill(20),true)});
+  files.push({name:'xl/worksheets/_rels/sheet'+(mi+1)+'.xml.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing'+(mi+1)+'.xml"/></Relationships>'});
+ });
+
+ const inputRows=[['Mode','Point','Original deformation','Original stress / pressure (MPa)','Converted x','Converted stress used for fit (MPa)','Deformation definition','Stress definition','Used in combined fit','Inside active fit range']];
+ modes.forEach(mode=>{
+  const d=datasets[mode],cb=root.querySelector('.use-fit[data-mode="'+mode+'"]'),use=cb&&cb.checked?'Yes':'No';
+  for(let i=0;i<DATA_ROWS;i++){const xr=d.rows[i][0],yr=d.rows[i][1],converted=convertedData(mode,false).find(z=>z.row===i+1&&z.valid);inputRows.push([modeLabels[mode],i+1,xr,yr,converted?converted.x:'',converted?converted.P:'',d.xType,d.stressType,use,converted?(pointInsideFitRange(mode,converted.x)?'Yes':'No'):''])}
+ });
+ const fitRows=[['Model','Parameters','RMSE (MPa)','R²','Fit objective','Objective value','Total fitted points']];
+ modelOrder.forEach(m=>{const r=fitResults[m];fitRows.push([labels[m],ptext(r),r?r.rmse:'',r&&Number.isFinite(r.r2)?r.r2:'',fitObjective.value==='abaqus'?'Abaqus relative stress error':'Absolute least squares',r?r.fitScore:'',r?r.n:''])});
+ const paramRows=[
+  ['Parameter','Value','Unit / note'],['Tool',TOOL_NAME,'MakeCoTech'],['Version',TOOL_VERSION,'2026'],['Volume behavior',p.compressible?'Compressible':'Incompressible',''],['Fit objective',fitObjective.value==='abaqus'?'Abaqus relative stress error':'Absolute least squares',''],['Van der Waals β handling',vBetaMode.value==='fit'?'Fitted':'Fixed',''],['Reference E',p.E,'MPa'],['Initial bulk modulus K0',p.K0,'MPa'],(sel.value==='hyperfoam'?['Hyperfoam volumetric parameter','No D/D1; compressibility comes from μ1 and ν1','']:['Abaqus '+volumetricParamSymbol(sel.value),p.D1,'1/MPa']),
+  ['Neo-Hookean μ',p.muN,'MPa'],['Mooney-Rivlin C10',p.c10,'MPa'],['Mooney-Rivlin C01',p.c01,'MPa'],['Ogden μ',p.muO,'MPa'],['Ogden α',p.a,'-'],
+  ['Arruda-Boyce μ',p.muAB,'MPa'],['Arruda-Boyce λm',p.lmAB,'-'],['Yeoh C10',p.yC10,'MPa'],['Yeoh C20',p.yC20,'MPa'],['Yeoh C30',p.yC30,'MPa'],
+  ['Reduced Polynomial C10',p.rC10,'MPa'],['Reduced Polynomial C20',p.rC20,'MPa'],['Van der Waals μ',p.vMu,'MPa'],['Van der Waals λm',p.vLm,'-'],['Van der Waals a',p.vA,'-'],['Van der Waals β',p.vBeta,'-'],
+  ['Hyperfoam μ1',p.hMu,'MPa'],['Hyperfoam α1',p.hAlpha,'-'],['Hyperfoam ν1',p.hNu,'-'],['Hyperfoam β1',hyperfoamBetaFromNu(p.hNu),'-'],['Hyperfoam derived K0',hyperfoamK0(p.hMu,p.hNu),'MPa'],['Hyperfoam ν handling',hNuMode.value==='fit'?'Fitted':'Fixed',''],
+  ['Current loading mode',modeLabels[currentMode],''],['Current model',labels[sel.value],''],['Energy density','1 MPa = 1 MJ/m³','']
+ ];
+ const extraSheets=[{name:'Input Data',rows:inputRows,widths:[22,9,22,28,18,30,28,28,18,20]},{name:'Fit Results',rows:fitRows,widths:[30,70,18,18,30,20,20]},{name:'Parameters',rows:paramRows,widths:[34,38,36]}];
+ extraSheets.forEach((s,j)=>files.push({name:'xl/worksheets/sheet'+(6+j)+'.xml',data:sheetXml(s.rows,s.widths,false)}));
+
+ const totalSheets=8;
+ let ct='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>';
+ for(let i=1;i<=totalSheets;i++)ct+='<Override PartName="/xl/worksheets/sheet'+i+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>';
+ for(let i=1;i<=5;i++)ct+='<Override PartName="/xl/drawings/drawing'+i+'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>';
+ for(let i=1;i<=10;i++)ct+='<Override PartName="/xl/charts/chart'+i+'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';ct+='</Types>';files.push({name:'[Content_Types].xml',data:ct});
+ files.push({name:'_rels/.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>'});
+ const names=['Uniaxial','Equibiaxial','Planar','Simple Shear','Volumetric','Input Data','Fit Results','Parameters'];
+ let wb='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>';names.forEach((nm,i)=>wb+='<sheet name="'+xmlEsc(nm)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>');wb+='</sheets></workbook>';files.push({name:'xl/workbook.xml',data:wb});
+ let wr='<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';for(let i=1;i<=totalSheets;i++)wr+='<Relationship Id="rId'+i+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet'+i+'.xml"/>';wr+='<Relationship Id="rId9" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';files.push({name:'xl/_rels/workbook.xml.rels',data:wr});
+ files.push({name:'xl/styles.xml',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF17365D"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>'});
+
+ const hex={linear:'60A5FA',neo:'10B981',mr:'FBBF24',ogden:'EF4444',arruda:'22D3EE',yeoh:'F472B6',rpoly:'FB923C',vdw:'A3E635',hyperfoam:'818CF8'};
+ curveMeta.forEach((m,mi)=>{
+  let stressSeries='',energySeries='';
+  exportModels.forEach((mod,idx)=>{
+   const stressCol=colName(2+idx),energyCol=colName(2+exportModels.length+idx);
+   stressSeries+=seriesXml(idx,m.sheet,stressCol,stressCol,hex[mod],m.last);
+   energySeries+=seriesXml(idx,m.sheet,energyCol,energyCol,hex[mod],m.last);
+  });
+  stressSeries+=expSeriesXml(exportModels.length,m.sheet,m.expEnd,colName(m.expXCol+1),colName(m.expYCol+1));
+  const c1=2*mi+1,c2=2*mi+2;
+  files.push({name:'xl/drawings/drawing'+(mi+1)+'.xml',data:drawingXml('rId1','rId2')});
+  files.push({name:'xl/drawings/_rels/drawing'+(mi+1)+'.xml.rels',data:'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart'+c1+'.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart'+c2+'.xml"/></Relationships>'});
+  files.push({name:'xl/charts/chart'+c1+'.xml',data:chartXml(modeLabels[m.mode]+' Stress Response',cfg[m.mode].x,cfg[m.mode].stress,stressSeries,600000+c1*10)});
+  files.push({name:'xl/charts/chart'+c2+'.xml',data:chartXml(modeLabels[m.mode]+' Strain Energy Density',cfg[m.mode].x,'W (MJ/m³)',energySeries,600000+c2*10)});
+ });
+ const zip=zipStore(files),blob=new Blob([zip],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='MakeCoTech_Hyperelastic_Explorer_v1.0.xlsx';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+
+
+
+function modelUsesAbaqusD(model=sel.value){
+ return model==='arruda'||model==='vdw';
+}
+function volumetricParamSymbol(model=sel.value){
+ if(model==='hyperfoam')return 'none';
+ return modelUsesAbaqusD(model)?'D':'D1';
+}
+function updateVolumetricParamUI(){
+ const model=sel.value;
+
+ if(model==='hyperfoam'){
+  behavior.value='compressible';
+  const p=par(),beta=hyperfoamBetaFromNu(p.hNu),K0=hyperfoamK0(p.hMu,p.hNu);
+  inp.hBeta.value=beta.toFixed(6);
+  $('volParamLabel').textContent='No D / D1 for Hyperfoam';
+  $('compressNote').innerHTML=
+   '<strong>Ogden Hyperfoam is inherently compressible.</strong> Abaqus HYPERFOAM uses μᵢ, αᵢ and νᵢ directly; it does not use D or D1. '+
+   'For this N=1 implementation: β₁ = ν₁/(1−2ν₁), G₀ = μ₁ and K₀ = 2μ₁(β₁ + 1/3) = '+K0.toFixed(5)+' MPa.';
+  return;
+ }
+
+ const comp=behavior.value==='compressible';
+ const usesD=modelUsesAbaqusD(model);
+ const symbol=usesD?'D':'D1';
+
+ $('volParamLabel').textContent=(model==='linear'?'Equivalent ':'Abaqus ')+symbol+' (1/MPa)';
+
+ if(!comp){
+  $('compressNote').innerHTML=
+   'In <strong>incompressible mode</strong>, K0 and '+symbol+
+   ' are inactive because J = 1.';
+  return;
+ }
+
+ if(model==='linear'){
+  $('compressNote').innerHTML=
+   '<strong>Linear small-strain reference:</strong> K0 is used directly. '+
+   'The displayed D1 = 2/K0 is an equivalent initial-modulus relation only; '+
+   'it is not being presented as a finite-strain linear-elastic Abaqus material parameter.';
+ }else if(usesD){
+  $('compressNote').innerHTML=
+   '<strong>'+labels[model]+' uses Abaqus parameter D.</strong> '+
+   'The initial bulk-modulus relation is K0 = 2/D. '+
+   'Its finite volumetric energy is Uvol = (1/D)[(J²−1)/2 − ln(J)], '+
+   'so it is different from the polynomial-family D1 term.';
+ }else{
+  $('compressNote').innerHTML=
+   '<strong>'+labels[model]+' uses Abaqus parameter D1.</strong> '+
+   'K0 = 2/D1 and Uvol = (1/D1)(J−1)² = ½K0(J−1)².';
+ }
+}
+function updateBehaviorUI(){
+ if(sel.value==='hyperfoam')behavior.value='compressible';
+ const comp=behavior.value==='compressible';
+ if(comp){
+  inp.D1.value=(2/Math.max(.0001,+inp.K0.value||100)).toFixed(8);
+ }else{
+  if(currentMode==='volumetric')currentMode='uniaxial';
+  if($('datasetMode').value==='volumetric')$('datasetMode').value='uniaxial';
+  Object.values(datasets).forEach(d=>{if(d.stressType==='cauchy')d.stressType='nominal'});
+ }
+ updateVolumetricParamUI();
+ gray();loadDatasetUI();updateModeUI();renderFitResults();render();
+}
+function syncKtoD(){const K=Math.max(.0001,+inp.K0.value||100);inp.K0.value=K;inp.D1.value=(2/K).toFixed(8);render()}
+function syncDtoK(){const D=Math.max(1e-8,+inp.D1.value||.02);inp.D1.value=D;inp.K0.value=(2/D).toFixed(8);render()}
+
+/* listeners */
+document.querySelectorAll('.modebtn').forEach(b=>b.addEventListener('click',()=>setMainMode(b.dataset.mode)));
+let sliderRAF=0;
+slider.addEventListener('input',()=>{
+ if(sliderRAF)return;
+ sliderRAF=requestAnimationFrame(()=>{
+  sliderRAF=0;
+  render();
+ });
+});sel.addEventListener('change',()=>{
+ const cb=root.querySelector('.toggle[data-m="'+sel.value+'"]');
+ if(cb)cb.checked=true;
+ if(sel.value==='hyperfoam')behavior.value='compressible';
+ updateBehaviorUI();renderFitResults();render();
+});fitObjective.addEventListener('change',()=>{Object.keys(fitResults).forEach(k=>delete fitResults[k]);renderFitResults();$('fitStatus').textContent='Fit objective changed. Refit the selected model(s) to update parameters.'});vBetaMode.addEventListener('change',()=>{render()});
+behavior.addEventListener('change',updateBehaviorUI);
+inp.K0.addEventListener('input',syncKtoD);inp.D1.addEventListener('input',syncDtoK);
+[inp.E,inp.muN,inp.c10,inp.c01,inp.muO,inp.a,inp.muAB,inp.lmAB,inp.yC10,inp.yC20,inp.yC30,inp.rC10,inp.rC20,inp.vMu,inp.vLm,inp.vA,inp.vBeta,inp.hMu,inp.hAlpha].forEach(x=>x.addEventListener('input',render));
+inp.hNu.addEventListener('input',()=>{const nu=hyperfoamNu();inp.hBeta.value=hyperfoamBetaFromNu(nu).toFixed(6);updateVolumetricParamUI();render()});
+hNuMode.addEventListener('change',()=>{render()});root.querySelectorAll('.toggle').forEach(x=>x.addEventListener('change',render));
+$('match').addEventListener('click',match);$('reset').addEventListener('click',reset);$('exportXlsx').addEventListener('click',downloadExcel);
+$('datasetMode').addEventListener('change',()=>{saveVisibleDataset();currentMode=$('datasetMode').value;updateModeUI();loadDatasetUI();render()});
+$('inputXType').addEventListener('change',updateDatasetSelectors);$('inputStressType').addEventListener('change',updateDatasetSelectors);
+root.querySelectorAll('.exp-cell').forEach(el=>{el.addEventListener('input',()=>{saveVisibleDataset();render()});el.addEventListener('paste',handlePaste)});
+$('fitSelected').addEventListener('click',()=>runFit(sel.value));$('fitAll').addEventListener('click',fitAll);
+$('loadDemo').addEventListener('click',loadDemo);$('loadTreloar').addEventListener('click',loadTreloarBenchmark);$('loadTreloar2016').addEventListener('click',loadTreloar2016Benchmark);$('clearMode').addEventListener('click',clearMode);$('clearAll').addEventListener('click',clearAll);
+$('useExperimentalRange').addEventListener('click',useExperimentalRange);
+$('resetRange').addEventListener('click',resetCurrentRange);
+['displayMin','displayMax','fitMin','fitMax'].forEach(id=>{
+ $(id).addEventListener('change',()=>{if(applyRangeControls(true))render()});
+});
+$('restrictFitRange').addEventListener('change',()=>{rangeState[currentMode].fitEnabled=$('restrictFitRange').checked;render()});
+root.querySelectorAll('.use-fit').forEach(x=>x.addEventListener('change',()=>{}));
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(render,80)});
+loadDatasetUI();renderFitResults();updateBehaviorUI();updateModeUI();render();
+})();
+</script>
+</body>
+</html>
