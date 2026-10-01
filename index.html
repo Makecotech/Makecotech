@@ -23,7 +23,7 @@
   name="description"
 />
 
-<link href="style.css" rel="stylesheet"/>
+<link href="style.css?v=20261001-services1" rel="stylesheet"/>
 
 <script>
 if (!sessionStorage.getItem('languageRedirectDone')) {
@@ -45,6 +45,7 @@ if (!sessionStorage.getItem('languageRedirectDone')) {
 <link rel="alternate" hreflang="en" href="https://www.makecotech.com/"/>
 <link rel="alternate" hreflang="fr" href="https://www.makecotech.com/fr/"/>
 <link rel="alternate" hreflang="x-default" href="https://www.makecotech.com/"/>
+<script defer src="assets/js/service-cards.js"></script>
 </head>
 
 <body>
@@ -147,108 +148,52 @@ Our Expertise
 Engineering &amp; Simulation Solutions
 </h2>
 
+<p class="service-section-intro">Select a service to explore its capabilities and typical deliverables.</p>
 </div>
 
 
 <div class="cards">
-
-
-<article class="card">
-
-<div class="icon">⚙</div>
-
-<h3>
-Product Development
-</h3>
-
-<p>
-Concept development, design optimization, troubleshooting,
-validation and root cause analysis.
-</p>
-
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/product.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Product Development</h3>
+<p>From engineering concepts to practical design improvements, troubleshooting and validation.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-product-details" aria-label="Explore service: Product Development" data-service-dialog="service-product-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-
-<article class="card">
-
-<div class="icon">▧</div>
-
-<h3>
-Finite Element Analysis
-</h3>
-
-<p>
-Structural, thermal, thermo-mechanical, buckling, vibration,
-fatigue and nonlinear simulations.
-</p>
-
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/fea.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Finite Element Analysis</h3>
+<p>Structural and thermal analysis, nonlinear contact, friction, large deformation, impact and durability.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-fea-details" aria-label="Explore service: Finite Element Analysis" data-service-dialog="service-fea-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-
-<article class="card">
-
-<div class="icon">σ</div>
-
-<h3>
-Nonlinear Material Modeling
-</h3>
-
-<p>
-Development and calibration of advanced material models
-including plasticity, creep, damage and failure.
-</p>
-
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/materials.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Nonlinear Material Modeling</h3>
+<p>Material laws and calibration for plasticity, hyperelasticity, creep, viscoplasticity, damage and failure.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-materials-details" aria-label="Explore service: Nonlinear Material Modeling" data-service-dialog="service-materials-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-
-<article class="card">
-
-<div class="icon">⌁</div>
-
-<h3>
-Metal Forming Simulation
-</h3>
-
-<p>
-Sheet metal forming, stamping, deep drawing, formability,
-springback prediction and process optimization.
-</p>
-
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/forming.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Metal Forming Simulation</h3>
+<p>Sheet forming, stamping and deep drawing, with formability, thickness and springback assessment.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-forming-details" aria-label="Explore service: Metal Forming Simulation" data-service-dialog="service-forming-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-
-<article class="card">
-
-<div class="icon">⟶</div>
-
-<h3>
-Automotive &amp; Exhaust Systems
-</h3>
-
-<p>
-Hot-end exhaust systems, after-treatment development,
-thermal durability and product validation.
-</p>
-
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/automotive.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Automotive &amp; Exhaust Systems</h3>
+<p>Exhaust and after-treatment development, thermal durability, vibration, fatigue and product validation.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-automotive-details" aria-label="Explore service: Automotive &amp; Exhaust Systems" data-service-dialog="service-automotive-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-
-<article class="card">
-
-<div class="icon">◎</div>
-
-<h3>
-Semiconductor Equipment
-</h3>
-
-<p>
-High-temperature furnace (CVD/ALD) systems, wafer carriers,
-quartz, SiC and ceramic component analysis.
-</p>
-
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/semiconductor.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Semiconductor Equipment</h3>
+<p>High-temperature CVD/ALD systems, wafer carriers and quartz, SiC and ceramic component assessment.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-semiconductor-details" aria-label="Explore service: Semiconductor Equipment" data-service-dialog="service-semiconductor-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
-
-
 </div>
 
 </section>
@@ -637,6 +582,109 @@ toggle.addEventListener(
 </script>
 
 
+
+<!-- Service details -->
+<dialog class="service-dialog" id="service-product-details" aria-labelledby="service-product-details-title" aria-describedby="service-product-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/product.webp" alt="Machined mechanical prototype and measuring tools on an engineering workbench." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-product-details-title">Product Development</h2>
+<p class="service-dialog-overview" id="service-product-details-overview">Turn a technical requirement or an existing product challenge into a clear engineering approach, supported by calculations, simulation and practical design judgment.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Concept development, requirements and design trade-offs.</li><li>Geometry and material selection for performance, weight and manufacturability.</li><li>Troubleshooting and root cause analysis of mechanical or thermal problems.</li><li>Design verification and planning of focused validation activities.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Design options with clear recommendations.</li><li>Supporting calculations and simulation findings.</li><li>A practical verification and validation plan.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Product%20Development">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-fea-details" aria-labelledby="service-fea-details-title" aria-describedby="service-fea-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/fea.webp" alt="Illustrative finite-element mesh and contour visualization on a metal assembly." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-fea-details-title">Finite Element Analysis</h2>
+<p class="service-dialog-overview" id="service-fea-details-overview">Understand how a component or assembly responds to its loading and operating conditions, and use the results to support design and validation decisions.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Structural, buckling, modal, vibration and fatigue analysis.</li><li>Thermal and thermo-mechanical behavior under steady or transient conditions.</li><li>Nonlinear contact, friction, sliding and large deformation.</li><li>Impact and transient dynamic loading, with appropriate material and contact assumptions.</li><li>Sensitivity studies, interpretation of critical regions and comparison with test evidence.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>A documented model with loading and modeling assumptions.</li><li>Assessment of stresses, deformation, temperature and relevant response measures.</li><li>Engineering recommendations and a focused validation strategy.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Finite%20Element%20Analysis">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-materials-details" aria-labelledby="service-materials-details-title" aria-describedby="service-materials-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/materials.webp" alt="Rubber specimen in a tensile testing fixture." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-materials-details-title">Nonlinear Material Modeling</h2>
+<p class="service-dialog-overview" id="service-materials-details-overview">Choose and calibrate material behavior that reflects the loads, temperatures, deformation levels and time scales that matter for your application.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Elastoplastic behavior with isotropic, kinematic or combined hardening.</li><li>Hyperelastic models for rubber-like materials and foams, including compressibility.</li><li>Time-dependent behavior: creep, relaxation and viscoplasticity.</li><li>Damage and failure modeling, with attention to calibration and model limitations.</li><li>Custom material formulations and verification against material test data.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>A justified material-model selection.</li><li>Calibrated parameters and comparison with available test data.</li><li>Documented assumptions, applicability limits and verification checks.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Nonlinear%20Material%20Modeling">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-forming-details" aria-labelledby="service-forming-details-title" aria-describedby="service-forming-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/forming.webp" alt="Steel punch and die shaping a sheet-metal component." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-forming-details-title">Metal Forming Simulation</h2>
+<p class="service-dialog-overview" id="service-forming-details-overview">Explore how material behavior, tooling and process conditions influence forming performance and the final shape of a sheet-metal part.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Sheet metal forming, stamping and deep drawing.</li><li>Strain distribution, thinning and formability assessment.</li><li>Springback and residual stresses after unloading.</li><li>Influence of material anisotropy, friction, tooling and process parameters.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Identification of critical forming regions.</li><li>Assessment of thickness variation and springback.</li><li>Recommendations for tooling or process improvements.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Metal%20Forming%20Simulation">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-automotive-details" aria-labelledby="service-automotive-details-title" aria-describedby="service-automotive-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/automotive.webp" alt="Stainless-steel exhaust manifold and after-treatment assembly." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-automotive-details-title">Automotive &amp; Exhaust Systems</h2>
+<p class="service-dialog-overview" id="service-automotive-details-overview">Support the development and assessment of automotive components and exhaust systems exposed to demanding thermal and mechanical operating conditions.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Hot-end exhaust and after-treatment component development.</li><li>Thermal and thermo-mechanical response during operating cycles.</li><li>Vibration, fatigue and durability assessment of components, joints and supports.</li><li>Design troubleshooting, verification and interpretation of validation results.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Assessment of critical load cases and regions.</li><li>Design recommendations for thermal and mechanical durability.</li><li>Support for verification and validation decisions.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Automotive%20%26%20Exhaust%20Systems">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-semiconductor-details" aria-labelledby="service-semiconductor-details-title" aria-describedby="service-semiconductor-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/semiconductor.webp" alt="Quartz wafer boat and silicon wafers in a semiconductor equipment setting." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-semiconductor-details-title">Semiconductor Equipment</h2>
+<p class="service-dialog-overview" id="service-semiconductor-details-overview">Apply thermal, structural and material expertise to semiconductor equipment components whose dimensional stability and durability matter under demanding process conditions.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>High-temperature furnace systems and CVD/ALD equipment components.</li><li>Wafer-carrier and support-component deformation and stress assessment.</li><li>Quartz, silicon carbide and ceramic component behavior under thermal and mechanical loads.</li><li>Effects of thermal gradients, ramps and deposited-film buildup on component response.</li><li>Failure investigation and practical design or validation recommendations.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Thermal and structural assessments with clear assumptions.</li><li>Investigation of plausible failure mechanisms and critical regions.</li><li>Recommendations for component design, material choice and validation.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Semiconductor%20Equipment">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
 </body>
 
 </html>
