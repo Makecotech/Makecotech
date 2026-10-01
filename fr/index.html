@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html lang="fr">
+
+<html lang="en">
 <head>
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-91WPDSWXXL"></script>
 <script>
@@ -9,186 +11,279 @@
   gtag('js', new Date());
 
   gtag('config', 'G-91WPDSWXXL');
-</script>  
+</script>
+
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>MakeCoTech | Conseil en Ingénierie et Simulation Avancée</title>
-<meta content="MakeCoTech fournit des services de conseil en ingénierie, d'analyse par éléments finis, de modélisation non linéaire des matériaux, de simulation de formage des métaux, de développement de systèmes automobiles et d'ingénierie d'équipements pour semi-conducteurs." name="description"/>
-<link href="../style.css" rel="stylesheet"/>
-<link rel="canonical" href="https://www.makecotech.com/fr/"/>
+
+<title>MakeCoTech | Advanced Engineering &amp; Simulation Consulting</title>
+
+<meta
+  content="MakeCoTech provides engineering consultancy, finite element analysis, nonlinear material modeling, metal forming simulation, automotive exhaust systems development and semiconductor equipment engineering."
+  name="description"
+/>
+
+<link href="style.css?v=20261001-services1" rel="stylesheet"/>
+
+<script>
+if (!sessionStorage.getItem('languageRedirectDone')) {
+    const lang = navigator.language || navigator.userLanguage;
+
+    if (
+        lang.toLowerCase().startsWith('fr') &&
+        !window.location.pathname.startsWith('/fr/')
+    ) {
+        sessionStorage.setItem('languageRedirectDone', 'true');
+
+        const hash = window.location.hash || "";
+        window.location.href = "/fr/" + hash;
+    }
+}
+</script>
+
+<link rel="canonical" href="https://www.makecotech.com/"/>
 <link rel="alternate" hreflang="en" href="https://www.makecotech.com/"/>
 <link rel="alternate" hreflang="fr" href="https://www.makecotech.com/fr/"/>
 <link rel="alternate" hreflang="x-default" href="https://www.makecotech.com/"/>
-<style>
-/* Keep the longer French navigation comfortable on smaller screens. */
-@media (max-width: 1280px) {
-  .menu-toggle { display: block; }
-  .nav {
-    display: none;
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 100%;
-    padding: 20px 7%;
-    flex-direction: column;
-    align-items: flex-start;
-    background: var(--navy);
-  }
-  .nav.open { display: flex; }
-}
-</style>
+<script defer src="assets/js/service-cards.js"></script>
 </head>
 
 <body>
+
 <header class="site-header">
-<a aria-label="Accueil MakeCoTech" class="brand" href="#home">
-<img alt="Logo MakeCoTech" src="../makecotech_logo.png"/>
+
+<a aria-label="MakeCoTech home" class="brand" href="#home">
+<img alt="MakeCoTech logo" src="makecotech_logo.png"/>
 </a>
 
-<button aria-label="Ouvrir le menu" class="menu-toggle">☰</button>
+<button aria-label="Open menu" class="menu-toggle">☰</button>
 
 <nav class="nav">
-<a href="#home">Accueil</a>
+
+<a href="#home">Home</a>
 <a href="#services">Services</a>
-<a href="#industries">Secteurs</a>
-<a href="#resources">Ressources techniques</a>
-   
-<a href="#about">À propos</a>
-<a href="#fondateur">Fondateur</a>
+<a href="#industries">Industries</a>
+<a href="#resources">Technical Resources</a>
+<a href="#about">About</a>
+<a href="#founder">Founder</a>
 <a href="#contact">Contact</a>
 
 <select class="language-switcher" onchange="window.location.href=this.value">
-<option value="/">BE-EN</option>
-<option value="/fr/" selected>BE-FR</option>
+<option value="/" selected>BE-EN</option>
+<option value="/fr/">BE-FR</option>
 </select>
+
 </nav>
+
 </header>
 
+
 <main id="home">
+
+
+<!-- HERO -->
+
 <section class="hero">
+
 <div class="hero-grid">
+
 <div class="hero-text">
-<p class="eyebrow">Conseil en Ingénierie et Simulation Avancée</p>
-<h1>Analyser. Optimiser. Innover.</h1>
+
+<p class="eyebrow">
+Advanced Engineering &amp; Simulation Consulting
+</p>
+
+<h1>
+Analyze. Optimize. Innovate.
+</h1>
 
 <p class="lead">
-Basée en Belgique, MakeCoTech accompagne les entreprises en Belgique,
-aux Pays-Bas, au Luxembourg, en Allemagne et dans toute la région
-Benelux avec des services avancés de conseil en ingénierie,
-d'analyse par éléments finis, de modélisation non linéaire des
-matériaux, d'analyse thermique et de support au développement de produits.
+Based in Belgium, MakeCoTech helps companies across Belgium,
+the Netherlands, Luxembourg, Germany and the wider Benelux region
+solve complex engineering challenges through advanced engineering
+consultancy, finite element analysis, nonlinear material modeling,
+thermal analysis and product development support.
 </p>
 
 <div class="hero-actions">
-<a class="btn primary" href="#services">Nos Services</a>
-<a class="btn secondary" href="#contact">Nous Contacter</a>
+
+<a class="btn primary" href="#services">
+Our Services
+</a>
+
+<a class="btn secondary" href="#contact">
+Contact Us
+</a>
+
 </div>
+
 </div>
+
 
 <div aria-hidden="true" class="hero-visual">
-<img alt="Visualisation de simulation par éléments finis" src="../hero_simulation.png"/>
+
+<img
+  alt="FEA engineering simulation visual"
+  src="hero_simulation.png"
+/>
+
 </div>
+
 </div>
+
 </section>
+
+
+<!-- SERVICES -->
 
 <section class="section services" id="services">
+
 <div class="section-title">
-<p class="eyebrow blue">Notre Expertise</p>
-<h2>Solutions d'Ingénierie et de Simulation</h2>
+
+<p class="eyebrow blue">
+Our Expertise
+</p>
+
+<h2>
+Engineering &amp; Simulation Solutions
+</h2>
+
+<p class="service-section-intro">Select a service to explore its capabilities and typical deliverables.</p>
 </div>
+
 
 <div class="cards">
-<article class="card">
-<div class="icon">⚙</div>
-<h3>Développement de Produits</h3>
-<p>Développement de concepts, optimisation de conception, résolution de problèmes, validation et analyse des causes racines.</p>
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/product.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Product Development</h3>
+<p>From engineering concepts to practical design improvements, troubleshooting and validation.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-product-details" aria-label="Explore service: Product Development" data-service-dialog="service-product-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-<article class="card">
-<div class="icon">▧</div>
-<h3>Analyse par Éléments Finis</h3>
-<p>Simulations structurelles, thermiques, thermo-mécaniques, de flambage, de vibrations, de fatigue et non linéaires.</p>
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/fea.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Finite Element Analysis</h3>
+<p>Structural and thermal analysis, nonlinear contact, friction, large deformation, impact and durability.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-fea-details" aria-label="Explore service: Finite Element Analysis" data-service-dialog="service-fea-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-<article class="card">
-<div class="icon">σ</div>
-<h3>Modélisation Non Linéaire des Matériaux</h3>
-<p>Développement et calibration de modèles matériaux avancés incluant plasticité, fluage, endommagement et rupture.</p>
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/materials.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Nonlinear Material Modeling</h3>
+<p>Material laws and calibration for plasticity, hyperelasticity, creep, viscoplasticity, damage and failure.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-materials-details" aria-label="Explore service: Nonlinear Material Modeling" data-service-dialog="service-materials-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-<article class="card">
-<div class="icon">⌁</div>
-<h3>Simulation de Formage des Métaux</h3>
-<p>Formage de tôles, emboutissage, emboutissage profond, formabilité, prédiction du retour élastique et optimisation des procédés.</p>
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/forming.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Metal Forming Simulation</h3>
+<p>Sheet forming, stamping and deep drawing, with formability, thickness and springback assessment.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-forming-details" aria-label="Explore service: Metal Forming Simulation" data-service-dialog="service-forming-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-<article class="card">
-<div class="icon">⟶</div>
-<h3>Automobile et Systèmes d'Échappement</h3>
-<p>Systèmes d'échappement haute température, développement post-traitement, durabilité thermique et validation produit.</p>
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/automotive.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Automotive &amp; Exhaust Systems</h3>
+<p>Exhaust and after-treatment development, thermal durability, vibration, fatigue and product validation.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-automotive-details" aria-label="Explore service: Automotive &amp; Exhaust Systems" data-service-dialog="service-automotive-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 
-<article class="card">
-<div class="icon">◎</div>
-<h3>Équipements pour Semi-conducteurs</h3>
-<p>Systèmes de fours haute température (CVD/ALD), porte-wafers, analyse de composants en quartz, SiC et céramique.</p>
+<article class="card service-card">
+<div class="service-card-media"><img src="assets/services/semiconductor.webp" alt="" width="960" height="540" loading="lazy" decoding="async"/></div>
+<h3>Semiconductor Equipment</h3>
+<p>High-temperature CVD/ALD systems, wafer carriers and quartz, SiC and ceramic component assessment.</p>
+<button class="service-details-trigger" type="button" aria-haspopup="dialog" aria-controls="service-semiconductor-details" aria-label="Explore service: Semiconductor Equipment" data-service-dialog="service-semiconductor-details" hidden>Explore service <span aria-hidden="true">↗</span></button>
 </article>
 </div>
+
 </section>
+
+
+<!-- INDUSTRIES -->
 
 <section class="industries-band" id="industries">
-<h2>Secteurs que Nous Accompagnons</h2>
+
+<h2>
+Industries We Support
+</h2>
+
 <div class="industry-list">
-<span>Automobile</span>
-<span>Semi-conducteurs</span>
-<span>Équipements Industriels</span>
-<span>Énergie</span>
-<span>Recherche et Développement</span>
+
+<span>Automotive</span>
+
+<span>Semiconductor</span>
+
+<span>Industrial Equipment</span>
+
+<span>Energy</span>
+
+<span>Research &amp; Development</span>
+
 </div>
+
 </section>
 
+
+<!-- TECHNICAL RESOURCES -->
+
 <section class="section resources" id="resources">
+
 <div class="section-title">
-<p class="eyebrow blue">Ressources techniques</p>
-<h2>Guides d’ingénierie, articles et outils interactifs</h2>
-<p>Des ressources pratiques pour comprendre la modélisation des matériaux,
-la plasticité des métaux et les matériaux hyperélastiques.</p>
-<p>Les articles, guides et outils interactifs ci-dessous sont disponibles en anglais.</p>
+
+<p class="eyebrow blue">
+Technical Resources
+</p>
+
+<h2>
+Engineering Guides, Articles &amp; Interactive Tools
+</h2>
+
+<p>
+Practical technical material covering finite element analysis,
+constitutive modeling, metal plasticity, semiconductor equipment,
+and simulation-driven product development.
+</p>
+
 </div>
+
 
 <div class="cards">
-<article class="card resource-publication" lang="en">
+
+
+<article class="card resource-publication">
 <div class="icon" aria-hidden="true">σ</div>
-<h3><a href="../plasticity-hardening.html" hreflang="en">Isotropic, Kinematic &amp; Combined Hardening</a></h3>
+<h3><a href="plasticity-hardening.html">Isotropic, Kinematic &amp; Combined Hardening</a></h3>
 <p>A practical guide to understanding how different hardening models influence yielding, reverse loading, the Bauschinger effect, cyclic plasticity and springback predictions.</p>
 <div class="resource-publication-links">
-<a href="../plasticity-hardening.html" hreflang="en">Read Guide</a>
-<a href="../plasticity-hardening.html#appContainer" hreflang="en">Open Interactive Tool</a>
+<a href="plasticity-hardening.html">Read Guide</a>
+<a href="plasticity-hardening.html#appContainer">Open Interactive Tool</a>
 </div>
 </article>
 
-<article class="card resource-publication" lang="en">
+<article class="card resource-publication">
 <div class="icon" aria-hidden="true">λ</div>
-<h3><a href="../hyperelastic-material-modeling.html" hreflang="en">Hyperelastic Material Modeling</a></h3>
+<h3><a href="hyperelastic-material-modeling.html">Hyperelastic Material Modeling</a></h3>
 <p>A practical guide to nonlinear hyperelastic materials, model selection and calibration, paired with MakeCoTech Hyperelastic Explorer v1.0.</p>
 <div class="resource-publication-docs">
-<a href="../hyperelastic-material-modeling.html#video-overview" hreflang="en">Watch Overview</a>
-<a href="../hyperelastic-explorer-help.html" hreflang="en">User guide</a>
-<a href="../hyperelastic-explorer-reference-manual-v1.0.html" hreflang="en">Reference manual</a>
+<a href="hyperelastic-material-modeling.html#video-overview">Watch Overview</a>
+<a href="hyperelastic-explorer-help.html">User guide</a>
+<a href="hyperelastic-explorer-reference-manual-v1.0.html">Reference manual</a>
 </div>
 <div class="resource-publication-links">
-<a href="../hyperelastic-material-modeling.html" hreflang="en">Read Guide</a>
-<a href="../MakeCoTech_Hyperelastic_Explorer_v1.0.html" hreflang="en">Open Interactive Tool</a>
+<a href="hyperelastic-material-modeling.html">Read Guide</a>
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open Interactive Tool</a>
 </div>
 </article>
+
 </div>
+
 
 
 <section class="linkedin-articles" aria-labelledby="linkedin-articles-title" style="margin-top:56px;padding-top:40px;border-top:1px solid var(--border)">
 <div class="section-title">
-<p class="eyebrow blue">Regards d’ingénierie · LinkedIn</p>
-<h2 id="linkedin-articles-title">Matière à réflexion</h2>
-<p>Des questions d’ingénierie explorées par la simulation, publiées sur LinkedIn. Articles en anglais.</p>
+<p class="eyebrow blue">Simulation insights · LinkedIn</p>
+<h2 id="linkedin-articles-title">Food for Thought</h2>
+<p>Engineering questions explored through simulation, shared on LinkedIn.</p>
 </div>
 <div class="cards">
 <article class="card resource-publication" lang="en">
@@ -213,136 +308,383 @@ la plasticité des métaux et les matériaux hyperélastiques.</p>
 </section>
 </section>
 
-    
+
+<!-- ABOUT -->
+
 <section class="section about" id="about">
+
+
 <div class="about-image">
-<img alt="Image d'ingénierie, simulation et développement" src="../about_engineering.png"/>
+
+<img
+  alt="Engineering simulation and development imagery"
+  src="about_engineering.png"
+/>
+
 </div>
+
 
 <div class="about-text">
-<p class="eyebrow blue">À propos de MakeCoTech</p>
-<h2>Vision d'ingénierie. Puissance de simulation. Impact concret.</h2>
+
+<p class="eyebrow blue">
+About MakeCoTech
+</p>
+
+<h2>
+Engineering insight. Simulation power. Real-world impact.
+</h2>
 
 <p>
-MakeCoTech associe une expérience pratique en développement d'ingénierie
-à une expertise avancée en simulation afin d'accompagner les entreprises
-depuis la conception jusqu'à la validation. Nous fournissons des analyses fiables,
-des recommandations de conception pragmatiques et une valeur ajoutée mesurable.
+MakeCoTech combines hands-on engineering development experience
+with advanced simulation expertise to support companies from
+concept design to validation.
 </p>
+
+<p>
+We deliver reliable analyses, practical design recommendations
+and measurable engineering value.
+</p>
+
 
 <ul>
-<li>Expertise de niveau doctorat en simulation, modélisation des matériaux et développement de produits</li>
-<li>Simulation avancée pour des décisions d'ingénierie concrètes</li>
-<li>Expérience dans les secteurs automobile, semi-conducteurs et industriels</li>
-<li>Support pratique pour l'optimisation de conception, la validation et l'analyse des causes racines</li>
+
+<li>
+PhD-level expertise in simulation, material modeling and product development
+</li>
+
+<li>
+Advanced simulation for real engineering decisions
+</li>
+
+<li>
+Experience across automotive, semiconductor and industrial sectors
+</li>
+
+<li>
+Practical support for design optimization, validation and root cause analysis
+</li>
+
 </ul>
+
+
 </div>
+
 </section>
-<section class="section founder-section" id="fondateur">
+
+
+<!-- FOUNDER -->
+
+<section class="section founder-section" id="founder">
+
 
 <div class="founder-image">
-    <img src="../founder_kianoosh.png"
-         alt="Kianoosh Marandi, PhD, Eng. - Fondateur de MakeCoTech">
+
+<img
+  src="founder_kianoosh.png"
+  alt="Kianoosh Marandi, PhD, Eng. - Founder of MakeCoTech"
+/>
+
 </div>
+
 
 <div class="founder-text">
-    <p class="eyebrow blue">Rencontrez le fondateur</p>
 
-    <h2>Kianoosh Marandi, PhD, Eng.</h2>
-
-    <h3>Fondateur &amp; Consultant Principal</h3>
-
-    <p>
-        Kianoosh Marandi est un ingénieur mécanicien et spécialiste en simulation
-        numérique avec plus de 18 ans d'expérience internationale dans le
-        développement de produits, les simulations avancées et l'innovation
-        technologique.
-    </p>
-
-    <p>
-        Après l'obtention de son Master en Génie Mécanique, il a travaillé pendant
-        deux ans comme ingénieur de conception avant de poursuivre un doctorat à la
-        National University of Singapore, où il a obtenu son diplôme en 2012.
-        Ses recherches doctorales portaient sur le comportement non linéaire et
-        la modélisation avancée des matériaux composites métalliques.
-    </p>
-
-    <p>
-        Après son doctorat, il s'est installé en Belgique pour travailler comme
-        chercheur, puis a passé plus de dix ans dans l'industrie automobile en
-        contribuant au développement de systèmes automobiles avancés. Son expertise
-        couvre la simulation de formage des tôles, les formulations de matériaux
-        non linéaires, les analyses thermiques et structurelles ainsi que le
-        développement de produits, de la conception à la validation.
-    </p>
-
-    <p>
-        En 2022, il a rejoint ASM dans l'industrie des semi-conducteurs, où il a
-        participé au développement de systèmes de fours à haute température et de
-        composants critiques en quartz, carbure de silicium, graphite et silicium,
-        répondant aux exigences de performance et de fiabilité les plus élevées.
-    </p>
-
-    <p>
-         <strong>À travers MakeCoTech,</strong> Kianoosh souhaite partager son expertise
-        multidisciplinaire avec un plus grand nombre d'entreprises afin de les aider
-        à résoudre des défis d'ingénierie complexes, accélérer l'innovation et
-        transformer leurs idées en produits fiables et performants.
-    </p>
-
-    <ul>
-        <li>Analyse par éléments finis (FEA)</li>
-        <li>Développement d'équipements pour semi-conducteurs</li>
-        <li>Modélisation avancée des matériaux non linéaires</li>
-        <li>Analyses thermiques et structurelles</li>
-        <li>Développement de produits et analyse des causes racines</li>
-        <li>Ingénierie automobile et industrielle</li>
-    </ul>
-
-</div>
-<p class="founder-linkedin">
-  <a href="https://www.linkedin.com/in/kianooshmarandi"
-     target="_blank"
-     rel="noopener noreferrer">
-    Consultez mon profil et connectez-vous sur LinkedIn  →
-  </a>
+<p class="eyebrow blue">
+Meet the Founder
 </p>
-</section>
-<section class="contact-section" id="contact">
-<div>
-<p class="eyebrow">Démarrer un Projet</p>
-<h2>Vous recherchez un consultant expérimenté pour résoudre des défis complexes de conception et de simulation ? Discutons de votre projet dès aujourd'hui.</h2>
-<p>Contactez MakeCoTech pour discuter de vos besoins en analyse, conception ou développement.</p>
+
+<h2>
+Kianoosh Marandi, PhD, Eng.
+</h2>
+
+<h3>
+Founder &amp; Principal Consultant
+</h3>
+
+
+<p>
+Kianoosh Marandi is a mechanical engineer and simulation specialist
+with more than 18 years of international experience in engineering
+development, advanced simulations and product innovation.
+</p>
+
+
+<p>
+After obtaining his Master's degree in Mechanical Engineering,
+he worked as a Design Engineer for two years before pursuing a PhD
+at the National University of Singapore, where he graduated in 2012.
+His doctoral research focused on the nonlinear behaviour and advanced
+constitutive modelling of metallic composites and engineering materials.
+</p>
+
+
+<p>
+Following his PhD, he moved to Belgium to work as a researcher
+and subsequently spent more than a decade in the automotive industry,
+contributing to the development of advanced automotive systems.
+</p>
+
+
+<p>
+His work covered sheet metal forming simulations,
+nonlinear material formulations, structural and thermal analyses,
+and product development from concept to validation.
+</p>
+
+
+<p>
+In 2022, he joined ASM in the semiconductor industry,
+where he contributed to the development of advanced high-temperature
+furnace systems and critical components made from quartz,
+silicon carbide, graphite and silicon, designed to meet demanding
+performance and reliability requirements.
+</p>
+
+
+<p>
+<strong>Through MakeCoTech,</strong>
+Kianoosh aims to share his multidisciplinary expertise with a broader
+range of companies, helping them solve complex engineering challenges,
+accelerate innovation and transform ideas into reliable,
+high-performance products.
+</p>
+
+
 </div>
 
-<a class="btn primary light" href="mailto:info@makecotech.com">info@makecotech.com</a>
+
+<p class="founder-linkedin">
+
+<a
+  href="https://www.linkedin.com/in/kianooshmarandi"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+
+View my profile and connect on LinkedIn →
+
+</a>
+
+</p>
+
+
 </section>
+
+
+<!-- CONTACT -->
+
+<section class="contact-section" id="contact">
+
+<div>
+
+<p class="eyebrow">
+Start a Project
+</p>
+
+<h2>
+Need an experienced engineering consultant to solve complex
+design and simulation challenges?
+Let’s discuss your project today.
+</h2>
+
+<p>
+Contact MakeCoTech to discuss your analysis,
+design or development challenge.
+</p>
+
+</div>
+
+
+<a
+  class="btn primary light"
+  href="mailto:info@makecotech.com"
+>
+
+info@makecotech.com
+
+</a>
+
+</section>
+
+
 </main>
 
+
+<!-- FOOTER -->
+
 <footer class="footer">
+
+
 <div class="footer-brand">
-<img alt="Icône MC MakeCoTech" src="../makecotech_mc_icon.png"/>
-<p>Conseil en Ingénierie et Simulation Avancée</p>
+
+<img
+  alt="MakeCoTech MC icon"
+  src="makecotech_mc_icon.png"
+/>
+
+<p>
+Advanced Engineering &amp; Simulation Consulting
+</p>
+
 </div>
+
 
 <div class="footer-links">
-<a href="#services">Services</a>
-<a href="#industries">Secteurs</a>
-<a href="#resources">Ressources techniques</a>
-   
-<a href="#about">À propos</a>
-<a href="#fondateur">Fondateur</a>
-<a href="#contact">Contact</a>
+
+<a href="#services">
+Services
+</a>
+
+<a href="#industries">
+Industries
+</a>
+
+<a href="#resources">
+Technical Resources
+</a>
+
+<a href="#about">
+About
+</a>
+
+<a href="#founder">
+Founder
+</a>
+
+<a href="#contact">
+Contact
+</a>
+
 </div>
 
-<p class="copyright">© 2026 MakeCoTech. Tous droits réservés.</p>
+
+<p class="copyright">
+© 2026 MakeCoTech. All rights reserved.
+</p>
+
+
 </footer>
 
+
 <script>
-const toggle = document.querySelector('.menu-toggle');
-const nav = document.querySelector('.nav');
-toggle.addEventListener('click', () => nav.classList.toggle('open'));
+
+const toggle =
+  document.querySelector('.menu-toggle');
+
+const nav =
+  document.querySelector('.nav');
+
+toggle.addEventListener(
+  'click',
+  () => nav.classList.toggle('open')
+);
+
 </script>
 
+
+
+<!-- Service details -->
+<dialog class="service-dialog" id="service-product-details" aria-labelledby="service-product-details-title" aria-describedby="service-product-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/product.webp" alt="Machined mechanical prototype and measuring tools on an engineering workbench." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-product-details-title">Product Development</h2>
+<p class="service-dialog-overview" id="service-product-details-overview">Turn a technical requirement or an existing product challenge into a clear engineering approach, supported by calculations, simulation and practical design judgment.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Concept development, requirements and design trade-offs.</li><li>Geometry and material selection for performance, weight and manufacturability.</li><li>Troubleshooting and root cause analysis of mechanical or thermal problems.</li><li>Design verification and planning of focused validation activities.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Design options with clear recommendations.</li><li>Supporting calculations and simulation findings.</li><li>A practical verification and validation plan.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Product%20Development">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-fea-details" aria-labelledby="service-fea-details-title" aria-describedby="service-fea-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/fea.webp" alt="Illustrative finite-element mesh and contour visualization on a metal assembly." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-fea-details-title">Finite Element Analysis</h2>
+<p class="service-dialog-overview" id="service-fea-details-overview">Understand how a component or assembly responds to its loading and operating conditions, and use the results to support design and validation decisions.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Structural, buckling, modal, vibration and fatigue analysis.</li><li>Thermal and thermo-mechanical behavior under steady or transient conditions.</li><li>Nonlinear contact, friction, sliding and large deformation.</li><li>Impact and transient dynamic loading, with appropriate material and contact assumptions.</li><li>Sensitivity studies, interpretation of critical regions and comparison with test evidence.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>A documented model with loading and modeling assumptions.</li><li>Assessment of stresses, deformation, temperature and relevant response measures.</li><li>Engineering recommendations and a focused validation strategy.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Finite%20Element%20Analysis">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-materials-details" aria-labelledby="service-materials-details-title" aria-describedby="service-materials-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/materials.webp" alt="Rubber specimen in a tensile testing fixture." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-materials-details-title">Nonlinear Material Modeling</h2>
+<p class="service-dialog-overview" id="service-materials-details-overview">Choose and calibrate material behavior that reflects the loads, temperatures, deformation levels and time scales that matter for your application.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Elastoplastic behavior with isotropic, kinematic or combined hardening.</li><li>Hyperelastic models for rubber-like materials and foams, including compressibility.</li><li>Time-dependent behavior: creep, relaxation and viscoplasticity.</li><li>Damage and failure modeling, with attention to calibration and model limitations.</li><li>Custom material formulations and verification against material test data.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>A justified material-model selection.</li><li>Calibrated parameters and comparison with available test data.</li><li>Documented assumptions, applicability limits and verification checks.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Nonlinear%20Material%20Modeling">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-forming-details" aria-labelledby="service-forming-details-title" aria-describedby="service-forming-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/forming.webp" alt="Steel punch and die shaping a sheet-metal component." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-forming-details-title">Metal Forming Simulation</h2>
+<p class="service-dialog-overview" id="service-forming-details-overview">Explore how material behavior, tooling and process conditions influence forming performance and the final shape of a sheet-metal part.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Sheet metal forming, stamping and deep drawing.</li><li>Strain distribution, thinning and formability assessment.</li><li>Springback and residual stresses after unloading.</li><li>Influence of material anisotropy, friction, tooling and process parameters.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Identification of critical forming regions.</li><li>Assessment of thickness variation and springback.</li><li>Recommendations for tooling or process improvements.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Metal%20Forming%20Simulation">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-automotive-details" aria-labelledby="service-automotive-details-title" aria-describedby="service-automotive-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/automotive.webp" alt="Stainless-steel exhaust manifold and after-treatment assembly." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-automotive-details-title">Automotive &amp; Exhaust Systems</h2>
+<p class="service-dialog-overview" id="service-automotive-details-overview">Support the development and assessment of automotive components and exhaust systems exposed to demanding thermal and mechanical operating conditions.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>Hot-end exhaust and after-treatment component development.</li><li>Thermal and thermo-mechanical response during operating cycles.</li><li>Vibration, fatigue and durability assessment of components, joints and supports.</li><li>Design troubleshooting, verification and interpretation of validation results.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Assessment of critical load cases and regions.</li><li>Design recommendations for thermal and mechanical durability.</li><li>Support for verification and validation decisions.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Automotive%20%26%20Exhaust%20Systems">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
+
+<dialog class="service-dialog" id="service-semiconductor-details" aria-labelledby="service-semiconductor-details-title" aria-describedby="service-semiconductor-details-overview">
+<div class="service-dialog-media">
+<img src="assets/services/semiconductor.webp" alt="Quartz wafer boat and silicon wafers in a semiconductor equipment setting." width="960" height="540" loading="lazy" decoding="async"/>
+<button class="service-dialog-close" type="button" aria-label="Close service details" data-service-close><span aria-hidden="true">×</span></button>
+</div>
+<div class="service-dialog-content">
+<p class="service-dialog-eyebrow">Engineering &amp; simulation consulting</p>
+<h2 id="service-semiconductor-details-title">Semiconductor Equipment</h2>
+<p class="service-dialog-overview" id="service-semiconductor-details-overview">Apply thermal, structural and material expertise to semiconductor equipment components whose dimensional stability and durability matter under demanding process conditions.</p>
+<div class="service-dialog-columns">
+<section class="service-capabilities"><h3>How we can help</h3><ul><li>High-temperature furnace systems and CVD/ALD equipment components.</li><li>Wafer-carrier and support-component deformation and stress assessment.</li><li>Quartz, silicon carbide and ceramic component behavior under thermal and mechanical loads.</li><li>Effects of thermal gradients, ramps and deposited-film buildup on component response.</li><li>Failure investigation and practical design or validation recommendations.</li></ul></section>
+<aside class="service-deliverables"><h3>Typical deliverables</h3><ul><li>Thermal and structural assessments with clear assumptions.</li><li>Investigation of plausible failure mechanisms and critical regions.</li><li>Recommendations for component design, material choice and validation.</li></ul></aside>
+</div>
+<div class="service-dialog-footer"><p>Let’s discuss your application, constraints and validation needs.</p><a class="btn primary" href="mailto:info@makecotech.com?subject=MakeCoTech%20enquiry%3A%20Semiconductor%20Equipment">Discuss your project <span aria-hidden="true">↗</span></a></div>
+</div>
+</dialog>
 </body>
+
 </html>
