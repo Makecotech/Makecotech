@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MakeCoTech Hyperelastic Explorer v1.0 User Guide | MakeCoTech</title>
+<meta name="description" content="User guide for MakeCoTech Hyperelastic Explorer v1.0, covering experimental data entry, hyperelastic fitting, benchmark datasets, ranges and Excel export."/>
+<link href="style.css" rel="stylesheet"/>
+<link rel="icon" href="makecotech_mc_icon.png"/>
+
+<style>
+.article-page{background:#fff}
+.article-hero{background:linear-gradient(135deg,#07172f 0%,#0b2a5b 60%,#164d82 100%);color:#fff;padding:42px 24px 36px}
+.article-container{width:100%;max-width:900px;margin:0 auto}
+.article-hero .eyebrow{margin:0 0 8px;color:#7ec8ff;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-hero h1{max-width:860px;margin:0;color:#fff;font-size:clamp(1.9rem,3.6vw,2.8rem);line-height:1.12;letter-spacing:-.02em}
+.article-hero .lead{max-width:790px;margin:14px 0 0;color:rgba(255,255,255,.86);font-size:1rem;line-height:1.65}
+.article-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.article-tag{padding:5px 9px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:600}
+.article-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.article-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:7px;text-decoration:none;font-size:.86rem;font-weight:800}
+.article-btn.primary{background:#fff;color:#0b2a5b}
+.article-btn.secondary{border:1px solid rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.06)}
+.article-btn:hover{text-decoration:none;filter:brightness(.97)}
+.article-body{max-width:900px;margin:0 auto;padding:40px 24px 56px}
+.article-body section{margin-bottom:44px}
+.article-section-label{display:block;margin-bottom:5px;color:#0074d9;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-body h2{margin:0 0 14px;color:#0b2a5b;font-size:1.55rem;line-height:1.28;text-align:left}
+.article-body h3{margin:24px 0 9px;color:#163a63;font-size:1.08rem}
+.article-body p{margin:0 0 14px;color:#334155;font-size:.96rem;line-height:1.72;text-align:left}
+.article-intro{color:#26384d!important;font-size:1.02rem!important}
+.equation-box{margin:18px 0;padding:14px 18px;border-left:3px solid #0074d9;border-radius:6px;background:#f5f8fc;color:#0b2a5b;font-family:Cambria,Georgia,serif;font-size:1.03rem;font-weight:700;text-align:left;overflow:auto}
+.callout{margin:22px 0;padding:18px 20px;border:1px solid #dce8f4;border-left:4px solid #0074d9;border-radius:8px;background:#f8fbff}
+.callout.warning{border-left-color:#d97706;background:#fffaf0}
+.callout p:last-child{margin-bottom:0}
+.model-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0 12px}
+.model-card{padding:18px;border:1px solid #dbe5f0;border-radius:9px;background:#fff;box-shadow:0 6px 18px rgba(11,42,91,.04)}
+.model-card h3{margin:0 0 7px;color:#0b2a5b;font-size:1rem}
+.model-card p{margin:0;font-size:.9rem;line-height:1.58}
+.comparison-table-wrapper{margin:24px 0;overflow-x:auto;border:1px solid #dce5ef;border-radius:10px}
+.comparison-table{width:100%;border-collapse:collapse;background:#fff}
+.comparison-table th{padding:12px 14px;background:#0b2a5b;color:#fff;font-size:.88rem;text-align:left}
+.comparison-table td{padding:12px 14px;border-bottom:1px solid #e5ebf1;color:#334155;font-size:.91rem;line-height:1.48;vertical-align:top}
+.comparison-table tr:last-child td{border-bottom:none}
+.comparison-table tbody tr:nth-child(even){background:#f8fafc}
+.tool-card{margin:22px 0;padding:22px;border:1px solid #cbdcec;border-radius:10px;background:linear-gradient(135deg,#f8fbff,#eef6ff)}
+.tool-card h3{margin-top:0;color:#0b2a5b}
+.tool-ref{font-size:.84rem;color:#5a6d82!important}
+.workflow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin:22px 0}
+.workflow div{padding:12px 8px;border:1px solid #d6e2ee;border-radius:8px;background:#f8fbff;color:#163a63;text-align:center;font-size:.78rem;font-weight:800}
+.resource-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.resource-links a{display:inline-flex;padding:9px 12px;border-radius:7px;background:#0b2a5b;color:#fff;font-size:.82rem;font-weight:800;text-decoration:none}
+.resource-links a.alt{background:#fff;color:#0b2a5b;border:1px solid #9fbad3}
+.reference-list{font-size:.83rem;color:#66788d}
+.reference-list a{color:#0074d9}
+.help-step{display:grid;grid-template-columns:34px 1fr;gap:12px;margin:16px 0}
+.help-step .num{width:30px;height:30px;border-radius:50%;background:#0b2a5b;color:#fff;display:grid;place-items:center;font-weight:900;font-size:.83rem}
+.help-step h3{margin:2px 0 4px}
+.help-step p{margin:0}
+.help-nav{margin:0 auto 30px;max-width:900px;padding:0 24px}
+.help-nav-inner{display:flex;gap:8px;flex-wrap:wrap}
+.help-nav a{padding:6px 9px;border-radius:999px;background:#eef5fb;border:1px solid #d7e5f2;color:#164d82;font-size:.75rem;font-weight:700;text-decoration:none}
+.version-badge{display:inline-flex;margin-left:5px;padding:3px 7px;border-radius:999px;background:#e9f3fc;color:#0b2a5b;font-size:.72rem;font-weight:800;vertical-align:middle}
+@media(max-width:850px){
+ .model-grid{grid-template-columns:1fr}
+ .workflow{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:560px){
+ .article-actions{flex-direction:column;align-items:stretch}
+ .workflow{grid-template-columns:1fr 1fr}
+}
+
+/* Navigation for the Hyperelastic Explorer publication. */
+.hyperelastic-nav{display:flex;flex-wrap:wrap;gap:8px;max-width:900px;margin:0 auto;padding:14px 24px;border-bottom:1px solid #dbe5f0;background:#fff;font:600 .875rem/1.4 Arial,Helvetica,sans-serif}
+.hyperelastic-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid #cbdcec;border-radius:6px;color:#164d82;text-decoration:none}
+.hyperelastic-nav a:hover{background:#edf6ff;border-color:#0074d9}
+.hyperelastic-nav a[aria-current="page"]{background:#0b2a5b;color:#fff;border-color:#0b2a5b}
+.hyperelastic-nav a:focus-visible,.resource-publication a:focus-visible{outline:3px solid #008cff;outline-offset:3px}
+#tool .hyperelastic-nav{max-width:none;margin:0 0 10px;padding:0 0 10px;border-color:#26364a;background:transparent}
+#tool .hyperelastic-nav a{border-color:#40536a;color:#dbeafe;background:#10233a}
+#tool .hyperelastic-nav a[aria-current="page"]{background:#dbeafe;color:#081d33}
+@media(max-width:560px){.hyperelastic-nav{padding:12px 16px;gap:6px}.hyperelastic-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
+@media print{.hyperelastic-nav{display:none}}
+
+</style>
+<link rel="canonical" href="https://www.makecotech.com/hyperelastic-explorer-help.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="MakeCoTech"/>
+<meta property="og:title" content="MakeCoTech Hyperelastic Explorer v1.0 User Guide | MakeCoTech"/>
+<meta property="og:description" content="User guide for MakeCoTech Hyperelastic Explorer v1.0, covering experimental data entry, hyperelastic fitting, benchmark datasets, ranges and Excel export."/>
+<meta property="og:url" content="https://www.makecotech.com/hyperelastic-explorer-help.html"/>
+<meta name="twitter:card" content="summary"/>
+</head>
+
+<body class="article-page">
+<header class="site-header">
+<a aria-label="MakeCoTech home" class="brand" href="index.html"><img alt="MakeCoTech logo" src="makecotech_logo.png"/></a>
+<button type="button" aria-label="Open menu" aria-expanded="false" aria-controls="site-navigation" class="menu-toggle">☰</button>
+<nav class="nav" id="site-navigation" aria-label="Main navigation">
+<a href="index.html#home">Home</a>
+<a href="index.html#services">Services</a>
+<a href="index.html#industries">Industries</a>
+<a href="index.html#resources">Technical Resources</a>
+<a href="index.html#about">About</a>
+<a href="index.html#founder">Founder</a>
+<a href="index.html#contact">Contact</a>
+</nav>
+</header>
+<nav class="hyperelastic-nav" aria-label="Hyperelastic resources">
+<a href="hyperelastic-material-modeling.html">Article</a>
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Interactive explorer</a>
+<a href="hyperelastic-explorer-help.html" aria-current="page">User guide</a>
+<a href="hyperelastic-explorer-reference-manual-v1.0.html">Reference manual</a>
+</nav>
+
+<main>
+<section class="article-hero">
+<div class="article-container">
+<p class="eyebrow">User Guide</p>
+<h1>MakeCoTech Hyperelastic Explorer v1.0: How to Use the Interactive Module</h1>
+<p class="lead">A practical GUI guide for visualizing nonlinear response, entering experimental data, fitting hyperelastic material models, using the built-in Abaqus benchmark datasets and exporting results.</p>
+<div class="article-meta">
+<span class="article-tag">User Guide</span>
+<span class="article-tag">Hyperelasticity</span>
+<span class="article-tag">Material Fitting</span>
+</div>
+<div class="article-actions">
+<a class="article-btn primary" href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open MakeCoTech Hyperelastic Explorer v1.0</a>
+<a class="article-btn secondary" href="hyperelastic-material-modeling.html">Read the Technical Article</a>
+</div>
+</div>
+</section>
+
+<div class="help-nav"><div class="help-nav-inner">
+<a href="#quick">Quick Start</a><a href="#models">Material Models</a><a href="#range">Ranges</a>
+<a href="#data">Experimental Data</a><a href="#fit">Fitting</a><a href="#benchmark">Benchmarks</a>
+<a href="#export">Excel Export</a><a href="#limits">Limitations</a>
+</div></div>
+
+<div class="article-body">
+
+<section id="quick">
+<span class="article-section-label">Getting Started</span>
+<h2>Quick Start</h2>
+<div class="help-step"><div class="num">1</div><div><h3>Choose a loading mode</h3><p>Select Uniaxial, Equibiaxial, Planar / Pure Shear, Simple Shear or Volumetric loading.</p></div></div>
+<div class="help-step"><div class="num">2</div><div><h3>Choose a material model</h3><p>Select the constitutive law to inspect or fit. The selected model is highlighted in the live charts.</p></div></div>
+<div class="help-step"><div class="num">3</div><div><h3>Enter experimental data</h3><p>Select the deformation and stress definitions, then paste two columns directly from Excel into the 30-row table.</p></div></div>
+<div class="help-step"><div class="num">4</div><div><h3>Select the datasets used for fitting</h3><p>The dataset selector chooses which table is visible. The checkboxes decide which test modes participate in the combined calibration.</p></div></div>
+<div class="help-step"><div class="num">5</div><div><h3>Choose the fitting objective</h3><p>Use Abaqus relative stress error for Abaqus-style comparison, or Standard least squares / RMSE when absolute stress error is preferred.</p></div></div>
+<div class="help-step"><div class="num">6</div><div><h3>Fit and inspect the response</h3><p>Use Fit Selected Model or Fit All Models, then inspect the curves, metrics and extrapolated behavior before transferring coefficients to FEA.</p></div></div>
+</section>
+
+<section id="models">
+<span class="article-section-label">Material Configuration</span>
+<h2>Available material models</h2>
+<div class="comparison-table-wrapper">
+<table class="comparison-table">
+<thead><tr><th>Model</th><th>Parameters</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Linear elastic reference</td><td>E</td><td>Small-strain reference only</td></tr>
+<tr><td>Neo-Hookean</td><td>μ</td><td>Simple one-parameter hyperelastic model</td></tr>
+<tr><td>Mooney–Rivlin</td><td>C10, C01</td><td>Two-invariant form</td></tr>
+<tr><td>Ogden N=1</td><td>μ, α</td><td>Abaqus-style normalization</td></tr>
+<tr><td>Arruda–Boyce</td><td>μ, λm</td><td>Chain-locking formulation</td></tr>
+<tr><td>Yeoh</td><td>C10, C20, C30</td><td>First-invariant polynomial form</td></tr>
+<tr><td>Reduced Polynomial N=2</td><td>C10, C20</td><td>Compact higher-order form</td></tr>
+<tr><td>Van der Waals</td><td>μ, λm, a, β</td><td>β can be fitted or held fixed</td></tr>
+<tr><td>Ogden Hyperfoam N=1</td><td>μ1, α1, ν1</td><td>Inherently compressible; no D or D1</td></tr>
+</tbody>
+</table>
+</div>
+<div class="callout"><p><strong>Hyperfoam:</strong> the tool automatically treats this law as compressible. Its effective ν1 may be fixed or included in the fit. D/D1 is intentionally hidden because Abaqus HYPERFOAM does not use a separate D parameter.</p></div>
+</section>
+
+<section id="range">
+<span class="article-section-label">Display & Calibration Window</span>
+<h2>Display range versus fit range</h2>
+<p><strong>Display Min / Max</strong> controls the chart domain, deformation slider and generated curve range.</p>
+<p><strong>Fit Min / Max</strong> controls which experimental points can participate in calibration when “Restrict fit” is enabled.</p>
+<p><strong>Use Experimental Range</strong> automatically uses the minimum and maximum of the active dataset. The range settings are stored independently for each loading mode.</p>
+<div class="callout"><p>This separation is intentional: you can calibrate only over a trusted experimental interval while still displaying the model outside that range to inspect extrapolation.</p></div>
+</section>
+
+<section id="data">
+<span class="article-section-label">Experimental Input</span>
+<h2>Entering experimental data</h2>
+<p>The tool supports up to 30 points per loading mode and accepts direct two-column paste from Excel.</p>
+<div class="comparison-table-wrapper">
+<table class="comparison-table">
+<thead><tr><th>Mode</th><th>Deformation input</th><th>Stress input</th></tr></thead>
+<tbody>
+<tr><td>Uniaxial / Biaxial / Planar</td><td>Stretch λ or engineering strain %</td><td>Nominal / engineering stress; Cauchy stress is available for incompressible behavior</td></tr>
+<tr><td>Simple shear</td><td>γ or engineering shear %</td><td>Shear stress τ</td></tr>
+<tr><td>Volumetric</td><td>Volume ratio J or volume change %</td><td>Compression pressure p</td></tr>
+</tbody>
+</table>
+</div>
+<p>For compressible normal loading, the tool requires nominal / engineering stress because converting Cauchy stress to nominal stress requires additional lateral-deformation or volume information.</p>
+</section>
+
+<section id="fit">
+<span class="article-section-label">Calibration</span>
+<h2>Fitting the material parameters</h2>
+<p><strong>Fit Selected Model</strong> calibrates the currently selected constitutive law. <strong>Fit All Models</strong> fits the implemented models to the same selected datasets for comparison.</p>
+<h3>Abaqus relative stress error</h3>
+<p>This objective emphasizes relative stress error and is intended for comparison with Abaqus-style hyperelastic calibration.</p>
+<h3>Standard least squares / RMSE</h3>
+<p>This objective minimizes absolute stress residuals and may be more appropriate when absolute error across the measured stress range is the engineering priority.</p>
+<div class="callout warning"><p>A low fitting error does not prove parameter uniqueness, physical stability or reliable extrapolation. Always inspect the material response outside the calibration points.</p></div>
+</section>
+
+<section id="benchmark">
+<span class="article-section-label">Verification Presets</span>
+<h2>What is the difference between the two Abaqus benchmark buttons?</h2>
+<div class="model-grid">
+<div class="model-card"><h3>Abaqus SI Hypertest Benchmark</h3><p>Loads 23 uniaxial, 16 biaxial, 13 planar and 4 volumetric points. The source data are SI-based and the tool displays stress in MPa. Compressible behavior and volumetric fitting are enabled.</p></div>
+<div class="model-card"><h3>Abaqus 2016 Rubber-Fit Benchmark</h3><p>Loads the raw Treloar values from the older fitting example. Nominal strain is converted with λ = 1 + ε and stress with 1 kgf/cm² = 0.0981 MPa. Only uniaxial, biaxial and planar data are used, and the example is treated as incompressible.</p></div>
+</div>
+<p>The 2016 guide reports an all-data Arruda–Boyce result near μ = 3.28 kgf/cm² (about 0.3218 MPa) and λm = 5.24, providing a useful published cross-check.</p>
+</section>
+
+<section id="export">
+<span class="article-section-label">Results & Traceability</span>
+<h2>Excel export</h2>
+<p>The Excel workbook records the tool identity and version, material parameters, test inputs, converted data, generated stress and energy curves, fit metrics and charts.</p>
+<p>When results are referenced in a report, use:</p>
+<div class="equation-box">MakeCoTech Hyperelastic Explorer v1.0, MakeCoTech, 2026</div>
+</section>
+
+<section id="limits">
+<span class="article-section-label">Important Use Limitation</span>
+<h2>Educational and preliminary engineering use</h2>
+<div class="callout warning"><p><strong>This tool does not replace material testing, constitutive-model verification or solver-level validation.</strong> The user remains responsible for checking units, experimental definitions, parameter identifiability, extrapolation, stability and the final FEA implementation. MakeCoTech provides no warranty and accepts no responsibility for analysis failure, design decisions or material-model failure resulting from use of the tool or its outputs.</p></div>
+</section>
+
+<div class="tool-card">
+<h3>MakeCoTech Hyperelastic Explorer <span class="version-badge">v1.0</span></h3>
+<p class="tool-ref"><strong>Reference name:</strong> MakeCoTech Hyperelastic Explorer v1.0, MakeCoTech, 2026.</p>
+<div class="resource-links">
+<a href="MakeCoTech_Hyperelastic_Explorer_v1.0.html">Open Interactive Module</a>
+<a class="alt" href="hyperelastic-material-modeling.html">Technical Article</a>
+</div>
+</div>
+
+</div>
+</main>
+<script>
+const menuToggle=document.querySelector('.menu-toggle');
+const nav=document.querySelector('.nav');
+if(menuToggle&&nav){
+ function setMenu(open){nav.classList.toggle('open',open);menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');}
+ menuToggle.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));
+ nav.addEventListener('click',event=>{if(event.target.closest('a'))setMenu(false);});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&nav.classList.contains('open')){setMenu(false);menuToggle.focus();}});
+}
+</script>
+</body>
+</html>
