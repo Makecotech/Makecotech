@@ -1608,7 +1608,7 @@ function loadTreloarBenchmark(){
 
  behavior.value='compressible';fitObjective.value='abaqus';
  root.querySelectorAll('.use-fit').forEach(cb=>cb.checked=['uniaxial','biaxial','planar','volumetric'].includes(cb.dataset.mode));
- currentMode='uniaxial';$('datasetMode').value='uniaxial';
+ // Keep the active loading mode when the example datasets are replaced.
 
  ['uniaxial','biaxial','planar','volumetric'].forEach(mode=>setRangeFromBenchmark(mode,TRELOAR_ABAQUS[mode]));
 
@@ -1642,7 +1642,7 @@ function loadHyperfoamDemo(){
  });
  Object.keys(fitResults).forEach(k=>delete fitResults[k]);
  root.querySelectorAll('.use-fit').forEach(cb=>cb.checked=true);
- currentMode='uniaxial';$('datasetMode').value='uniaxial';
+ // Keep the active loading mode when the example datasets are replaced.
  updateBehaviorUI();syncRangeControls();loadDatasetUI();
  $('fitStatus').textContent='Synthetic Hyperfoam demo loaded: 14 points each for uniaxial, equibiaxial and planar loading, 13 shear points and 9 volumetric points. Reference μ₁ = 0.5 MPa, α₁ = 2, ν₁ = 0.20. Hyperfoam, fitting of ν₁ and absolute least squares are selected. These are generated model data for demonstrating the fitting workflow.';
  render();
@@ -1922,3 +1922,4 @@ loadDatasetUI();renderFitResults();updateBehaviorUI();updateModeUI();render();
 </script>
 </body>
 </html>
+
