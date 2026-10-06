@@ -1320,12 +1320,14 @@ body.service-dialog-open { overflow: hidden; }
   position: relative;
   z-index: 2;
   display: block;
-  width: calc(100% + 56px);
-  margin: -28px -28px 22px;
+  width: 100%;
+  margin: 0 0 18px;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #061a3d;
-  border-bottom: 1px solid #b8cee5;
+  border: 1px solid #b8cee5;
+  border-radius: 9px;
+  box-shadow: 0 8px 18px rgba(6,26,61,.10);
 }
 
 .resource-publication-motion .resource-motion img {
