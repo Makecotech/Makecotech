@@ -1,24 +1,12 @@
 <?xml version='1.0' encoding='utf-8'?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://www.makecotech.com/</loc>
-  </url>
-  <url>
-    <loc>https://www.makecotech.com/fr/</loc>
-  </url>
-  <url>
-    <loc>https://www.makecotech.com/plasticity-hardening.html</loc>
-  </url>
-  <url>
-    <loc>https://www.makecotech.com/hyperelastic-material-modeling.html</loc>
-  </url>
-  <url>
-    <loc>https://www.makecotech.com/MakeCoTech_Hyperelastic_Explorer_v1.0.html</loc>
-  </url>
-  <url>
-    <loc>https://www.makecotech.com/hyperelastic-explorer-help.html</loc>
-  </url>
-  <url>
-    <loc>https://www.makecotech.com/hyperelastic-explorer-reference-manual-v1.0.html</loc>
-  </url>
+  <url><loc>https://www.makecotech.com/</loc></url>
+  <url><loc>https://www.makecotech.com/fr/</loc></url>
+  <url><loc>https://www.makecotech.com/plasticity-hardening.html</loc></url>
+  <url><loc>https://www.makecotech.com/hyperelastic-material-modeling.html</loc></url>
+  <url><loc>https://www.makecotech.com/MakeCoTech_Hyperelastic_Explorer_v1.0.html</loc></url>
+  <url><loc>https://www.makecotech.com/hyperelastic-explorer-help.html</loc></url>
+  <url><loc>https://www.makecotech.com/hyperelastic-explorer-reference-manual-v1.0.html</loc></url>
+  <url><loc>https://www.makecotech.com/forming-limit-diagram-mk.html</loc></url>
+  <url><loc>https://www.makecotech.com/MakeCoTech_MK_FLD_Explorer_v1.3.5.html</loc></url>
 </urlset>
