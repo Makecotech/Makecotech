@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>MakeCoTech M–K / FLD Explorer v1.3.5 | MakeCoTech</title>
+<style>
+:root{--bg:#08111f;--panel:#0e1a2b;--panel2:#101f33;--txt:#eaf2ff;--muted:#9fb0c8;--line:#2b405f;--accent:#76a9ff;--good:#29d37d;--yellow:#ffd84a;--orange:#ff9438;--red:#ff4d5a;--blue:#4aa3ff}
+*{box-sizing:border-box} body{margin:0;background:#fff;color:var(--txt);font-family:Inter,Segoe UI,Arial,sans-serif}
+.tool-shell{background:linear-gradient(180deg,#07101d,#0a1524);min-height:100vh;padding:14px 0 28px}
+.tool-header{padding:18px 22px;border-bottom:1px solid #1d304b;background:#091421}
+.tool-header h1{font-size:20px;margin:0 0 4px}.sub{color:var(--muted);font-size:12px}
+.wrap{display:grid;grid-template-columns:350px 1fr;gap:14px;padding:14px;max-width:1500px;margin:auto}
+.panel{background:linear-gradient(180deg,var(--panel),#0b1727);border:1px solid #1d314c;border-radius:14px;padding:14px;box-shadow:0 10px 30px #0004}.controls{position:sticky;top:86px;align-self:start;max-height:calc(100vh - 100px);overflow:auto}
+h2{font-size:14px;margin:4px 0 10px}.group{border-top:1px solid #223854;padding-top:10px;margin-top:10px}.row{display:grid;grid-template-columns:1fr 95px;gap:8px;align-items:center;margin:7px 0}.row label{font-size:12px;color:#c9d6e8}.row input,.row select{width:100%;background:#071322;border:1px solid #29425f;color:var(--txt);padding:7px 8px;border-radius:8px}.btns{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.btn{border:1px solid #35577e;background:#102742;color:white;border-radius:9px;padding:8px 11px;cursor:pointer;font-weight:600}.btn.primary{background:#1b5aa4}.btn:hover{filter:brightness(1.12)}
+.main{display:grid;gap:14px}.grid2{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}.simRow{display:grid;grid-template-columns:minmax(0,1fr) 238px;gap:12px;align-items:stretch}.canvasWrap{position:relative;height:430px;min-width:0}.canvasWrap canvas{width:100%;height:100%;display:block;background:radial-gradient(circle at 50% 20%,#132947,#08111f 70%);border-radius:10px}.badge{position:absolute;top:12px;left:12px;padding:7px 9px;border-radius:8px;background:#07111dcc;border:1px solid #29405e;font-size:12px}.inspectPanel{background:#081523;border:1px solid #29425f;border-radius:10px;padding:11px 12px;font-size:11px;line-height:1.48;min-width:0}.inspectPanel h3{margin:0 0 7px;font-size:12px}.inspectPanel .pv{color:#fff;font-weight:650}.inspectPanel .muted{color:#9fb0c8}.inspectPanel .riskLine{height:3px;border-radius:3px;margin:6px 0 8px}.inspectPanel .kv{padding:2px 0;border-bottom:1px solid #162a43}.inspectPanel .kv:last-child{border-bottom:0}.inspectPanel .hint{margin-top:8px;color:#8ea3be;font-size:10px;line-height:1.35}.legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:11px;color:var(--muted)}.sw{display:inline-flex;align-items:center;gap:5px}.dot{width:10px;height:10px;border-radius:3px}
+.metrics{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}.metric{background:#091626;border:1px solid #1f3551;border-radius:10px;padding:10px}.metric b{display:block;font-size:18px}.metric span{font-size:10px;color:var(--muted)}
+.chart{height:280px}.chart canvas{width:100%;height:100%;display:block;background:#081321;border-radius:10px}.note{font-size:11px;line-height:1.45;color:var(--muted)}.status{font-size:12px;margin-top:8px;padding:9px;border:1px solid #29425f;border-radius:9px;background:#081523}.small{font-size:10px;color:#8ea3be}.sliderline{display:grid;grid-template-columns:1fr 70px;gap:8px;align-items:center}.sliderline input[type=range]{width:100%}
+.sheetNav{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#8ea3be;margin:1px 2px 4px}.inspectHint{margin-top:5px;line-height:1.35}
+.mkExplain{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:12px;align-items:stretch}.mkCanvas{height:330px}.mkCanvas canvas{width:100%;height:100%;display:block;background:#081321;border-radius:10px}.mkSide{background:#081523;border:1px solid #29425f;border-radius:10px;padding:11px 12px;font-size:11px;line-height:1.45}.mkSide .kv{padding:3px 0;border-bottom:1px solid #162a43}.mkSide .kv:last-child{border-bottom:0}.mkControls{display:grid;grid-template-columns:1fr 72px;gap:8px;align-items:center;margin:8px 0}.mkControls input[type=range]{width:100%}.flcBuildWrap{margin-top:12px;border-top:1px solid #223854;padding-top:12px}.flcBuildCanvas{height:300px}.flcBuildCanvas canvas{width:100%;height:100%;display:block;background:#081321;border-radius:10px}.deriveStrip{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0 4px}.deriveStep{font-size:11px;color:#cfe1ff;background:#0b1a2c;border:1px solid #29425f;border-radius:8px;padding:6px 8px}.minirow{display:grid;grid-template-columns:1fr 105px;gap:8px;align-items:center;margin:7px 0}.minirow label{font-size:11px;color:#c9d6e8}.minirow input{width:100%;background:#071322;border:1px solid #29425f;color:var(--txt);padding:6px 7px;border-radius:8px}
+.infoBox{background:#091827;border:1px solid #29425f;border-radius:10px;padding:10px 11px;margin:8px 0;font-size:10.5px;line-height:1.48;color:#b9c9dc}.infoBox b{color:#eef5ff}.formula{font-family:Cambria Math,STIX Two Math,serif;font-size:14px;color:#fff;display:block;margin:5px 0}.fldToolbar{display:grid;grid-template-columns:1fr 185px 1fr 185px;gap:8px;align-items:center;margin:0 0 8px}.fldToolbar label{font-size:11px;color:#c9d6e8}.fldToolbar select{width:100%;background:#071322;border:1px solid #29425f;color:var(--txt);padding:6px 7px;border-radius:8px}.curveLegend{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;font-size:10px;color:#9fb0c8}.lineKey{display:inline-flex;gap:6px;align-items:center}.lineSample{display:inline-block;width:22px;height:0;border-top:2px solid #f0c24b}.lineSample.original{border-top-color:#c78cff;border-top-style:dashed}.lineSample.benchmark{border-top-color:#52d6d3;border-top-style:dotted}.cloudSample{display:inline-block;width:24px;height:12px;position:relative}.cloudSample:before,.cloudSample:after{content:'';position:absolute;width:5px;height:5px;border-radius:50%;background:#29d37d;top:3px}.cloudSample:before{left:2px}.cloudSample:after{left:16px;background:#ffd84a}.cloudSample i{position:absolute;width:5px;height:5px;border-radius:50%;background:#4aa3ff;left:9px;top:0}
+
+.liveControls{margin-top:10px;padding:10px 12px;background:#081523;border:1px solid #29425f;border-radius:10px}.liveHead{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:7px}.liveHead b{font-size:12px}.targetOutcome{font-size:10px;color:#cfe1ff}.liveActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}.fldInspector{padding:8px 10px;margin:0 0 8px;background:#091827;border:1px solid #29425f;border-radius:9px}.fldInspectorHead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:4px}.fldInspectorHead b{font-size:11px}.cloudNote{font-size:9.5px;color:#8ea3be;margin-top:5px;line-height:1.35}
+.benchLib{margin-top:10px;padding-top:10px;border-top:1px solid #223854}.benchCard{display:none;margin-top:8px;padding:10px 11px;border:1px solid #29425f;border-radius:10px;background:#081523;font-size:10.5px;line-height:1.45;color:#b9c9dc}.benchCard.show{display:block}.benchCard b{color:#fff}.benchCard .tag{display:inline-block;padding:2px 6px;margin:2px 4px 2px 0;border:1px solid #35577e;border-radius:999px;color:#cfe1ff;background:#0b1a2c}.benchGrid{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;margin-top:6px}.benchGrid div{border-bottom:1px solid #162a43;padding:2px 0}.benchWarn{margin-top:7px;padding:7px 8px;border-left:3px solid #f0c24b;background:#0b1727;color:#d9c892}.benchCompareStatus{margin-top:7px;font-size:10px;color:#9fb0c8;padding:7px 8px;border:1px dashed #29425f;border-radius:8px;background:#071321}.exactTag{color:#86e3ae}.adapterTag{color:#f0c24b}
+.benchResults{display:none;margin-top:10px;padding:10px 12px;border:1px solid #35577e;border-radius:10px;background:#081523;color:#c7d5e7;font-size:10.5px;line-height:1.45}.benchResults.show{display:block}.benchResults h3{font-size:12px;color:#fff;margin:0 0 7px}.compareTable{width:100%;border-collapse:collapse;margin-top:6px}.compareTable th,.compareTable td{padding:5px 7px;border-bottom:1px solid #1a304a;text-align:left}.compareTable th{color:#9fb0c8;font-weight:600}.goodDiff{color:#86e3ae}.warnDiff{color:#f0c24b}.naCell{color:#8ea3be;font-style:italic}.mkNav{display:grid;grid-template-columns:1fr 1.2fr 1fr;gap:6px;margin:8px 0}.mkNav .btn{padding:7px 6px;font-size:10px}.searchBox{padding:8px 9px;border:1px solid #29425f;border-radius:9px;background:#071321;margin:8px 0;font-size:10px;line-height:1.45;color:#b9c9dc}.searchBox b{color:#fff}.curveList{display:grid;gap:4px;margin-top:6px}.curveList span{display:flex;align-items:flex-start;gap:6px}.curveBullet{width:18px;margin-top:6px;border-top:2px solid #f0c24b;flex:0 0 auto}.curveBullet.orig{border-color:#c78cff;border-top-style:dashed}.curveBullet.bench{border-color:#52d6d3;border-top-style:dotted}
+
+.yieldModelGroup{border:1px solid #29425f;border-radius:10px;padding:9px 10px;margin:8px 0;background:#081523}
+.yieldModelGroup .row{margin:6px 0}
+.anisoInputs{display:none;margin-top:8px;padding-top:8px;border-top:1px solid #223854}
+.anisoInputs.show{display:block}
+.yieldPanel{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:14px;align-items:stretch}
+.yieldCanvas{height:360px}
+.yieldCanvas canvas{width:100%;height:100%;display:block;background:#081321;border-radius:10px}
+.yieldSide{background:#081523;border:1px solid #29425f;border-radius:10px;padding:11px 12px;font-size:11px;line-height:1.48}
+.yieldSide .kv{padding:4px 0;border-bottom:1px solid #162a43}.yieldSide .kv:last-child{border-bottom:0}
+.legendLine{display:inline-flex;align-items:center;gap:6px;margin-right:12px}
+.legendLine i{display:inline-block;width:24px;border-top:2px solid #76a9ff}.legendLine.hill i{border-top-color:#ff9438}
+@media(max-width:900px){.yieldPanel{grid-template-columns:1fr}.yieldCanvas{height:320px}}
+@media(max-width:900px){.mkExplain{grid-template-columns:1fr}.fldToolbar{grid-template-columns:1fr 185px}}
+
+/* Auxiliary material-analysis area: visually separated from the main FLD solver */
+.auxPanel{
+  background:linear-gradient(180deg,#17172b,#101626);
+  border-color:#514b7a;
+  box-shadow:inset 0 0 0 1px rgba(156,145,220,.05),0 10px 30px #0004;
+}
+.auxPanel h2{color:#d8d3ff}
+.auxBadge{
+  display:inline-flex;align-items:center;gap:6px;margin:0 0 10px;padding:5px 9px;
+  border:1px solid #6d64a0;border-radius:999px;background:rgba(105,92,155,.18);
+  color:#cfc8ff;font-size:9.5px;font-weight:800;letter-spacing:.02em
+}
+.auxNotice{
+  margin:8px 0 12px;padding:10px 11px;border-left:3px solid #a992ff;
+  background:rgba(100,84,155,.14);color:#d7d2ea;font-size:10.5px;line-height:1.55
+}
+.auxNotice strong{color:#fff}
+
+
+.flcBuildInline{margin-top:10px;padding-top:10px;border-top:1px solid #2c4464;display:flex;flex-direction:column;gap:6px}
+.flcBuildInline .btn{width:100%;font-weight:800}
+.flcBuildState{font-size:10px;line-height:1.4;color:#9fb0c8}
+.flcBuildState.stale{color:#ffcc78}
+.flcBuildState.ready{color:#7ee3a7}
+#downloadFLCExcel:disabled{opacity:.45;cursor:not-allowed}
+
+@media(max-width:1100px){.simRow{grid-template-columns:1fr}.inspectPanel{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px}.inspectPanel h3,.inspectPanel .riskLine,.inspectPanel .hint{grid-column:1/-1}}@media(max-width:980px){.wrap{grid-template-columns:1fr}.controls{position:relative;top:auto;max-height:none}.grid2{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.canvasWrap{height:380px}}@media(max-width:620px){.inspectPanel{display:block}}
+
+/* Dedicated M-K / FLC builder layout */
+#cupPanel{display:none!important}
+@media(min-width:1000px){.wrap{grid-template-columns:285px minmax(0,1fr);max-width:1540px}.grid2{grid-template-columns:1fr}.chart{height:340px}.mkExplain{grid-template-columns:minmax(0,1fr) 330px}.mkCanvas{height:360px}.flcBuildCanvas{height:340px}}
+#mkDerivationPanel{margin-top:12px}
+.mkNav{position:sticky;top:0;background:#081523;padding:7px 0;z-index:3}
+.deriveStrip{position:sticky;top:0;background:#0b1727;padding:8px 0;z-index:2}
+
+/* v1.2 tensile calibration + export */
+.materialCal{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:14px;align-items:start}.curveBox{background:#081523;border:1px solid #29425f;border-radius:10px;padding:11px}.curveBox textarea{width:100%;min-height:210px;resize:vertical;background:#06111e;color:#d8e5f6;border:1px solid #29425f;border-radius:8px;padding:9px;font:11px/1.45 Consolas,monospace}.fitCanvas{height:330px}.fitCanvas canvas{width:100%;height:100%;display:block;background:#081321;border-radius:10px}.fitActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.fitResults{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:8px}.fitChip{background:#0b1a2c;border:1px solid #29425f;border-radius:8px;padding:7px 8px}.fitChip b{display:block;font-size:13px;color:#fff}.fitChip span{font-size:9px;color:#8ea3be}.fitWarn{margin-top:8px;padding:8px 9px;border-left:3px solid #ffb44a;background:rgba(255,180,74,.08);font-size:10px;line-height:1.45;color:#c9d6e8}.hillDirect{display:none}.hillDirect.show{display:block}.hillR{display:none}.hillR.show{display:block}.curveDirRow{display:none}.curveDirRow.show{display:grid}.inlineActions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.downloadBar{display:flex;justify-content:flex-end;gap:8px;margin:7px 0}.readonlyVal{font-family:Consolas,monospace;color:#dceaff}.sourceTag{display:inline-block;border:1px solid #355979;border-radius:999px;padding:2px 7px;font-size:9px;color:#9ec4f3;margin:2px 0}.fitLegend{display:flex;gap:14px;flex-wrap:wrap;margin-top:7px;font-size:10px;color:#a9bad1}.fitLegend i{display:inline-block;width:18px;border-top:2px solid #76a9ff;vertical-align:middle;margin-right:5px}.fitLegend .raw i{border-top:0;width:7px;height:7px;border-radius:50%;background:#fff}.fitLegend .offset i{border-top:2px dashed #ff9438}.fitLegend .swift i{border-top-color:#29d37d}
+@media(max-width:900px){.materialCal{grid-template-columns:1fr}.fitResults{grid-template-columns:repeat(2,minmax(0,1fr))}.fitCanvas{height:300px}}
+
+
+/* v1.3.5 layout refinement */
+.analysisRow{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  align-items:start;
+  margin-top:14px;
+}
+#mkDerivationPanel{
+  margin-top:16px;
+}
+#mkDerivationPanel .mkExplain{
+  grid-template-columns:minmax(0,1.45fr) minmax(330px,.55fr);
+  gap:14px;
+  align-items:start;
+}
+#mkDerivationPanel .mkSide{
+  align-self:start;
+}
+.mkTheoryGrid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+  margin-top:12px;
+}
+.mkTheoryGrid .infoBox{
+  margin:0;
+  min-width:0;
+}
+.mkTheoryGrid .referenceBox{
+  grid-column:1/-1;
+}
+#mkDerivationPanel .mkNav,
+#mkDerivationPanel .deriveStrip{
+  position:relative;
+  top:auto;
+}
+#mkDerivationPanel .flcBuildWrap{
+  margin-top:14px;
+  padding-top:14px;
+}
+#mkDerivationPanel .deriveStrip{
+  border:1px solid #29425f;
+  border-radius:10px;
+  padding:9px;
+  background:#0a1828;
+}
+@media(max-width:1180px){
+  .analysisRow{grid-template-columns:1fr}
+  #mkDerivationPanel .mkExplain{grid-template-columns:1fr}
+  .mkTheoryGrid{grid-template-columns:1fr 1fr}
+  .mkTheoryGrid .referenceBox{grid-column:1/-1}
+}
+@media(max-width:720px){
+  .mkTheoryGrid{grid-template-columns:1fr}
+  .mkTheoryGrid .referenceBox{grid-column:auto}
+}
+
+/* v1.3 FLD-first layout */
+.flcTopPanel .chart{height:500px}
+.analysisRow{display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:14px;align-items:start}
+.analysisRow .yieldPanel{grid-template-columns:1fr}
+.analysisRow .yieldCanvas{height:330px}
+.analysisRow .yieldSide{margin-top:8px}
+.analysisRow #materialCalibrationPanel .materialCal{grid-template-columns:1fr}
+.analysisRow #materialCalibrationPanel .materialCal>div:nth-child(2){order:-1}
+.analysisRow #materialCalibrationPanel .fitCanvas{height:330px}
+.pathGuideNote{margin:7px 0 2px;color:#bd9eea;font-size:10px;line-height:1.45}
+.downloadBar{justify-content:flex-start}
+@media(max-width:1100px){.analysisRow{grid-template-columns:1fr}.flcTopPanel .chart{height:420px}}
+
+/* final v1.3.5 layout overrides */
+.analysisRow{grid-template-columns:repeat(2,minmax(0,1fr))}
+#mkDerivationPanel .mkExplain{grid-template-columns:minmax(0,1.45fr) minmax(330px,.55fr)}
+@media(max-width:1180px){
+  .analysisRow{grid-template-columns:1fr}
+  #mkDerivationPanel .mkExplain{grid-template-columns:1fr}
+}
+
+
+/* Standard MakeCoTech site chrome around the engineering tool. */
+.fld-site-header{position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;padding:14px 7%;background:rgba(6,26,61,.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.12);font-family:Arial,Helvetica,sans-serif}
+.fld-site-header .brand img{display:block;width:230px;max-width:42vw}.fld-site-header .nav{display:flex;gap:28px;align-items:center}.fld-site-header .nav a{color:#fff;text-decoration:none;text-transform:uppercase;font-size:13px;font-weight:700;letter-spacing:.08em;line-height:1.4}.fld-site-header .nav a:hover{color:#22c4ff}.fld-site-header .menu-toggle{display:none;color:#fff;background:none;border:0;padding:4px;font-size:28px;cursor:pointer}.fld-site-header a:focus-visible,.fld-site-header button:focus-visible{outline:3px solid #22c4ff;outline-offset:4px}
+.fld-resource-nav{display:flex;flex-wrap:wrap;gap:8px;max-width:1500px;margin:0 auto;padding:12px 14px;background:#fff;font:600 .875rem/1.4 Arial,Helvetica,sans-serif}.fld-resource-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid #cbdcec;border-radius:6px;color:#164d82;text-decoration:none}.fld-resource-nav a:hover{background:#edf6ff;border-color:#0074d9}.fld-resource-nav a[aria-current="page"]{background:#0b2a5b;color:#fff;border-color:#0b2a5b}
+.tool-disclaimer{max-width:1500px;margin:0 auto 10px;padding:10px 14px;color:#cbd5e1;background:#0b1726;border-top:1px solid #203550;border-bottom:1px solid #203550;font-size:10px;line-height:1.45}.tool-disclaimer strong{color:#fff}
+@media(max-width:1180px){.fld-site-header .menu-toggle{display:block}.fld-site-header .nav{display:none;position:absolute;left:0;right:0;top:100%;padding:20px 7%;flex-direction:column;align-items:flex-start;background:#061a3d}.fld-site-header .nav.open{display:flex}}
+@media(max-width:560px){.fld-site-header .brand img{width:180px}.fld-resource-nav{padding:10px 12px}.fld-resource-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
+</style>
+
+<link rel="icon" href="makecotech_mc_icon.png"/>
+<link rel="canonical" href="https://www.makecotech.com/MakeCoTech_MK_FLD_Explorer_v1.3.5.html"/>
+<meta name="description" content="Free interactive MakeCoTech M-K / FLD Explorer v1.3.5 for numerical forming-limit curve estimation using Swift hardening, von Mises or Hill48 anisotropy, groove-angle scanning and Excel export."/>
+<meta property="og:type" content="website"/><meta property="og:site_name" content="MakeCoTech"/><meta property="og:title" content="MakeCoTech M-K / FLD Explorer v1.3.5"/><meta property="og:description" content="Interactive numerical forming-limit curve estimation with M-K, Swift hardening, von Mises/Hill48 and engineering sensitivity controls."/><meta property="og:url" content="https://www.makecotech.com/MakeCoTech_MK_FLD_Explorer_v1.3.5.html"/><meta name="twitter:card" content="summary"/>
+</head>
+<body>
+<header class="fld-site-header">
+<a class="brand" href="index.html" aria-label="MakeCoTech home"><img src="makecotech_logo.png" alt="MakeCoTech logo"/></a>
+<button type="button" class="menu-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="fld-site-navigation">☰</button>
+<nav class="nav" id="fld-site-navigation" aria-label="Main navigation">
+<a href="index.html#home">Home</a><a href="index.html#services">Services</a><a href="index.html#industries">Industries</a><a href="index.html#resources">Technical Resources</a><a href="index.html#about">About</a><a href="index.html#founder">Founder</a><a href="index.html#contact">Contact</a>
+</nav>
+</header>
+<nav class="fld-resource-nav" aria-label="Forming limit resources"><a href="forming-limit-diagram-mk.html">Article</a><a href="MakeCoTech_MK_FLD_Explorer_v1.3.5.html" aria-current="page">Interactive FLC tool</a></nav>
+<div class="tool-shell">
+<div class="tool-header"><h1>MakeCoTech M–K / FLD Explorer <span style="color:#76a9ff">v1.3.5</span></h1><div class="sub">Dedicated Marciniak–Kuczyński forming-limit derivation • FLD-first workflow • von Mises / Hill48 • Swift calibration • strain-path guides • Excel export</div></div>
+<div class="tool-disclaimer"><strong>Engineering exploration / educational use.</strong> Experimental forming-limit data remains the preferred reference for final validation. This tool provides a numerical M–K engineering estimate whose accuracy depends on constitutive inputs, anisotropy, hardening, strain path, localization criterion and imperfection factor f₀.</div>
+<div class="wrap">
+<section class="panel controls">
+<h2>Case</h2>
+<div class="row"><label>FLC material case</label><select id="preset"><option value="dc06lit">Literature steel — DC06 / Hill48 + Swift</option><option value="aa3003">Published validation — Eyckens AA3003</option><option selected="selected" value="custom">Custom M–K material</option></select></div>
+<div class="btns"><button class="btn primary" id="reset">Reload selected material case</button></div>
+<div class="benchCard" id="benchmarkCard"></div>
+<div class="group" style="display:none"><h2>Geometry</h2>
+<div class="row"><label>Blank radius [mm]</label><input id="blankR" step="1" type="number"/></div>
+<div class="row"><label>Thickness [mm]</label><input id="thick" step="0.01" type="number"/></div>
+<div class="row"><label>Punch radius [mm]</label><input id="punchR" step="0.5" type="number"/></div>
+<div class="row"><label>Punch corner R [mm]</label><input id="punchCR" step="0.5" type="number"/></div>
+<div class="row"><label>Die inner radius [mm]</label><input id="dieR" step="0.25" type="number"/></div>
+<div class="row"><label>Die corner R [mm]</label><input id="dieCR" step="0.5" type="number"/></div>
+<div class="row"><label>Target stroke [mm]</label><input id="strokeMax" step="1" type="number"/></div>
+</div>
+<div class="group" style="display:none"><h2>Process</h2>
+<div class="row"><label>Blank-holder force [kN]</label><input id="bhf" step="5" type="number"/></div>
+<div class="row"><label>μ punch</label><input id="muP" step="0.01" type="number"/></div>
+<div class="row"><label>μ die / holder</label><input id="muD" step="0.01" type="number"/></div>
+</div>
+<div class="group"><h2>M–K material / solver</h2>
+<select id="materialMode" style="display:none"><option selected value="direct">Direct Swift parameters</option></select>
+<div class="infoBox"><b>Inputs used by the FLC solver</b>Enter the actual material parameters directly below. The auxiliary Swift-fitting calculator further down the page is intentionally separate and does <b>not</b> update the FLC calculation automatically.</div>
+<div class="row"><label>Young's modulus E [GPa]</label><input id="E" step="0.1" type="number"/></div>
+<div class="row"><label>Poisson ratio ν</label><input id="nu" max="0.499" min="0" step="0.01" type="number"/></div>
+<div class="yieldModelGroup">
+<div class="row"><label>Yield model</label><select id="yieldModel"><option value="mises">von Mises — isotropic</option><option value="hill48">Hill48 — planar anisotropy</option></select></div>
+<div class="small">The yield model is used inside the M–K matrix/groove equilibrium solve. Swift hardening remains isotropic in both options.</div>
+<div class="anisoInputs" id="anisoInputs">
+<div class="row"><label>Hill48 calibration</label><select id="hillCal"><option value="r">From r-values (Hill48-r)</option><option value="direct">Direct F, G, H, N coefficients</option></select></div>
+<div class="hillR" id="hillRInputs">
+<div class="row"><label>r₀ — uniaxial along RD</label><input id="r0" min="0.05" step="0.01" type="number" value="1"/></div>
+<div class="row"><label>r₄₅ — uniaxial at 45°</label><input id="r45" min="0.05" step="0.01" type="number" value="1"/></div>
+<div class="row"><label>r₉₀ — uniaxial along TD</label><input id="r90" min="0.05" step="0.01" type="number" value="1"/></div>
+</div>
+<div class="hillDirect" id="hillDirectInputs">
+<div class="row"><label>Hill48 F</label><input id="hF" min="0.001" step="0.001" type="number" value="0.5"/></div>
+<div class="row"><label>Hill48 G</label><input id="hG" min="0.001" step="0.001" type="number" value="0.5"/></div>
+<div class="row"><label>Hill48 H</label><input id="hH" min="0.001" step="0.001" type="number" value="0.5"/></div>
+<div class="row"><label>Hill48 N</label><input id="hN" min="0.001" step="0.001" type="number" value="1.5"/></div>
+<div class="small">Direct coefficients are normalized internally by G+H so the RD uniaxial flow stress remains the scalar Swift flow stress. In this in-plane, no-TTS tool only F, G, H and N enter the plane-stress calculation.</div>
+</div>
+<div class="row"><label>RD angle α to global x₁ [deg]</label><input id="rdAngle" max="90" min="-90" step="1" type="number" value="0"/></div>
+<div class="small">α defines material orientation relative to the global major-strain axis x₁. The groove angle φ₀ is independent. r-values require transverse/thickness plastic-strain information; they cannot be obtained from an axial stress–strain curve alone.</div>
+</div>
+</div>
+<div class="row"><label>Swift initial flow stress Y₀ [MPa]</label><input id="sy" step="1" type="number"/></div>
+<div class="row"><label>Strength coefficient K [MPa]</label><input id="K" step="1" type="number"/></div>
+<div class="row"><label>Hardening exponent n</label><input id="n" step="0.001" type="number"/></div>
+<div class="row"><label>Swift prestrain ε₀</label><input id="eps0" min="0" step="0.0001" type="number"/></div>
+<div class="row"><label>M–K imperfection f₀</label><input id="f0" max="1" min="0.95" step="0.001" type="number"/></div>
+<div class="row"><label>M–K localization ratio</label><input id="mkCrit" max="30" min="3" step="1" type="number"/></div>
+<div class="row"><label>Groove-angle step [deg]</label><input id="angleStep" max="45" min="1" step="1" type="number"/></div>
+<div class="flcBuildInline">
+  <button class="btn primary" id="flcBuildPlayTop">▶ Build whole FLC</button>
+  <div class="flcBuildState ready" id="flcBuildStateTop">Current FLC is up to date.</div>
+</div>
+<div class="infoBox"><b>Swift isotropic hardening</b><span class="formula">σ̄ = K (ε₀ + ε̄ᵖ)ⁿ</span><span class="formula">σᵧ = K ε₀ⁿ   at   ε̄ᵖ = 0</span><b>K</b> [MPa] scales the flow stress, <b>n</b> controls work hardening, and <b>ε₀</b> sets the initial yield level. With Hill48, only the <i>yield-surface shape / plastic-flow direction</i> becomes anisotropic; the scalar Swift hardening law remains isotropic.</div>
+<div class="small">σᵧ and ε₀ are kept consistent with σᵧ = K ε₀ⁿ. Editing σᵧ updates ε₀; editing K, n or ε₀ updates σᵧ. Set groove step to 1° for the paper's angular resolution.</div>
+</div>
+<div class="status" id="status"></div>
+<div class="note" style="margin-top:10px"><b>Model scope.</b> This dedicated FLC builder solves the conventional M–K matrix/groove problem with Swift hardening, evolving groove orientation, compatibility along the groove, normal/tangential traction equilibrium, thickness evolution and a thickness-strain-rate localization criterion. Choose <b>von Mises</b> for isotropic yielding or <b>Hill48</b> for planar anisotropy calibrated from r-values. Through-thickness shear, anisotropic hardening, texture evolution and non-proportional loading remain outside this version.</div>
+</section>
+<section class="main">
+<div class="panel" id="cupPanel" style="display:none">
+<div class="simRow">
+<div class="canvasWrap"><canvas id="cup"></canvas><div class="badge" id="badge"></div></div>
+<aside aria-live="polite" class="inspectPanel" id="inspectPanel">
+<h3>Selected material point</h3>
+<div class="riskLine" id="ipRisk"></div>
+<div class="kv"><span class="muted">Material ring</span><br/><span class="pv" id="ipRing">—</span></div>
+<div class="kv"><span class="muted">Original R₀</span><br/><span class="pv" id="ipR0">—</span></div>
+<div class="kv"><span class="muted">Current (r,z)</span><br/><span class="pv" id="ipPos">—</span></div>
+<div class="kv"><span class="muted">Zone</span><br/><span class="pv" id="ipZone">—</span></div>
+<div class="kv"><span class="muted">Thickness / Δt</span><br/><span class="pv" id="ipThick">—</span></div>
+<div class="kv"><span class="muted">Equivalent flow stress</span><br/><span class="pv" id="ipStress">—</span></div>
+<div class="kv"><span class="muted">Principal in-plane strains</span><br/><span class="pv" id="ipStrain">—</span></div>
+<div class="kv"><span class="muted">FLD point (ε₂, ε₁)</span><br/><span class="pv" id="ipFLD">—</span></div>
+<div class="kv"><span class="muted">M–K utilization / margin</span><br/><span class="pv" id="ipMK">—</span></div>
+<div class="hint">The marker moves on the sheet; this information panel stays fixed so it never obscures the cup.</div>
+</aside>
+</div>
+<div class="liveControls">
+<div class="liveHead"><b>Punch stroke — watch the cup and FLD move together</b><span class="targetOutcome" id="targetOutcome">Target prediction —</span></div>
+<div class="sliderline"><input id="stroke" max="60" min="0" step="0.25" type="range"/><input id="strokeNum" step="0.25" type="number"/></div>
+<div class="liveActions"><button class="btn" id="animate">▶ Animate Draw</button><button class="btn" id="goTarget">Go to target stroke</button></div>
+<div class="small">Changing any geometry/process/material parameter still resets this slider to 0 mm. The target prediction remains visible so you can immediately see whether the new setup is expected to reach the M–K split limit.</div>
+</div>
+<div class="legend"><span class="sw"><span class="dot" style="background:#29d37d"></span>Safe</span><span class="sw"><span class="dot" style="background:#ffd84a"></span>Approaching limit</span><span class="sw"><span class="dot" style="background:#ff9438"></span>High risk</span><span class="sw"><span class="dot" style="background:#ff4d5a"></span>Failure / localization</span><span class="sw"><span class="dot" style="background:#4aa3ff"></span>Wrinkling tendency (indicator)</span></div>
+<div class="metrics"><div class="metric"><b id="mForce">0</b><span>Estimated punch force [kN]</span></div><div class="metric"><b id="mThin">0%</b><span>Minimum thickness change</span></div><div class="metric"><b id="mEdgeThick">0%</b><span>Outer-edge thickness change</span></div><div class="metric"><b id="mRisk">0%</b><span>Maximum formability utilization</span></div><div class="metric"><b id="mWrinkle">0%</b><span>Wrinkling tendency index</span></div></div>
+<div class="benchResults" id="benchmarkResultsPanel"></div>
+</div><div class="panel flcTopPanel"><h2>Forming Limit Diagram (FLD) — calculated FLC &amp; strain-path guides</h2>
+<div class="fldToolbar"><label>Available FLC curves</label><select id="fldCompare"><option selected="" value="all">All: current + 1967-style + AA3003 benchmark</option><option value="current_benchmark">Current + AA3003 benchmark</option><option value="current_original">Current + 1967-style</option><option value="current">Current all-angle M–K only</option><option value="original">1967-style fixed-groove only</option><option value="benchmark">Eyckens AA3003 benchmark only</option></select><label style="display:none">FLD material-point cloud</label><select id="fldCloud" style="display:none"><option selected="" value="dense">Dense cloud + 100 solved rings</option><option value="solved">100 solved rings only</option><option value="focus">Selected + critical only</option></select></div>
+<div class="fldInspector" style="display:none">
+<div class="fldInspectorHead"><b>Sheet material-point inspector — directly linked to the FLD</b><span class="small">original blank coordinate R₀ [mm]</span></div>
+<div class="sheetNav"><span>← left edge</span><span>center</span><span>right edge →</span></div>
+<div class="sliderline"><input id="inspect" max="100" min="-100" step="1" type="range" value="70"/><input id="inspectNum" step="1" type="number" value="70"/></div>
+</div>
+<div class="chart"><canvas id="fld"></canvas></div><div class="downloadBar"><button class="btn primary" id="downloadFLCExcel">↓ Download Excel + plotted FLC</button></div>
+<div class="curveLegend"><span class="lineKey"><span class="lineSample"></span>Current M–K: all-angle scan</span><span class="lineKey"><span class="lineSample original"></span>1967-style calculation: fixed φ₀=0°, RHS only</span><span class="lineKey"><span class="lineSample benchmark"></span>Eyckens 2009 AA3003 traditional M–K — digitized Fig. 5</span></div><div class="pathGuideNote"><b>Strain-path guides:</b> uniaxial compression · pure shear · uniaxial tension · plane strain · biaxial tension · equibiaxial tension</div>
+<div class="pathGuideNote"><b>FLD zones:</b> <span style="color:#77e09a">safe</span> = below 84% of the current FLC and above the wrinkle indicator · <span style="color:#f0c24b">near split</span> = 84–100% of the FLC · <span style="color:#ff8585">split</span> = above the FLC · <span style="color:#78b9ff">wrinkle tendency</span> = compression-side indicator below the blue dashed boundary. These shaded zones are visual engineering guides, not additional material criteria.</div>
+<div class="small">The larger colored dots are the <b>100 independently solved radial material rings</b> used by the reduced-order cup model. The cyan dotted reference is an <b>approximate digitization of the traditional M–K curve in Figure 5 of Eyckens et al. for AA3003</b>; it is a like-for-like benchmark only when the AA3003 case is loaded <b>and the yield model is von Mises</b>, matching the paper. The digitization is intended for validation/trend comparison, not as a replacement for the authors’ original numerical dataset. In dense-cloud mode, smaller translucent points and a faint ribbon are interpolated <b>between adjacent solved rings</b> to represent the continuous annular material between them. They make the display visually closer to an FE postprocessor, but they are <b>not additional FE integration points and do not add new physics</b>. Each point moves as punch stroke changes. The blue-outlined dot remains the slider-selected ring. The yellow curve is the current paper-aligned conventional M–K FLC. The dashed violet comparison uses the original 1967 groove-orientation assumption: a thinner groove running along the minor-strain direction, i.e. groove normal n aligned with the major-strain direction (φ₀=0°), and is shown only on the right-hand side. It uses the same current material and the same modern numerical localization detector so the effect of groove-angle treatment can be compared directly; it is <b>not</b> a digitized 1967 published curve.</div>
+<div class="infoBox"><b>How to read the FLD.</b> A material point below the selected M–K FLC has not yet reached the modelled localized-necking limit. Reaching/crossing the curve means the M–K localization condition has been met for that proportional strain path. The blue wrinkle region is a separate reduced-order compression indicator and is <b>not</b> part of M–K.</div><div class="infoBox"><b>Which M–K criterion is actually used?</b> The <b>yellow current curve</b> uses the Eyckens-type numerical criterion used by this solver: <span class="formula">|D₃₃ᵇ| / |D₃₃ᵃ| ≥ C<sub>loc</sub></span>with default <b>C<sub>loc</sub>=10</b>, or loss of a solution to the groove equilibrium problem. The <b>violet 1967-style comparison curve</b> fixes φ₀=0° to reproduce the original groove-orientation assumption, but deliberately uses the <i>same modern detector</i> so only the groove-orientation assumption changes.</div>
+</div><div class="analysisRow"><div class="panel auxPanel" id="yieldAuxPanel">
+<div class="auxBadge">AUXILIARY VISUALIZATION</div>
+<h2>Yield locus — von Mises / Hill48</h2>
+<div class="auxNotice"><strong>This plot is a visualization.</strong> It reflects the yield-model parameters entered in the main M–K material/solver panel above. Edit the actual von Mises / Hill48 inputs there; this graph itself does not define a separate material card.</div>
+<div class="yieldPanel">
+<div>
+<div class="yieldCanvas"><canvas id="yieldLocus"></canvas></div>
+<div class="curveLegend"><span class="legendLine"><i></i>von Mises reference</span><span class="legendLine hill"><i></i>Hill48 from current anisotropy / RD angle</span></div>
+<div class="small">Plane-stress section in the global σ₁–σ₂ plane with global τ₁₂ = 0. For Hill48, the stress state is rotated into the material RD–TD axes before evaluating the yield function, so changing the RD angle α changes the section seen in global axes. At α = 0°, r₄₅ mainly affects shear/off-axis yielding and therefore has little effect on this zero-global-shear section.</div>
+</div>
+<aside class="yieldSide">
+<div class="kv"><span class="muted">Active constitutive model</span><br/><span class="pv" id="yieldActive">—</span></div>
+<div class="kv"><span class="muted">Material orientation</span><br/><span class="pv" id="yieldOrient">—</span></div>
+<div class="kv"><span class="muted">Hill48 coefficients</span><br/><span class="pv" id="yieldCoeff">—</span></div>
+<div class="kv"><span class="muted">Directional uniaxial yield ratios predicted by current Hill48</span><br/><span class="pv" id="yieldRatios">—</span></div>
+<div class="infoBox"><b>Important:</b> r-values calibrate plastic-flow anisotropy. A quadratic Hill48 model generally cannot independently fit every measured r-value and every measured directional yield stress at the same time. Use <b>Hill48-r</b> when r-values are the primary calibration data, or <b>direct F,G,H,N</b> when a published/identified Hill48 parameter set is available. The yield-locus plot is an auxiliary visualization of the main material inputs; one quadratic Hill48 surface generally cannot fit every r-value and every directional yield stress independently.</div>
+</aside>
+</div>
+</div><div class="panel auxPanel" id="materialCalibrationPanel">
+<div class="auxBadge">AUXILIARY FITTING CALCULATOR</div>
+<h2>True plastic curve → Swift fit</h2>
+<div class="auxNotice"><strong>Important:</strong> this fitting calculator is <b>not connected to the FLC calculation</b>. Use it only to estimate Swift parameters from experimental data. If you want those fitted values in the M–K/FLC calculation, manually enter the resulting <b>Y₀, K, n and ε₀</b> in the main M–K material/solver inputs above. Young's modulus E is also entered separately in the main input panel.</div>
+<div class="materialCal">
+<div class="curveBox">
+<select id="curveFormat" style="display:none"><option selected value="truePlastic">True plastic strain + true stress</option></select>
+<select id="curveEChoice" style="display:none"><option selected value="model">Main-model E</option></select>
+<select id="curveDir" style="display:none"><option selected value="RD">RD</option></select>
+<label class="small" for="curveData"><b>True plastic strain [-] &nbsp; + &nbsp; true stress [MPa]</b></label>
+<div class="small" style="margin:5px 0 8px">Enter only the plastic hardening data. The first row should represent the onset of plastic flow: <b>ε̄ᵖ = 0 with non-zero yield stress</b> — do not add a (0,0) point. The values below are an editable example.</div>
+<textarea id="curveData" spellcheck="false">0.0000    148.4
+0.0020    162.2
+0.0050    177.4
+0.0100    195.5
+0.0200    220.1
+0.0400    251.5
+0.0600    273.1
+0.0800    289.9
+0.1200    315.9
+0.1600    335.9
+0.2000    352.4</textarea>
+<div class="fitWarn" id="curveHint"><b>Swift fit only.</b> The calculator fits σ̄ = K(ε₀ + ε̄ᵖ)ⁿ to the data shown here. It does not convert engineering data, does not fit the elastic region, and does not automatically send the fitted values to the FLC solver.</div>
+</div>
+<div>
+<div class="fitCanvas"><canvas id="curveFit"></canvas></div>
+<div class="fitLegend"><span class="raw"><i></i>experimental / entered points</span><span class="swift"><i></i>Swift fit</span></div>
+<div class="fitActions"><button class="btn primary" id="analyzeCurve">Fit Swift law</button><button class="btn" id="clearCurve">Reload example data</button></div>
+<div class="fitResults">
+<div class="fitChip"><b id="fitCount">0</b><span>valid plastic points</span></div>
+<div class="fitChip"><b id="fitK">—</b><span>Swift K [MPa]</span></div>
+<div class="fitChip"><b id="fitN">—</b><span>Swift n</span></div>
+<div class="fitChip"><b id="fitEps0">—</b><span>Swift ε₀</span></div>
+<div class="fitChip"><b id="fitY0">—</b><span>Swift Y₀ [MPa]</span></div>
+<div class="fitChip"><b id="fitRmse">—</b><span>fit RMSE [MPa]</span></div>
+</div>
+<div class="small" id="fitStatus">Editable example data are loaded. Press <b>Fit Swift law</b> to calculate K, n, ε₀ and Y₀.</div>
+</div>
+</div>
+<div class="infoBox"><b>Data convention</b>Use <b>true plastic strain</b> and <b>true stress</b> only. Young's modulus and Poisson's ratio are not fitted here; enter them directly in the main FLC material inputs.</div>
+</div>
+
+
+
+</div>
+
+<div class="panel" id="mkDerivationPanel">
+<h2>How one M–K point becomes the FLC</h2>
+<div class="mkExplain">
+<div>
+<div class="mkCanvas"><canvas id="mkAnim"></canvas></div>
+<div class="small">This animation shows the <b>inner M–K calculation</b> used to create one FLD point. For a chosen matrix strain ratio ρ₂₂, many initial groove orientations φ₀ are tested. The orientation that localizes at the lowest matrix major strain is the critical groove; its matrix strains at localization become one point of the FLC.</div>
+</div>
+<aside class="mkSide">
+<div class="minirow"><label>Matrix strain ratio ρ₂₂</label><input id="mkBeta" max="1" min="-0.5" step="0.05" type="number" value="-0.30"/></div>
+<div class="infoBox"><b>What is ρ₂₂?</b><span class="formula">ρ₂₂ = D₂₂ᵃ / D₁₁ᵃ = dε₂ᵃ / dε₁ᵃ</span>It is the imposed in-plane strain-rate ratio of the homogeneous matrix <i>a</i>. For a monotonic proportional path, one number defines the direction of the strain path while D₁₁ᵃ only sets its rate/scale. For isotropic von Mises plasticity, useful landmarks are <b>−0.5</b> = uniaxial-tension strain path, <b>0</b> = plane strain, and <b>1</b> = equibiaxial stretching. With Hill48, the strain ratio produced by a uniaxial stress test depends on the r-values and material orientation.</div><div class="searchBox" id="mkSearchInfo"></div><div class="infoBox"><b>Available FLC curves in this tool</b><div class="curveList"><span><i class="curveBullet"></i><span><b>Current all-angle M–K</b> — recalculated from the current K, n, ε₀, f₀, C<sub>loc</sub> and groove-angle step.</span></span><span><i class="curveBullet orig"></i><span><b>1967-style fixed-groove calculation</b> — same current material and modern detector, but φ₀=0°; RHS only. This isolates the historical groove-orientation assumption and is not a digitized 1967 curve.</span></span><span><i class="curveBullet bench"></i><span><b>Eyckens AA3003 benchmark</b> — approximate digitization of the published traditional-M–K curve in Figure 5 for f₀=0.998, K=184 MPa, ε₀=0.00196, n=0.224.</span></span></div></div>
+<div class="mkNav"><button class="btn" id="mkPrev">← Previous FLD point</button><button class="btn" id="mkPlay">▶ Run current FLD point</button><button class="btn" id="mkNext">Next FLD point →</button></div><div class="btns"><button class="btn" id="mkRestart">↺ Restart current point</button></div>
+<div class="mkControls"><input id="mkProgress" max="100" min="0" step="1" type="range" value="0"/><input id="mkProgressNum" max="100" min="0" step="1" type="number" value="0"/></div>
+<div class="kv"><span class="muted">Initial critical groove φ₀</span><br/><span class="pv" id="mkPhi0">—</span></div>
+<div class="kv"><span class="muted">Current groove φ</span><br/><span class="pv" id="mkPhi">—</span></div>
+<div class="kv"><span class="muted">Matrix major/minor strain</span><br/><span class="pv" id="mkStrain">—</span></div>
+<div class="kv"><span class="muted">Matrix / groove thickness</span><br/><span class="pv" id="mkThickness">—</span></div>
+<div class="kv"><span class="muted">Thickness-strain-rate ratio</span><br/><span class="pv" id="mkRatio">—</span></div>
+<div class="kv"><span class="muted">State</span><br/><span class="pv" id="mkState">—</span></div>
+<div class="kv"><span class="muted">Derivation step</span><br/><span class="pv" id="mkDeriveStep">—</span></div>
+<div class="kv"><span class="muted">Resulting FLD limit point</span><br/><span class="pv" id="mkPoint">—</span></div>
+<div class="small" style="margin-top:8px">φ₀ is scanned to find the earliest localization for the chosen ρ₂₂. The current φ changes during deformation; it is not held equal to φ₀. The matrix strains at that earliest localization are stored as one FLC point.</div>
+
+
+</aside>
+</div><div class="mkTheoryGrid"><div class="infoBox"><b>Original M–K (1967): physical instability criterion.</b> The original paper describes loss of stability as <b>progressive strain concentration in the thinner groove</b>, while deformation in the adjacent uniform sheet progressively fades; the limiting surrounding-sheet strain is the forming limit ε*. It does <b>not</b> introduce the later universal “10× thickness-strain-rate” threshold used below.</div><div class="infoBox"><b>Numerical M–K criterion used by this tool / Eyckens formulation.</b><span class="formula">|D₃₃ᵇ| / |D₃₃ᵃ| ≥ C<sub>loc</sub></span>The Eyckens paper uses <b>C<sub>loc</sub> = 10</b> and a second criterion: localization is also declared if the nonlinear groove equilibrium/compatibility problem no longer has an acceptable solution. The paper notes that the precise large number has little influence because the groove thinning rate rises extremely rapidly near incipient localization. The editable “M–K localization ratio” is C<sub>loc</sub>.</div><div class="infoBox"><b>Abaqus M–K style criterion — for comparison.</b> Abaqus/Explicit can monitor groove-to-nominal deformation-severity ratios for <b>equivalent plastic deformation, normal deformation, and tangential deformation</b>; the default critical severity factors are 10. Setting all severity factors to zero makes the Abaqus M–K check rely on nonconvergence of the equilibrium/compatibility equations. <b>This tool currently uses the Eyckens thickness-strain-rate detector above, not the full Abaqus three-severity implementation.</b></div><div class="infoBox referenceBox"><b>Reference basis.</b><br/>Marciniak &amp; Kuczyński (1967), <i>Limit Strains in the Processes of Stretch-Forming Sheet Metal</i>, International Journal of Mechanical Sciences 9, 609–620, DOI 10.1016/0020-7403(67)90066-5.<br/><br/>Eyckens, Van Bael &amp; Van Houtte (2009), <i>Marciniak–Kuczynski type modelling of the effect of Through-Thickness Shear on the forming limits of sheet metal</i>, International Journal of Plasticity 25, 2249–2268, DOI 10.1016/j.ijplas.2009.02.002.</div></div>
+<div class="flcBuildWrap">
+<div class="deriveStrip"><span class="deriveStep"><b>1</b> change ρ₂₂ → next strain path</span><span class="deriveStep"><b>2</b> scan all φ₀</span><span class="deriveStep"><b>3</b> find first localization</span><span class="deriveStep"><b>4</b> store (ε₂*, ε₁*)</span><span class="deriveStep"><b>5</b> repeat → FLC</span><button class="btn" id="flcBuildPlay">▶ Build whole FLC</button><span class="flcBuildState ready" id="flcBuildStateBottom">Current FLC is up to date.</span></div>
+<div class="flcBuildCanvas"><canvas id="flcBuild"></canvas></div>
+<div class="small">Left: necking major strain obtained for each tested initial groove orientation φ₀ at the selected ρ₂₂; the minimum is the critical groove. Right: the corresponding limit point is placed at (ε₂, ε₁) = (ρ₂₂ ε₁*, ε₁*). Repeating this outer loop for different ρ₂₂ values constructs the FLC point-by-point.</div>
+<div class="infoBox"><b>Original 1967-style versus later full-FLD construction.</b> The original M–K concept assumed an initially thinner, infinitely long groove oriented along the minor-strain direction and used the onset of strain localization / loss of stability to identify the limiting surrounding-sheet strain. Later full-FLD M–K formulations scan possible initial groove orientations and retain the lowest major strain at localization. In the comparison curve above, the original <b>geometry/orientation assumption</b> is isolated by fixing φ₀=0°; the same modern 10×/equilibrium detector is deliberately retained for both curves. Therefore the violet line is a controlled <i>1967-style calculation</i>, not the historical published 1967 FLC itself.</div>
+</div>
+</div>
+<div class="panel note"><b>Reference basis.</b> The conventional M–K formulation and AA3003 validation parameters follow Eyckens, Van Bael &amp; Van Houtte (2009), which revisits the conventional model and uses f₀=0.998, K=184 MPa, ε₀=0.00196 and n=0.224 for AA3003. The historical comparison is labelled “1967-style” because it fixes the groove orientation assumption while retaining the same modern numerical localization detector; it is not a digitized copy of the 1967 curve.</div>
+</section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const ids=['blankR','thick','punchR','punchCR','dieR','dieCR','strokeMax','bhf','muP','muD','E','nu','sy','K','n','eps0','f0','mkCrit','angleStep','r0','r45','r90','hF','hG','hH','hN','rdAngle'];
+const bench={blankR:100,thick:.82,punchR:50,punchCR:13,dieR:51.25,dieCR:5,strokeMax:60,bhf:100,muP:.25,muD:.10,E:211,nu:.30,sy:91.3,K:513,n:.223,eps0:.000435,f0:.995,mkCrit:10,angleStep:15};
+const paperAA3003={E:70,nu:.33,sy:45.53,K:184,n:.224,eps0:.00196,f0:.998,mkCrit:10,angleStep:5,r0:1,r45:1,r90:1,hF:.5,hG:.5,hH:.5,hN:1.5,rdAngle:0};
+// Published DC06 1.0 mm constitutive set from Neto et al., Int. J. Material Forming 19, 35 (2026), DOI 10.1007/s12289-026-02002-0.
+// Paper: E=210 GPa, nu=0.30, Swift Y0=119.9 MPa, K=542.6 MPa, n=0.276; Hill48 F=.275, G=.369, H=.631, L=M=1.5, N=1.496.
+// eps0 follows the paper's Swift relation eps0=(Y0/K)^(1/n). f0 and localization settings below are tool assumptions, not values from that constitutive paper.
+const dc06Literature={E:210,nu:.30,sy:119.9,K:542.6,n:.276,eps0:.0042113185,f0:.995,mkCrit:10,angleStep:5,r0:1.710,r45:1.823,r90:2.295,hF:.275,hG:.369,hH:.631,hN:1.496,rdAngle:0};
+// NUMISHEET 2016 BM3 room-temperature AA5086-H111 cup. Geometry/process/E/nu/yield are published benchmark values.
+// Swift K/n/eps0 below are an approximate room-temperature adapter for this tool's isotropic Swift law, not official benchmark constitutive parameters.
+const numi2016RT={blankR:30,thick:.80,punchR:16.5,punchCR:5,dieR:17.625,dieCR:5,strokeMax:32.5,bhf:5,muP:.09,muD:.09,E:71.7,nu:.31,sy:138.5,K:547.6,n:.3446,eps0:.01852,f0:.995,mkCrit:10,angleStep:15};
+const benchmarkRefs={
+  abaqus:{title:'Abaqus cylindrical deep-drawing example',kind:'Published solver benchmark',inputs:'Blank R 100 mm • t₀ 0.82 mm • punch R 50 mm • punch corner 13 mm • die inner R 51.25 mm • die corner 5 mm • BHF 100 kN • stroke 60 mm • μ punch 0.25 • μ die/holder 0.10',material:'AK steel • E 211 GPa • ν 0.30 • K 513 MPa • n 0.223',measured:'Published end-state thickness targets used here: about −12% in the cylindrical wall and +16% at the outer edge. The source also contains punch-force results, but a numerical force curve is not embedded in this tool.',adapter:'No extra material adapter beyond this tool’s current isotropic Swift/J2 assumptions.',targets:{wallThin:-12,edgeThick:16}},
+  numi2016:{title:'NUMISHEET 2016 Benchmark 3 / AutoForm — AA5086-H111, room temperature',kind:'Experimental benchmark + AutoForm submission',inputs:'Blank Ø60 mm • t₀ 0.8 mm • punch Ø33 mm • punch/die corner R 5 mm • radial clearance 1.125 mm • BHF 5 kN • target stroke 32.5 mm • punch speed 5 mm/s • recommended μ = 0.09',material:'Published RT: E 71.7 GPa • ν 0.31 • RD YS 138.5 MPa • DD YS 135.0 MPa • TD YS 138.8 MPa • r₀ 0.71 • r₄₅ 1.08 • r₉₀ 0.73',measured:'Benchmark outputs include punch force–stroke, thickness distribution along RD/DD/TD, earing, temperature and springback/ring opening.',adapter:'Current tool is axisymmetric, isothermal and isotropic. K=547.6 MPa, n=0.3446 and ε₀=0.01852 are an approximate Swift adapter for the public RT response; f₀=0.995 is a tool assumption, not a NUMISHEET input. Raw experimental force/thickness point tables are not embedded, so no fake overlay is shown.',targets:null},
+  dc06lit:{title:'DC06 mild steel — published Hill48 + Swift constitutive set',kind:'Literature constitutive material preset',inputs:'DC06 mild steel • 1.0 mm sheet in the cited study • room-temperature uniaxial characterization in RD/45°/TD',material:'E 210 GPa • ν 0.30 • measured Rₚ0.2 = 140.17 / 147.42 / 148.53 MPa (RD/45°/TD) • r = 1.710 / 1.823 / 2.294 • Swift Y₀ 119.9 MPa • K 542.6 MPa • n 0.276 • ε₀≈0.004211 • Hill48 F 0.275, G 0.369, H 0.631, N 1.496 • DOI 10.1007/s12289-026-02002-0',measured:'The cited paper calibrates Swift from the RD tensile curve and Hill48 from measured r-values. The coefficients used here are the published 1.0 mm DC06 set.',adapter:'Constitutive values are loaded directly. M–K imperfection f₀=0.995, C_loc=10 and groove-angle step are tool assumptions/settings because the cited DC06 paper is not an M–K FLC benchmark.',targets:null},
+  aa3003:{title:'Eyckens–Van Bael–Van Houtte AA3003 M–K validation case',kind:'Published M–K / FLC reference case',inputs:'This is an FLC material case, not a cylindrical-cup experiment. Cup geometry is retained only so the material can be explored in the same interface.',material:'AA3003 • f₀ 0.998 • K 184 MPa • ε₀ 0.00196 • n 0.224 • conventional M–K groove-angle search',measured:'The uploaded paper publishes FLC figures and the M–K formulation. A digitized numerical FLC point table is not embedded in this version.',adapter:'The material/formability parameters are loaded directly from the paper; the retained cup geometry is not part of that paper benchmark.',targets:null}
+};
+window.MK_ONLY_MODE=true;
+let flcVisited=new Set();
+const CURVE_EXAMPLE=`0.0000    148.4
+0.0020    162.2
+0.0050    177.4
+0.0100    195.5
+0.0200    220.1
+0.0400    251.5
+0.0600    273.1
+0.0800    289.9
+0.1200    315.9
+0.1600    335.9
+0.2000    352.4`;
+const tensileStore={RD:CURVE_EXAMPLE,DD:'',TD:''}, tensileAnalysis={RD:null,DD:null,TD:null};
+let activeCurveDir='RD';
+let anim=null,mkAnimRAF=null,flcBuildRAF=null,flcBuildCount=0,flcDisplayReady=true,mkExplainCache={key:'',beta:null,trace:null,limit:null,scan:null}, mkCache={key:'',curve:null}, mkOriginalCache={key:'',curve:null}, drawCache={key:'',states:null}, targetPredCache={key:'',pred:null};
+// Approximate digitization of the thick traditional-M–K curve in Eyckens et al. (2009), Fig. 5, AA3003, rho13=rho23=0.
+// Coordinates are (minor strain e2*, major strain e1*); use for benchmark/trend comparison, not as an exact author dataset.
+const EYCKENS_AA3003_FLC=[[-.205,.410],[-.184,.370],[-.160,.333],[-.136,.302],[-.112,.276],[-.086,.254],[-.058,.237],[-.030,.227],[0,.224],[.040,.273],[.087,.332],[.148,.404],[.225,.482],[.315,.553],[.414,.620],[.520,.678],[.632,.729],[.744,.773]];
+const MK_BETAS=[-.5,-.4,-.3,-.2,-.1,0,.15,.3,.5,.7,1];
+function stopAnimations(){if(anim){cancelAnimationFrame(anim);anim=null;$('animate').textContent='▶ Animate Draw'}if(mkAnimRAF){cancelAnimationFrame(mkAnimRAF);mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point'}if(flcBuildRAF){cancelAnimationFrame(flcBuildRAF);flcBuildRAF=null;$('flcBuildPlay').textContent='▶ Build whole FLC'}}
+function setFLCBuildButtonText(label){
+  const a=$('flcBuildPlay'),b=$('flcBuildPlayTop');
+  if(a)a.textContent=label;
+  if(b)b.textContent=label;
+}
+function refreshFLCBuildState(){
+  const msg=flcDisplayReady?'Current FLC is up to date.':'Inputs changed — rebuild the FLC.';
+  for(const id of ['flcBuildStateTop','flcBuildStateBottom']){
+    const el=$(id);if(!el)continue;el.textContent=msg;el.classList.toggle('ready',flcDisplayReady);el.classList.toggle('stale',!flcDisplayReady);
+  }
+  const dl=$('downloadFLCExcel');if(dl)dl.disabled=!flcDisplayReady;
+}
+function invalidateFLC(){
+  flcDisplayReady=false;
+  flcBuildCount=0;
+  flcVisited.clear();
+  if(flcBuildRAF){cancelAnimationFrame(flcBuildRAF);flcBuildRAF=null;}
+  setFLCBuildButtonText('▶ Build whole FLC');
+  refreshFLCBuildState();
+}
+function resetStroke(){stopAnimations();$('stroke').value=0;$('strokeNum').value='0.00';}
+function clearModelCaches(){mkCache={key:'',curve:null};mkOriginalCache={key:'',curve:null};drawCache={key:'',states:null};mkExplainCache={key:'',beta:null,trace:null,limit:null};}
+function finishPreset(name){$('preset').value=name;$('stroke').max=v('strokeMax');resetStroke();syncInspectRange();$('inspect').value=.70*v('blankR');$('inspectNum').value=(.70*v('blankR')).toFixed(1);clearModelCaches();$('mkProgress').value=0;$('mkProgressNum').value=0;renderBenchmarkCard();invalidateFLC();update();}
+function setBench(){for(const k in bench)if($(k))$(k).value=bench[k];finishPreset('abaqus');}
+function setNumi2016(){for(const k in numi2016RT)if($(k))$(k).value=numi2016RT[k];finishPreset('numi2016');}
+function setPaperAA3003(){for(const k in bench)if($(k))$(k).value=bench[k];for(const k in paperAA3003)if($(k))$(k).value=paperAA3003[k];$('yieldModel').value='mises';$('hillCal').value='r';$('materialMode').value='direct';for(const d of ['RD','DD','TD'])tensileAnalysis[d]=null;syncYieldInputs();finishPreset('aa3003');}
+function setDC06Literature(){for(const k in bench)if($(k))$(k).value=bench[k];for(const k in dc06Literature)if($(k))$(k).value=dc06Literature[k];$('yieldModel').value='hill48';$('hillCal').value='direct';$('materialMode').value='direct';tensileAnalysis.RD={Rp:140.17,literature:true};tensileAnalysis.DD={Rp:147.42,literature:true};tensileAnalysis.TD={Rp:148.53,literature:true};syncYieldInputs();finishPreset('dc06lit');}
+function setCustomDefaults(){
+  for(const k in bench)if($(k))$(k).value=bench[k];
+  const custom={E:210,nu:.30,sy:148.40,K:500,n:.22,eps0:.004,f0:.995,mkCrit:10,angleStep:5,r0:1,r45:1,r90:1,hF:.5,hG:.5,hH:.5,hN:1.5,rdAngle:0};
+  for(const k in custom)if($(k))$(k).value=custom[k];
+  $('yieldModel').value='mises';$('hillCal').value='r';$('materialMode').value='direct';
+  tensileStore.RD=CURVE_EXAMPLE;tensileStore.DD='';tensileStore.TD='';for(const d of ['RD','DD','TD'])tensileAnalysis[d]=null;
+  syncYieldInputs();finishPreset('custom');
+}
+
+function renderBenchmarkCard(){const key=$('preset').value,card=$('benchmarkCard'),btn=$('reset');if(key==='custom'){card.classList.remove('show');card.innerHTML='';btn.disabled=false;return;}const b=benchmarkRefs[key];btn.disabled=false;card.classList.add('show');card.innerHTML=`<b>${b.title}</b><br><span class="tag">${b.kind}</span><div class="benchGrid"><div><span class="exactTag">Published setup</span></div><div>${b.inputs}</div><div><span class="exactTag">Published material</span></div><div>${b.material}</div><div><span class="exactTag">Reference outputs</span></div><div>${b.measured}</div><div><span class="adapterTag">How this tool uses it</span></div><div>${b.adapter}</div></div>`;}
+function resetSelectedPreset(){const key=$('preset').value;if(key==='dc06lit')setDC06Literature();else if(key==='aa3003')setPaperAA3003();else if(key==='abaqus')setBench();else setCustomDefaults();}
+function updateBenchmarkResults(pred){const key=$('preset').value,panel=$('benchmarkResultsPanel');if(key==='custom'){panel.classList.remove('show');panel.innerHTML='';return;}const b=benchmarkRefs[key];panel.classList.add('show');if(key==='abaqus'){
+  const dThin=pred.targetThin-b.targets.wallThin,dEdge=pred.targetEdge-b.targets.edgeThick;
+  const clsThin=Math.abs(dThin)<=3?'goodDiff':'warnDiff',clsEdge=Math.abs(dEdge)<=4?'goodDiff':'warnDiff';
+  panel.innerHTML=`<h3>Benchmark results comparison — target stroke ${v('strokeMax').toFixed(1)} mm</h3><div class="small">Published reference values are kept separate from the reduced-order prediction.</div><table class="compareTable"><thead><tr><th>Quantity</th><th>Published reference</th><th>MakeCoTech model</th><th>Difference</th></tr></thead><tbody><tr><td>Minimum / wall thickness change</td><td>≈ ${b.targets.wallThin.toFixed(0)}%</td><td>${pred.targetThin.toFixed(1)}%</td><td class="${clsThin}">${dThin>=0?'+':''}${dThin.toFixed(1)} %-pt</td></tr><tr><td>Outer-edge thickness change</td><td>≈ +${b.targets.edgeThick.toFixed(0)}%</td><td>${pred.targetEdge>=0?'+':''}${pred.targetEdge.toFixed(1)}%</td><td class="${clsEdge}">${dEdge>=0?'+':''}${dEdge.toFixed(1)} %-pt</td></tr><tr><td>Punch-force curve</td><td>Published in benchmark source</td><td>${pred.targetForce.toFixed(1)} kN at target</td><td class="naCell">raw reference curve not embedded</td></tr></tbody></table>`;
+}else if(key==='numi2016'){
+  panel.innerHTML=`<h3>Benchmark results comparison — NUMISHEET 2016 / AutoForm</h3><div class="benchWarn"><b>Inputs are loaded from the published benchmark, but the raw experimental force/thickness point tables are not embedded yet.</b> This version therefore does not fabricate an experimental overlay.</div><table class="compareTable"><tbody><tr><td>Model punch force at ${v('strokeMax').toFixed(1)} mm</td><td>${pred.targetForce.toFixed(1)} kN</td></tr><tr><td>Model minimum thickness change</td><td>${pred.targetThin.toFixed(1)}%</td></tr><tr><td>Model outer-edge thickness change</td><td>${pred.targetEdge>=0?'+':''}${pred.targetEdge.toFixed(1)}%</td></tr><tr><td>Published experimental overlays</td><td class="naCell">not yet embedded</td></tr></tbody></table>`;
+}else{
+  panel.innerHTML=`<h3>Benchmark results comparison — AA3003 M–K case</h3><div class="small">The published case supplies M–K material parameters and FLC figures, not a cylindrical-cup result table. The current yellow FLC is the tool prediction for those paper inputs. A digitized paper FLC is not embedded, so no artificial numerical overlay is shown.</div>`;
+}}
+function v(id){return parseFloat($(id).value)||0}
+function clamp(x,a,b){return Math.max(a,Math.min(b,x))}
+function lerp(a,b,t){return a+(b-a)*t}
+function smoothstep(x){x=clamp(x,0,1);return x*x*(3-2*x)}
+function riskColor(u,wr=0){if(wr>.82 && u<.72)return '#4aa3ff'; if(u<.60)return '#29d37d';if(u<.80)return '#ffd84a';if(u<1)return '#ff9438';return '#ff4d5a'}
+function syncInspectRange(){
+  const B=Math.max(1,v('blankR'));const s=$('inspect'),n=$('inspectNum');s.min=-B;s.max=B;
+  let x=parseFloat(s.value);if(!isFinite(x))x=.7*B;x=clamp(x,-B,B);s.value=x;n.value=x.toFixed(1);
+}
+function inspectionFor(M){
+  const B=Math.max(1e-9,M.p.blankR),raw=clamp(parseFloat($('inspect').value)||0,-B,B),side=raw<0?-1:1;
+  const idx=clamp(Math.round(Math.abs(raw)/B*(M.rings.length-1)),0,M.rings.length-1),ring=M.rings[idx];
+  return {ring,side,index:idx,signedR0:side*ring.r0};
+}
+function fmtSigned(x,d=3){return (x>=0?'+':'')+x.toFixed(d)}
+
+// ---------------- M–K solver: von Mises or Hill48 + Swift hardening ----------------
+function syncYieldInputs(){
+  const hill=$('yieldModel')&&$('yieldModel').value==='hill48',direct=hill&&$('hillCal')&&$('hillCal').value==='direct';
+  if($('anisoInputs'))$('anisoInputs').classList.toggle('show',hill);
+  if($('hillRInputs'))$('hillRInputs').classList.toggle('show',hill&&!direct);
+  if($('hillDirectInputs'))$('hillDirectInputs').classList.toggle('show',direct);
+  if($('curveDirRow'))$('curveDirRow').classList.toggle('show',false);
+  if($('curveDir')){$('curveDir').value='RD';activeCurveDir='RD';}
+}
+function hardeningOffset(p){if(isFinite(p.eps0)&&p.eps0>0)return p.eps0;if(p.K<=0||p.n<=0)return 1e-4;return Math.pow(Math.max(1e-9,p.sy/p.K),1/p.n)}
+function initialYield(p){return p.K*Math.pow(Math.max(1e-12,hardeningOffset(p)),Math.max(.01,p.n))}
+function flowStress(ep,p){const e0=hardeningOffset(p);return p.K*Math.pow(Math.max(1e-12,e0+Math.max(0,ep)),Math.max(.01,p.n))}
+function eqIncTensor(dnn,dtt,dnt){const d33=-(dnn+dtt);return Math.sqrt((2/3)*(dnn*dnn+dtt*dtt+d33*d33+2*dnt*dnt))}
+function rotateTensor(a,b,ab,theta){
+  const c=Math.cos(theta),s=Math.sin(theta),cs=s*c;
+  return {nn:a*c*c+b*s*s+2*ab*cs,tt:a*s*s+b*c*c-2*ab*cs,nt:(b-a)*cs+ab*(c*c-s*s)};
+}
+function hillCoeffs(p){
+  if((p.hillCal||'r')==='direct'){
+    let F=Math.max(1e-8,p.hF||.5),G=Math.max(1e-8,p.hG||.5),H=Math.max(1e-8,p.hH||.5),N=Math.max(1e-8,p.hN||1.5);
+    const scale=Math.max(1e-12,G+H);F/=scale;G/=scale;H/=scale;N/=scale;
+    const r0=H/G,r90=H/F,r45=N/(F+G)-.5;
+    return {F,G,H,N,A:G+H,C:F+H,r0,r45,r90,direct:true};
+  }
+  const r0=Math.max(.05,Math.abs(p.r0||1)),r45=Math.max(.05,Math.abs(p.r45||1)),r90=Math.max(.05,Math.abs(p.r90||1));
+  const G=1/(1+r0),H=r0/(1+r0),F=H/r90;
+  const N=(r0+r90)*(1+2*r45)/(2*r90*(1+r0));
+  return {F,G,H,N,A:G+H,C:F+H,r0,r45,r90,direct:false};
+}
+function hillEquivalentStress(s1,s2,t12,p){
+  const c=hillCoeffs(p);
+  return Math.sqrt(Math.max(0,c.A*s1*s1+c.C*s2*s2-2*c.H*s1*s2+2*c.N*t12*t12));
+}
+function stressFromTensor(dnn,dtt,dnt,epBase,p,frameAngle=0){
+  const model=p.yieldModel||'mises';
+  if(model!=='hill48'){
+    const deq=eqIncTensor(dnn,dtt,dnt),ep=epBase+deq;
+    const A11=2*dnn+dtt,A22=dnn+2*dtt,A12=dnt;
+    const den=Math.sqrt(Math.max(1e-20,A11*A11-A11*A22+A22*A22+3*A12*A12));
+    const sb=flowStress(ep,p), c=den>1e-14?sb/den:0;
+    return {nn:c*A11,tt:c*A22,nt:c*A12,eq:sb,ep,deq};
+  }
+  // Hill48 with associated flow. The groove-frame strain increment is rotated
+  // to material RD-TD axes, the associated-flow relation is inverted to obtain
+  // the stress direction, and plastic work gives the equivalent strain increment.
+  const alpha=(p.rdAngle||0)*Math.PI/180,theta=alpha-frameAngle;
+  const dm=rotateTensor(dnn,dtt,dnt,theta),hc=hillCoeffs(p);
+  const det=hc.A*hc.C-hc.H*hc.H;
+  if(Math.abs(det)<1e-14)return {nn:0,tt:0,nt:0,eq:0,ep:epBase,deq:0};
+  const s1raw=(hc.C*dm.nn+hc.H*dm.tt)/det;
+  const s2raw=(hc.H*dm.nn+hc.A*dm.tt)/det;
+  const traw=dm.nt/Math.max(1e-12,hc.N);
+  const q=Math.sqrt(Math.max(1e-24,hc.A*s1raw*s1raw+hc.C*s2raw*s2raw-2*hc.H*s1raw*s2raw+2*hc.N*traw*traw));
+  const u1=s1raw/q,u2=s2raw/q,ut=traw/q;
+  const deq=Math.max(0,u1*dm.nn+u2*dm.tt+2*ut*dm.nt),ep=epBase+deq,sb=flowStress(ep,p);
+  const sg=rotateTensor(sb*u1,sb*u2,sb*ut,-theta);
+  return {nn:sg.nn,tt:sg.tt,nt:sg.nt,eq:sb,ep,deq};
+}
+function transformA(d1,d2,theta){return rotateTensor(d1,d2,0,theta)}
+function norm2(a,b){return Math.sqrt(a*a+b*b)}
+function solve2x2(a,b,c,d,e,f){const det=a*d-b*c;if(Math.abs(det)<1e-16)return null;return [(e*d-b*f)/det,(a*f-e*c)/det]}
+function solveGrooveIncrement(A,state,p,x0,y0,phi){
+  const sA=stressFromTensor(A.nn,A.tt,A.nt,state.epA,p,phi),epAt=sA.ep,tAt=state.tA*Math.exp(-(A.nn+A.tt));
+  const scale=Math.max(1e-9,Math.abs(tAt*sA.eq));
+  function F(x,y){const sB=stressFromTensor(x,A.tt,y,state.epB,p,phi),epBt=sB.ep,tBt=state.tB*Math.exp(-(x+A.tt));return {r1:(tBt*sB.nn-tAt*sA.nn)/scale,r2:(tBt*sB.nt-tAt*sA.nt)/scale,epBt,tBt}}
+  let x=x0,y=y0;
+  for(let it=0;it<24;it++){
+    const f=F(x,y),n0=norm2(f.r1,f.r2);if(n0<2e-8)return {ok:true,x,y,epAt,tAt,epBt:f.epBt,tBt:f.tBt};
+    const hx=Math.max(1e-8,Math.abs(x)*2e-4,Math.abs(A.nn)*2e-4),hy=Math.max(1e-8,Math.abs(y)*2e-4,Math.abs(A.nt)*2e-4);
+    const fx=F(x+hx,y),fy=F(x,y+hy);
+    const J11=(fx.r1-f.r1)/hx,J21=(fx.r2-f.r2)/hx,J12=(fy.r1-f.r1)/hy,J22=(fy.r2-f.r2)/hy;
+    const d=solve2x2(J11,J12,J21,J22,-f.r1,-f.r2);if(!d)return {ok:false};
+    let accepted=false,lam=1;
+    for(let ls=0;ls<8;ls++){const xn=x+lam*d[0],yn=y+lam*d[1],fn=F(xn,yn);if(norm2(fn.r1,fn.r2)<n0){x=xn;y=yn;accepted=true;break}lam*=.5}
+    if(!accepted || !isFinite(x) || !isFinite(y))return {ok:false};
+    const ref=Math.max(Math.abs(A.nn),Math.abs(A.tt),Math.abs(A.nt),1e-6);if(Math.abs(x)>120*ref||Math.abs(y)>120*ref)return {ok:false};
+  }
+  return {ok:false};
+}
+function mkRun(beta,phi0deg,p,targetE1=.75,stepE1=.004,record=false){
+  let st={epA:0,epB:0,tA:1,tB:p.f0},e1A=0,e2A=0,xPrev=null,yPrev=null,ratio=1,phi=phi0deg*Math.PI/180;
+  const trace=[]; if(record)trace.push({e1:0,e2:0,phi0:phi0deg,phi:phi0deg,tA:1,tB:p.f0,ratio:1,state:'initial'});
+  while(e1A<targetE1-1e-10){
+    const h=Math.min(stepE1,targetE1-e1A),d2=beta*h;
+    // Eq. (12) of Eyckens et al.: groove direction rotates with the matrix deformation.
+    phi=Math.atan(Math.exp(e1A-e2A)*Math.tan(phi0deg*Math.PI/180));
+    const A=transformA(h,d2,phi);
+    const x0=xPrev===null?A.nn*1.01:xPrev*(h/stepE1),y0=yPrev===null?A.nt:yPrev*(h/stepE1);
+    const sol=solveGrooveIncrement(A,st,p,x0,y0,phi);
+    if(!sol.ok){if(record)trace.push({e1:e1A+h,e2:e2A+d2,phi0:phi0deg,phi:phi*180/Math.PI,tA:st.tA,tB:st.tB,ratio,state:'loss of equilibrium'});return {failed:true,e1:e1A+h,e2:e2A+d2,reason:'loss of equilibrium',ratio,thicknessRatio:st.tB/st.tA,theta:phi0deg,phi0:phi0deg,phi:phi*180/Math.PI,trace};}
+    const d33A=-(A.nn+A.tt),d33B=-(sol.x+A.tt);
+    ratio=Math.abs(d33A)>1e-14?Math.abs(d33B/d33A):1;
+    st={epA:sol.epAt,epB:sol.epBt,tA:sol.tAt,tB:sol.tBt};xPrev=sol.x;yPrev=sol.y;e1A+=h;e2A+=d2;
+    phi=Math.atan(Math.exp(e1A-e2A)*Math.tan(phi0deg*Math.PI/180));
+    if(record)trace.push({e1:e1A,e2:e2A,phi0:phi0deg,phi:phi*180/Math.PI,tA:st.tA,tB:st.tB,ratio,state:ratio>=p.mkCrit?'localized':'stable'});
+    if(ratio>=p.mkCrit)return {failed:true,e1:e1A,e2:e2A,reason:'thickness-rate localization',ratio,thicknessRatio:st.tB/st.tA,theta:phi0deg,phi0:phi0deg,phi:phi*180/Math.PI,trace};
+  }
+  return {failed:false,e1:targetE1,e2:beta*targetE1,reason:'stable',ratio,thicknessRatio:st.tB/st.tA,theta:phi0deg,phi0:phi0deg,phi:phi*180/Math.PI,trace};
+}
+function grooveScanBounds(p){return (p.yieldModel||'mises')==='hill48'?[-90,90]:[0,90]}
+function criticalForBeta(beta,p,recordBest=false){
+  beta=clamp(beta,-.5,1);
+  const step=Math.max(1,Math.min(45,Math.round(p.angleStep||5))),maxE=.75,[amin,amax]=grooveScanBounds(p);
+  let best={e1:maxE,theta:0,phi0:0,phi:0,reason:'> scan range',ratio:1,thicknessRatio:p.f0,censored:true};
+  for(let a=amin;a<=amax+1e-9;a+=step){const r=mkRun(beta,a,p,maxE,.006,false);if(r.failed&&r.e1<best.e1)best={e1:r.e1,theta:a,phi0:a,phi:r.phi,reason:r.reason,ratio:r.ratio,thicknessRatio:r.thicknessRatio,censored:false};}
+  if(recordBest){const run=mkRun(beta,best.phi0,p,Math.min(maxE,best.e1),.0035,true);best.trace=run.trace;best.phi=run.phi;best.ratio=run.ratio;best.thicknessRatio=run.thicknessRatio;best.reason=run.reason;}
+  return {beta,e1crit:best.e1,e2crit:beta*best.e1,theta:best.phi0,phi0:best.phi0,phi:best.phi,reason:best.reason,censored:best.censored,ratio:best.ratio,thicknessRatio:best.thicknessRatio,trace:best.trace||null};
+}
+function mkAngleScan(beta,p){
+  beta=clamp(beta,-.5,1);const step=Math.max(1,Math.min(45,Math.round(p.angleStep||5))),maxE=.75,out=[],bounds=grooveScanBounds(p);
+  for(let a=bounds[0];a<=bounds[1]+1e-9;a+=step){const r=mkRun(beta,a,p,maxE,.006,false);out.push({phi0:a,e1:r.failed?r.e1:maxE,e2:beta*(r.failed?r.e1:maxE),failed:r.failed,reason:r.reason,phi:r.phi,ratio:r.ratio});}
+  return out;
+}
+function mkKey(p){return [p.yieldModel||'mises',p.hillCal||'r',p.K,p.n,p.eps0,p.f0,p.mkCrit,p.angleStep,p.r0||1,p.r45||1,p.r90||1,p.hF||.5,p.hG||.5,p.hH||.5,p.hN||1.5,p.rdAngle||0].map(x=>typeof x==='string'?x:(+x).toFixed(7)).join('|')}
+function getMKCurve(p){
+  const key=mkKey(p);if(mkCache.key===key&&mkCache.curve)return mkCache.curve;
+  const betas=MK_BETAS;
+  const curve=betas.map(b=>criticalForBeta(b,p));mkCache={key,curve};return curve;
+}
+function getOriginalStyleMKCurve(p){
+  const key=mkKey(p)+'|1967-fixed-phi0';if(mkOriginalCache.key===key&&mkOriginalCache.curve)return mkOriginalCache.curve;
+  // Original-style comparison: fixed groove normal parallel to major-strain direction (phi0=0°), RHS only.
+  // This intentionally keeps the current constitutive law and current localization detector for an apples-to-apples comparison.
+  const betas=[0,.1,.2,.3,.4,.5,.6,.7,.85,1],maxE=.75;
+  const curve=betas.map(beta=>{const r=mkRun(beta,0,p,maxE,.0045,false),e1=r.failed?r.e1:maxE;return {beta,e1crit:e1,e2crit:beta*e1,theta:0,phi0:0,phi:r.phi,reason:r.reason,censored:!r.failed,ratio:r.ratio,thicknessRatio:r.thicknessRatio};});
+  mkOriginalCache={key,curve};return curve;
+}
+function limitAtBeta(beta,curve){
+  const requested=beta;beta=clamp(beta,curve[0].beta,curve[curve.length-1].beta);const outside=requested<curve[0].beta||requested>curve[curve.length-1].beta;
+  for(let i=1;i<curve.length;i++)if(beta<=curve[i].beta){const a=curve[i-1],b=curve[i],t=(beta-a.beta)/(b.beta-a.beta);return {e1crit:lerp(a.e1crit,b.e1crit,t),theta:lerp(a.theta,b.theta,t),censored:a.censored&&b.censored,outside}}
+  const q=curve[curve.length-1];return {e1crit:q.e1crit,theta:q.theta,censored:q.censored,outside};
+}
+
+// ---------------- Axisymmetric flange-equilibrium / draw-in solver ----------------
+function inverseFlowEp(sig,p){
+  const sy0=initialYield(p);if(sig<=sy0)return 0;
+  const e0=hardeningOffset(p);return Math.max(0,Math.pow(Math.max(sig,sy0)/Math.max(1e-9,p.K),1/Math.max(.02,p.n))-e0);
+}
+function drawKey(p){return [p.blankR,p.thick,p.punchR,p.punchCR,p.dieR,p.dieCR,p.strokeMax,p.bhf,p.muD,p.E,p.K,p.n,p.eps0].map(x=>(+x).toFixed(7)).join('|')}
+function integrateFlangeProfile(Rin,ro,p,ri,q){
+  const B=p.blankR,t0=Math.max(.02,p.thick),mu=Math.max(0,p.muD),N=64;
+  const prof=[];let sigmaR=0,plasticTerm=0,frictionTerm=0;
+  const denR=Math.max(1e-12,ro*ro-ri*ri),denR0=Math.max(1e-12,B*B-Rin*Rin);
+  for(let j=0;j<N;j++){
+    const a=j/(N-1),r=ro-(ro-ri)*a;
+    // Equal-annular-area label mapping is only a coordinate map; local thickness
+    // is then recovered from associated flow and incompressibility below.
+    const u=clamp((r*r-ri*ri)/denR,0,1);
+    const R0=Math.sqrt(Math.max(1e-12,Rin*Rin+u*denR0));
+    const eTheta=Math.log(Math.max(1e-9,r)/Math.max(1e-9,R0));
+    let eq=Math.sqrt(4/3)*Math.abs(eTheta),sigmaTheta=0,eRad=-.5*eTheta,eThick=-(eRad+eTheta),sf=flowStress(eq,p);
+    // Local J2 plane-stress state. The compressive branch is selected for the
+    // hoop stress. Associated-flow strain ratios then give thickness evolution.
+    for(let it=0;it<7;it++){
+      sf=flowStress(eq,p);
+      const srFlow=Math.min(Math.max(0,sigmaR),1.145*sf);
+      const disc=Math.max(0,4*sf*sf-3*srFlow*srFlow);
+      sigmaTheta=.5*(srFlow-Math.sqrt(disc));
+      const den=2*sigmaTheta-srFlow;
+      let k=Math.abs(den)>1e-9?(2*srFlow-sigmaTheta)/den:-2.5;
+      k=clamp(k,-2.5,-.08);
+      eRad=k*eTheta;
+      eThick=-(eRad+eTheta);
+      const eqNew=Math.sqrt((2/3)*(eRad*eRad+eTheta*eTheta+eThick*eThick));
+      eq=.45*eq+.55*eqNew;
+    }
+    sf=flowStress(eq,p);
+    const t=clamp(t0*Math.exp(eThick),.45*t0,1.65*t0);
+    prof.push({r,R0,eRad,eTheta,eThick,eq,t,sigmaR,sigmaTheta,sf});
+    if(j<N-1){
+      const r2=ro-(ro-ri)*(j+1)/(N-1),dr=Math.max(0,r-r2);
+      const dPl=Math.max(0,sigmaR-sigmaTheta)/Math.max(.2,r)*dr;
+      const dFr=2*mu*q/Math.max(.02,t)*dr;
+      plasticTerm+=dPl;frictionTerm+=dFr;sigmaR+=dPl+dFr;
+    }
+  }
+  return {profile:prof,radialStress:sigmaR,plasticTerm,frictionTerm};
+}
+function flangeVolume(profile){
+  if(!profile||profile.length<2)return 0;let V=0;
+  for(let i=1;i<profile.length;i++){
+    const a=profile[i-1],b=profile[i],dr=Math.abs(a.r-b.r);
+    V+=2*Math.PI*.5*(a.r*a.t+b.r*b.t)*dr;
+  }
+  return V;
+}
+function profileAtR0(profile,R0){
+  if(!profile||!profile.length)return null;
+  if(R0>=profile[0].R0)return profile[0];
+  if(R0<=profile[profile.length-1].R0)return profile[profile.length-1];
+  for(let i=1;i<profile.length;i++){
+    const a=profile[i-1],b=profile[i];
+    if(R0<=a.R0 && R0>=b.R0){
+      const u=(a.R0-R0)/Math.max(1e-12,a.R0-b.R0),o={};
+      for(const k of Object.keys(a))o[k]=(typeof a[k]==='number')?lerp(a[k],b[k],u):a[k];
+      return o;
+    }
+  }
+  return profile[profile.length-1];
+}
+function flangeState(stroke,Rin,p,G,Rideal){
+  const ri=G.top.x,B=p.blankR,t0=Math.max(.02,p.thick);
+  const targetV=Math.PI*t0*Math.max(0,B*B-Rin*Rin);
+  let ro=Math.sqrt(Math.max(ri*ri,ri*ri+B*B-Rin*Rin)),pack=null,q=0;
+  // Thickness and current flange width are coupled through volume conservation.
+  // A few relaxed iterations are enough for this reduced-order solve.
+  for(let it=0;it<7;it++){
+    const area=Math.PI*Math.max(1e-9,ro*ro-ri*ri);
+    q=ro>ri+1e-7?(p.bhf*1000)/area:0;
+    pack=integrateFlangeProfile(Rin,ro,p,ri,q);
+    const V=flangeVolume(pack.profile);
+    if(targetV<=1e-9||V<=1e-9)break;
+    const roTarget=Math.sqrt(Math.max(ri*ri,ri*ri+(ro*ro-ri*ri)*targetV/V));
+    const next=.58*ro+.42*clamp(roTarget,ri,Math.max(ri,B));
+    if(Math.abs(next-ro)<2e-5){ro=next;break}ro=next;
+  }
+  const area=Math.PI*Math.max(1e-9,ro*ro-ri*ri);q=ro>ri+1e-7?(p.bhf*1000)/area:0;
+  pack=integrateFlangeProfile(Rin,ro,p,ri,q);
+  const profile=pack.profile,width=Math.max(0,ro-ri),inner=profile[profile.length-1]||null,outer=profile[0]||null;
+  const epFlange=inner?inner.eq:0,sf=inner?inner.sf:flowStress(0,p);
+  const tDie=inner?inner.t:t0;
+  const bendStress=sf*tDie/(2*Math.max(.25,p.dieCR+tDie*.5));
+  const drawGrowth=Math.max(0,Rideal-ri),sliding=1-Math.exp(-drawGrowth/Math.max(.75,.70*p.dieCR));
+  const capstan=Math.exp(Math.max(0,p.muD)*Math.max(0,G.phi));
+  const demand=sliding*(pack.radialStress+bendStress)*capstan;
+  const E=Math.max(1,p.E)*1000, slender=width/Math.max(.05,outer?outer.t:t0);
+  let hoopComp=0;for(const z of profile)hoopComp=Math.max(hoopComp,-z.sigmaTheta);
+  const holderSuppression=.35+Math.max(0,p.bhf)/75;
+  const wrinkle=width>2*t0?clamp(.65*slender*Math.sqrt(Math.max(0,hoopComp)/E)/holderSuppression,0,1.5)*sliding:0;
+  const avgT=targetV>1e-9?targetV/Math.max(1e-9,Math.PI*(ro*ro-ri*ri)):t0;
+  return {Rin,edgeR:ro,width,pressure:q,epFlange,flowFlange:sf,plasticTerm:pack.plasticTerm,frictionTerm:pack.frictionTerm,radialStress:pack.radialStress,bendStress,demand,sliding,wrinkle,profile,edgeThickness:outer?outer.t:t0,dieThickness:tDie,avgFlangeThickness:avgT};
+}
+function getDrawCurve(p){
+  const key=drawKey(p);if(drawCache.key===key&&drawCache.states)return drawCache.states;
+  const states=[],N=121;let eAHist=0;
+  // Closure between average cup area strain and equivalent plastic strain. 1.30 lies between
+  // proportional biaxial and strongly directional stretching and is held fixed, not fitted per stroke.
+  const eqPerArea=1.30;
+  for(let j=0;j<N;j++){
+    const stroke=p.strokeMax*j/(N-1),G=contactGeometry(stroke,p),tab=contactAreaTable(G,140);
+    const Rideal=Math.sqrt(Math.max(0,tab.totalArea)/Math.PI),ri=G.top.x;
+    const geoMin=Rideal>p.blankR?2*Math.log(Rideal/p.blankR):0;
+    let eA=Math.max(eAHist,geoMin),Rin=Math.min(p.blankR,Rideal*Math.exp(-.5*eA));
+    for(let it=0;it<35;it++){
+      Rin=clamp(Rideal*Math.exp(-.5*eA),Math.min(Rideal,ri*.92),Math.min(Rideal,p.blankR));
+      const fs=flangeState(stroke,Rin,p,G,Rideal),epReq=inverseFlowEp(fs.demand,p),eReq=epReq/eqPerArea;
+      const target=Math.max(eAHist,geoMin,eReq),next=.55*eA+.45*target;
+      if(Math.abs(next-eA)<2e-6){eA=next;break}eA=next;
+    }
+    eAHist=Math.max(eAHist,eA,geoMin);
+    Rin=clamp(Rideal*Math.exp(-.5*eAHist),Math.min(Rideal,ri*.92),Math.min(Rideal,p.blankR));
+    const fs=flangeState(stroke,Rin,p,G,Rideal);
+    states.push({stroke,Rideal,Rin,areaStrain:eAHist,avgThickness:p.thick*Math.exp(-eAHist),...fs});
+  }
+  drawCache={key,states};return states;
+}
+function drawStateAt(stroke,p){
+  const a=getDrawCurve(p),x=clamp(stroke/Math.max(1e-9,p.strokeMax),0,1)*(a.length-1),i=Math.floor(x),j=Math.min(a.length-1,i+1),u=x-i,A=a[i],B=a[j],o={};
+  for(const k of Object.keys(A))o[k]=(typeof A[k]==='number')?lerp(A[k],B[k],u):A[k];return o;
+}
+function forceFromDrawState(ds,p,G){
+  const vertical=clamp(Math.sin(Math.max(0,G.phi)),0,1),tp=Math.max(.02,ds.avgThickness);
+  const punchFriction=1+.12*(Math.max(0,p.muP)/.25)*vertical;
+  return 2*Math.PI*Math.max(1,p.punchR)*tp*Math.max(0,ds.demand)/1000*vertical*punchFriction;
+}
+// Build a nonuniform material-area mapping for the drawn cup.
+// The global draw solver supplies the total stretched cup area.  This mapping distributes
+// that stretching between bottom, punch radius, wall/free span and die radius instead of
+// forcing every drawn ring to have the same areal strain.  The scale is solved so the
+// integrated current area still matches the contact geometry exactly.
+function localCupStretchWeight(S,G){
+  if(G.Lcontact<1e-9)return 1;
+  let L=S;
+  if(L<=G.L0){const q=G.L0>1e-9?L/G.L0:0;return .52+.24*q*q;}
+  L-=G.L0;
+  if(L<=G.Lp){const q=G.Lp>1e-9?L/G.Lp:0;return .82+.56*Math.sin(Math.PI*q)*Math.sin(Math.PI*q)+.10*q;}
+  L-=G.Lp;
+  if(L<=G.Lfree){const q=G.Lfree>1e-9?L/G.Lfree:0;return 1.14+.10*(1-q);}
+  L-=G.Lfree;
+  if(L<=G.Ld){const q=G.Ld>1e-9?L/G.Ld:0;return 1.02-.12*q;}
+  return .9;
+}
+function makeCupAreaMap(ds,G,p,areaTab){
+  const Rin=Math.max(1e-8,ds.Rin),n=260,R=[],w=[];
+  const uniStretch=Math.exp(Math.max(0,ds.areaStrain));
+  for(let j=0;j<=n;j++){
+    const r=Rin*j/n,At=Math.min(areaTab.totalArea,Math.PI*r*r*uniStretch),pt=areaPointFromTable(areaTab,At,G);
+    R.push(r);w.push(localCupStretchWeight(pt.S,G));
+  }
+  const areaFor=c=>{let A=0;for(let j=1;j<=n;j++){const dA=Math.PI*(R[j]*R[j]-R[j-1]*R[j-1]),wm=.5*(w[j]+w[j-1]);A+=dA*Math.exp(c*wm);}return A;};
+  let lo=0,hi=Math.max(.25,ds.areaStrain*3+0.4),target=areaTab.totalArea;
+  while(areaFor(hi)<target&&hi<8)hi*=1.6;
+  for(let it=0;it<45;it++){const m=.5*(lo+hi);if(areaFor(m)<target)lo=m;else hi=m;}
+  const c=.5*(lo+hi),cum=[0];
+  for(let j=1;j<=n;j++){const dA=Math.PI*(R[j]*R[j]-R[j-1]*R[j-1]),wm=.5*(w[j]+w[j-1]);cum.push(cum[j-1]+dA*Math.exp(c*wm));}
+  const targetAt=r=>{
+    r=clamp(r,0,Rin);const x=r/Rin*n,i=Math.floor(x),j=Math.min(n,i+1),u=x-i;
+    return lerp(cum[i],cum[j],u);
+  };
+  return {targetAt,scale:c,total:cum[n]};
+}
+function localMeridionalLogStrain(raw,i,lastDrawn){
+  if(lastDrawn<1)return 0;
+  let a,b;
+  if(i<=0){a=raw[0];b=raw[1];}
+  else if(i>=lastDrawn){a=raw[lastDrawn-1];b=raw[lastDrawn];}
+  else {a=raw[i-1];b=raw[i+1];}
+  const dR=Math.max(1e-9,b.r0-a.r0),dS=Math.max(1e-9,b.sDef-a.sDef);
+  return Math.log(Math.max(1e-8,dS/dR));
+}
+function baseModel(stroke,needMK=true){
+  const p={};ids.forEach(k=>p[k]=v(k));p.yieldModel=$('yieldModel').value;p.hillCal=$('hillCal')?$('hillCal').value:'r';const prog=clamp(stroke/Math.max(1,p.strokeMax),0,1),curve=needMK?getMKCurve(p):null;
+  const ds=drawStateAt(stroke,p),G=contactGeometry(stroke,p),areaTab=contactAreaTable(G,720),areaMap=prog>1e-8?makeCupAreaMap(ds,G,p,areaTab):null;
+  const raw=[],rings=[];let maxU=0,crit=null,minT=1e9,maxWr=0;const N=100,ri=G.top.x;
+  let lastDrawn=-1;
+  // Pass 1: material positions and flange-equilibrium quantities.
+  for(let i=0;i<N;i++){
+    const r0=p.blankR*i/(N-1),u=r0/p.blankR;let sDef=0,zone='bottom',wrinkle=0,sigma1=0,sigma2=0,flange=null;
+    if(prog<1e-8){
+      sDef=r0;zone=r0<=G.L0?'punch floor':(r0<=G.top.x?'flat span':'flange');
+    }else if(r0<=ds.Rin+1e-9){
+      const targetA=Math.min(areaTab.totalArea,areaMap.targetAt(r0)),pt=areaPointFromTable(areaTab,targetA,G);
+      sDef=pt.S;zone=pt.region;lastDrawn=i;
+    }else{
+      const fp=profileAtR0(ds.profile,r0);
+      if(fp){sDef=G.Lcontact+(fp.r-ri);zone='flange';flange=fp;sigma1=fp.sigmaR;sigma2=fp.sigmaTheta;}
+      else {const rc=Math.sqrt(Math.max(ri*ri,ri*ri+r0*r0-ds.Rin*ds.Rin));sDef=G.Lcontact+(rc-ri);zone='flange';}
+      const q=clamp((r0-ds.Rin)/Math.max(1e-6,p.blankR-ds.Rin),0,1);wrinkle=ds.wrinkle*(.35+.65*q);
+    }
+    const pos=pathPoint(stroke,p,{r0,sDef});raw.push({r0,u,sDef,zone,wrinkle,sigma1,sigma2,flange,pos});
+  }
+  if(lastDrawn<0&&prog>1e-8)lastDrawn=0;
+  // Pass 2: local strains.  Drawn-cup strains come from local axisymmetric kinematics;
+  // remaining-flange strains come from the radial-equilibrium solution.
+  for(let i=0;i<N;i++){
+    const a=raw[i],r0=a.r0;let em=0,eh=0,e3=0,t=p.thick,sigma1=a.sigma1,sigma2=a.sigma2;
+    if(prog<1e-8){em=eh=e3=0;t=p.thick;}
+    else if(i<=lastDrawn){
+      em=localMeridionalLogStrain(raw,i,lastDrawn);
+      if(i===0){
+        const j=Math.min(lastDrawn,1),rr=Math.max(1e-9,raw[j].r0);eh=Math.log(Math.max(1e-8,raw[j].pos.x/rr));
+      }else eh=Math.log(Math.max(1e-8,a.pos.x/Math.max(1e-9,r0)));
+      e3=-(em+eh);t=p.thick*Math.exp(e3);
+    }else if(a.flange){
+      em=a.flange.eRad;eh=a.flange.eTheta;e3=a.flange.eThick;t=a.flange.t;
+    }else{
+      const rc=Math.max(1e-9,a.pos.x);em=Math.log(Math.max(1e-9,r0/rc));eh=-em;e3=0;t=p.thick;
+    }
+    // FLD axes are ordered principal in-plane logarithmic strains: major >= minor.
+    const e1=Math.max(em,eh),e2=Math.min(em,eh),beta=e1>1e-8?e2/e1:0;let util=0,lim={e1crit:.75,theta:0,censored:true};
+    if(curve&&e1>0){lim=limitAtBeta(beta,curve);util=lim.outside&&beta<-.5?0:Math.max(0,e1/Math.max(.04,lim.e1crit));}
+    const eq=Math.sqrt((2/3)*(e1*e1+e2*e2+e3*e3)),sig=flowStress(eq,p);
+    if(eq>1e-9 && Math.abs(sigma1)+Math.abs(sigma2)<1e-9){const ss=stressFromTensor(e1,e2,0,0,p,0);sigma1=ss.nn;sigma2=ss.tt;}
+    const rr={r0:a.r0,u:a.u,e1,e2,e3,eq,t,sDef:a.sDef,util,wrinkle:a.wrinkle,zone:a.zone,sig,sigma1,sigma2,beta,limit:lim,epsMeridional:em,epsHoop:eh};rings.push(rr);
+    if(util>maxU){maxU=util;crit=rr}if(t<minT)minT=t;if(a.wrinkle>maxWr)maxWr=a.wrinkle;
+  }
+  const force=forceFromDrawState(ds,p,G);let mkState=null;
+  if(needMK&&crit&&crit.e1>1e-7&&crit.beta>=-.5)mkState=mkRun(clamp(crit.beta,-.5,1),crit.limit.theta,p,crit.e1,.0035,false);
+  return {p,prog,rings,maxU,crit,minT,maxWr,force,curve,mkState,drawState:ds,geometry:G};
+}
+function targetPrediction(){
+  const p={};ids.forEach(k=>p[k]=v(k));p.yieldModel=$('yieldModel').value;
+  const key=drawKey(p)+'|'+mkKey(p)+'|target';
+  if(targetPredCache.key===key&&targetPredCache.pred)return targetPredCache.pred;
+  const target=baseModel(p.strokeMax,true);let firstSplit=null;
+  if(target.maxU>=1&&p.strokeMax>0){
+    let lo=0,hi=p.strokeMax,prev=0,found=false;const N=14;
+    for(let i=1;i<=N;i++){const s=p.strokeMax*i/N,m=baseModel(s,true);if(m.maxU>=1){lo=prev;hi=s;found=true;break}prev=s;}
+    if(found){for(let it=0;it<7;it++){const mid=.5*(lo+hi),m=baseModel(mid,true);if(m.maxU>=1)hi=mid;else lo=mid;}firstSplit=hi;}
+  }
+  const pred={targetU:target.maxU,targetThin:(target.minT/p.thick-1)*100,targetEdge:(target.drawState.edgeThickness/p.thick-1)*100,targetForce:target.force,pressure:target.drawState.pressure,firstSplit};
+  targetPredCache={key,pred};return pred;
+}
+function estimateForceAt(stroke,p){const ds=drawStateAt(stroke,p),G=contactGeometry(stroke,p);return forceFromDrawState(ds,p,G)}
+function bendShape(x){
+  // Compact C2 boundary-layer shape: g(0)=g'(0)=0, g''(0)=1 and
+  // g(1)=g'(1)=g''(1)=0. This lets the free sheet leave a tool with
+  // finite curvature and relax smoothly toward the membrane tangent.
+  x=clamp(x,0,1);return .5*x*x*Math.pow(1-x,3);
+}
+function freeCurveSample(P,D,t,nL,L,kP,kD,lP,lD,n=90){
+  const pts=[],cum=[0];
+  for(let i=0;i<=n;i++){
+    const ss=L*i/n;let q=0;
+    if(lP>1e-8 && ss<lP)q+=kP*lP*lP*bendShape(ss/lP);
+    const sd=L-ss;
+    if(lD>1e-8 && sd<lD)q+=kD*lD*lD*bendShape(sd/lD);
+    const pt={x:P.x+t.x*ss+nL.x*q,y:P.y+t.y*ss+nL.y*q};pts.push(pt);
+    if(i){const a=pts[i-1],b=pt;cum.push(cum[i-1]+Math.hypot(b.x-a.x,b.y-a.y))}
+  }
+  return {pts,cum,Larc:cum[cum.length-1]};
+}
+function pointOnSample(curve,S){
+  S=clamp(S,0,curve.Larc);const c=curve.cum,pts=curve.pts;
+  let lo=0,hi=c.length-1;while(hi-lo>1){const m=(lo+hi)>>1;if(c[m]<S)lo=m;else hi=m}
+  const den=Math.max(1e-12,c[hi]-c[lo]),u=(S-c[lo])/den,a=pts[lo],b=pts[hi];
+  return {x:a.x+(b.x-a.x)*u,y:a.y+(b.y-a.y)*u};
+}
+function contactGeometry(s,p){
+  // Sheet mid-surface contact geometry. Tool surfaces are offset by t/2 so
+  // stroke=0 gives a truly flat sheet between punch and die/holder.
+  const h=Math.max(0,p.thick)*.5;
+  const Rp=Math.max(.05,p.punchCR+h), Rd=Math.max(.05,p.dieCR+h);
+  const Cp={x:p.punchR-p.punchCR,y:-s+h+p.punchCR};
+  const Cd={x:p.dieR+p.dieCR,y:-h-p.dieCR};
+  const dx=Cd.x-Cp.x,dy=Cd.y-Cp.y,d=Math.max(1e-9,Math.hypot(dx,dy)),Rsum=Rp+Rd;
+  const alpha=Math.acos(clamp(Rsum/d,-1,1)),delta=Math.atan2(dy,dx);
+  const theta=delta-alpha; // outward normal at punch tangency
+  const nx=Math.cos(theta),ny=Math.sin(theta);
+  const P={x:Cp.x+Rp*nx,y:Cp.y+Rp*ny};
+  const D={x:Cd.x-Rd*nx,y:Cd.y-Rd*ny};
+  const vx=D.x-P.x,vy=D.y-P.y,Lline=Math.max(1e-9,Math.hypot(vx,vy));
+  const t={x:vx/Lline,y:vy/Lline},nL={x:-t.y,y:t.x};
+  const phi=Math.max(0,theta+Math.PI/2);
+  const bottom={x:Cp.x,y:Cp.y-Rp};
+  const top={x:Cd.x,y:Cd.y+Rd};
+  const L0=Math.max(0,bottom.x),Lp=Rp*phi,Ld=Rd*phi;
+
+  // Finite-bending boundary layer for the unsupported span.
+  // Characteristic length lambda=sqrt(B/N), where B is plate bending rigidity
+  // per unit circumferential width and N is estimated membrane line tension.
+  // nu=0.30 is used for this visualization-level reduced model.
+  const prog=clamp(s/Math.max(1,p.strokeMax||60),0,1),nu=clamp(p.nu||.30,0,.499);
+  const E=Math.max(1,(p.E||211))*1000; // GPa -> N/mm²
+  const B=E*Math.pow(Math.max(.02,p.thick),3)/(12*(1-nu*nu));
+  const eqRep=.025+.16*prog;
+  const sigRep=Math.max(initialYield(p),flowStress(eqRep,p));
+  const Nline=Math.max(1,sigRep*Math.max(.02,p.thick));
+  const lambda=clamp(Math.sqrt(B/Nline),.35,12);
+  let lP=Math.min(2.2*lambda,.44*Lline),lD=Math.min(2.2*lambda,.44*Lline);
+  if(lP+lD>.88*Lline){const f=.88*Lline/(lP+lD);lP*=f;lD*=f}
+  // Contact must develop before the full tool curvature can be transmitted.
+  const devP=clamp(Lp/Math.max(1e-6,1.3*lambda),0,1),devD=clamp(Ld/Math.max(1e-6,1.3*lambda),0,1);
+  const kP=devP/Rp, kD=-devD/Rd;
+  const free=freeCurveSample(P,D,t,nL,Lline,kP,kD,lP,lD);
+  return {h,Rp,Rd,Cp,Cd,theta,phi,P,D,t,nL,bottom,top,L0,Lp,Lline,Lfree:free.Larc,Ld,Lcontact:L0+Lp+free.Larc+Ld,valid:d>Rsum,free,lambda,lP,lD,kP,kD};
+}
+function pointOnContactGeometry(G,S){
+  let L=clamp(S,0,G.Lcontact);
+  if(L<=G.L0)return {x:L,y:G.bottom.y,region:'punch floor',S};
+  L-=G.L0;
+  if(L<=G.Lp){const a=-Math.PI/2+L/G.Rp;return {x:G.Cp.x+G.Rp*Math.cos(a),y:G.Cp.y+G.Rp*Math.sin(a),region:'punch radius',S}}
+  L-=G.Lp;
+  if(L<=G.Lfree){const q=pointOnSample(G.free,L);return {x:q.x,y:q.y,region:'wall / free span',S}}
+  L-=G.Lfree;
+  if(L<=G.Ld){const a=G.theta+Math.PI-L/G.Rd;return {x:G.Cd.x+G.Rd*Math.cos(a),y:G.Cd.y+G.Rd*Math.sin(a),region:'die radius',S}}
+  return {x:G.top.x,y:G.top.y,region:'die exit',S};
+}
+function contactAreaTable(G,n=160){
+  const S=[],A=[],P=[];let area=0,prev=null;
+  for(let i=0;i<=n;i++){
+    const ss=G.Lcontact*i/n,pt=pointOnContactGeometry(G,ss);S.push(ss);P.push(pt);
+    if(prev){const ds=Math.hypot(pt.x-prev.x,pt.y-prev.y);area+=2*Math.PI*.5*(pt.x+prev.x)*ds}A.push(area);prev=pt;
+  }
+  return {S,A,P,totalArea:area};
+}
+function areaPointFromTable(tab,target,G){
+  target=clamp(target,0,tab.totalArea);let lo=0,hi=tab.A.length-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(tab.A[m]<target)lo=m;else hi=m}
+  const den=Math.max(1e-12,tab.A[hi]-tab.A[lo]),u=(target-tab.A[lo])/den,S=lerp(tab.S[lo],tab.S[hi],u);
+  return pointOnContactGeometry(G,S);
+}
+function pathPoint(s,p,m){
+  const G=contactGeometry(s,p),S=Math.max(0,(m&&isFinite(m.sDef))?m.sDef:(m?m.r0:0));
+  let L=S;
+  if(L<=G.L0)return {x:L,y:-s,region:'punch floor'};
+  L-=G.L0;
+  if(L<=G.Lp){const a=-Math.PI/2+L/G.Rp;return {x:G.Cp.x+G.Rp*Math.cos(a),y:G.Cp.y+G.Rp*Math.sin(a),region:'punch radius'}}
+  L-=G.Lp;
+  if(L<=G.Lfree){const q=pointOnSample(G.free,L);return {x:q.x,y:q.y,region:'finite-bending free span'}}
+  L-=G.Lfree;
+  if(L<=G.Ld){const a=G.theta+Math.PI-L/G.Rd;return {x:G.Cd.x+G.Rd*Math.cos(a),y:G.Cd.y+G.Rd*Math.sin(a),region:'die radius'}}
+  L-=G.Ld;
+  return {x:G.top.x+L,y:0,region:'flange'};
+}
+function strokePath(g,pts,X,Y,color,width=2){if(!pts.length)return;g.strokeStyle=color;g.lineWidth=width;g.lineJoin='round';g.lineCap='round';g.beginPath();g.moveTo(X(pts[0].x),Y(pts[0].y));for(let i=1;i<pts.length;i++)g.lineTo(X(pts[i].x),Y(pts[i].y));g.stroke()}
+function arcPts(cx,cy,r,a0,a1,n=24){const q=[];for(let i=0;i<=n;i++){const a=a0+(a1-a0)*i/n;q.push({x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)})}return q}
+function prepCanvas(c){const dpr=window.devicePixelRatio||1,r=c.getBoundingClientRect();c.width=Math.max(1,r.width*dpr);c.height=Math.max(1,r.height*dpr);const g=c.getContext('2d');g.setTransform(dpr,0,0,dpr,0,0);return[g,r.width,r.height]}
+function drawCup(M){
+  const [g,W,H]=prepCanvas($('cup'));g.clearRect(0,0,W,H);
+  const s=M.prog*M.p.strokeMax,h=M.p.thick*.5,G=contactGeometry(s,M.p);
+  const edge=pathPoint(s,M.p,M.rings[M.rings.length-1]);
+  const xmax=Math.max(M.p.blankR+10,edge.x+10,M.p.dieR+M.p.dieCR+18),yTop=Math.max(22,h+M.p.punchCR+8),yBottom=Math.max(M.p.strokeMax+12,M.p.dieCR+24);
+  const scale=Math.min((W*.46)/xmax,(H*.80)/(yTop+yBottom)),cx=W/2,y0=H*(yTop/(yTop+yBottom));
+  const X=x=>cx+x*scale,Y=y=>y0-y*scale;
+
+  // Punch: exact flat + circular corner + side surface.
+  const tool='#8aa3c3',die='#6b809b',floor=M.p.punchR-M.p.punchCR,pb=h-s,pcy=pb+M.p.punchCR;
+  strokePath(g,[{x:-floor,y:pb},{x:floor,y:pb}],X,Y,tool,2);
+  const pright=arcPts(floor,pcy,M.p.punchCR,-Math.PI/2,0,28),pleft=pright.map(q=>({x:-q.x,y:q.y})).reverse();
+  strokePath(g,pright,X,Y,tool,2);strokePath(g,pleft,X,Y,tool,2);
+  strokePath(g,[{x:M.p.punchR,y:pcy},{x:M.p.punchR,y:pcy+18}],X,Y,tool,2);
+  strokePath(g,[{x:-M.p.punchR,y:pcy},{x:-M.p.punchR,y:pcy+18}],X,Y,tool,2);
+
+  // Die: top plane, true circular entry radius, and inner vertical wall.
+  const dtop=-h,dcx=M.p.dieR+M.p.dieCR,dcy=dtop-M.p.dieCR;
+  strokePath(g,[{x:dcx,y:dtop},{x:xmax,y:dtop}],X,Y,die,2);strokePath(g,[{x:-dcx,y:dtop},{x:-xmax,y:dtop}],X,Y,die,2);
+  const dright=arcPts(dcx,dcy,M.p.dieCR,Math.PI/2,Math.PI,24),dleft=dright.map(q=>({x:-q.x,y:q.y})).reverse();
+  strokePath(g,dright,X,Y,die,2);strokePath(g,dleft,X,Y,die,2);
+  strokePath(g,[{x:M.p.dieR,y:dcy},{x:M.p.dieR,y:-yBottom}],X,Y,die,2);strokePath(g,[{x:-M.p.dieR,y:dcy},{x:-M.p.dieR,y:-yBottom}],X,Y,die,2);
+
+  // Blank holder lower face sits on the upper sheet surface at stroke zero.
+  const holderIn=M.p.dieR+M.p.dieCR,holderY=h;
+  strokePath(g,[{x:holderIn,y:holderY},{x:xmax,y:holderY}],X,Y,'#7288a4',2);strokePath(g,[{x:-holderIn,y:holderY},{x:-xmax,y:holderY}],X,Y,'#7288a4',2);
+  strokePath(g,[{x:holderIn,y:holderY},{x:holderIn,y:holderY+3}],X,Y,'#7288a4',1.5);strokePath(g,[{x:-holderIn,y:holderY},{x:-holderIn,y:holderY+3}],X,Y,'#7288a4',1.5);
+
+  // Sheet: material rings are mapped by current radial arclength onto the exact contact path.
+  const pts=M.rings.map(r=>({...pathPoint(s,M.p,r),r}));
+  for(const side of [-1,1])for(let i=1;i<pts.length;i++){
+    const a=pts[i-1],b=pts[i],u=(a.r.util+b.r.util)/2,wr=(a.r.wrinkle+b.r.wrinkle)/2,tt=.5*(a.r.t+b.r.t);
+    g.strokeStyle=riskColor(u,wr);g.lineWidth=Math.max(3,tt*scale*1.25);g.lineCap='round';g.beginPath();g.moveTo(X(side*a.x),Y(a.y));g.lineTo(X(side*b.x),Y(b.y));g.stroke();
+  }
+  // Critical point remains a white reference marker.
+  if(M.crit){const cp=pathPoint(s,M.p,M.crit);g.fillStyle='#fff';g.beginPath();g.arc(X(cp.x),Y(cp.y),3.5,0,Math.PI*2);g.fill();g.strokeStyle='#fff';g.lineWidth=1.2;g.beginPath();g.arc(X(cp.x),Y(cp.y),7,0,Math.PI*2);g.stroke()}
+
+  // User-selected material point. Keep only the marker on the cup; details live in the fixed inspector panel.
+  if(M.inspect&&M.inspect.ring){
+    const r=M.inspect.ring,cp=pathPoint(s,M.p,r),sx=X(M.inspect.side*cp.x),sy=Y(cp.y),col=riskColor(r.util,r.wrinkle);
+    g.fillStyle=col;g.beginPath();g.arc(sx,sy,5,0,Math.PI*2);g.fill();g.strokeStyle='#76a9ff';g.lineWidth=2.4;g.beginPath();g.arc(sx,sy,9,0,Math.PI*2);g.stroke();
+    g.strokeStyle='#76a9ff';g.lineWidth=1;g.setLineDash([3,3]);g.beginPath();g.moveTo(sx-13,sy);g.lineTo(sx+13,sy);g.moveTo(sx,sy-13);g.lineTo(sx,sy+13);g.stroke();g.setLineDash([]);
+  }
+
+  g.fillStyle='#9fb0c8';g.font='11px Segoe UI';g.fillText('blank holder',18,24);g.fillText('punch',cx-17,Y(pb)-10);g.fillText('die',18,Y(dtop)+18);
+  if(!G.valid){g.fillStyle='#ff9438';g.fillText('Geometry warning: tool radii overlap for this input.',18,H-18)}
+}
+
+function parseCurveText(text,format){
+  const rows=[];
+  for(const raw of (text||'').split(/\r?\n/)){
+    let line=raw.trim();if(!line||line.startsWith('#'))continue;let parts;
+    if(line.includes(';'))parts=line.split(';').map(x=>x.trim().replace(',','.'));
+    else if(line.includes('\t'))parts=line.split(/\t+/);
+    else parts=line.replace(/,/g,' ').trim().split(/\s+/);
+    if(parts.length<2)continue;
+    const ep=parseFloat(parts[0]),sig=parseFloat(parts[1]);
+    if(!isFinite(ep)||!isFinite(sig)||ep<0||sig<=0)continue;
+    rows.push({e:ep,s:sig});
+    if(rows.length>=30)break;
+  }
+  rows.sort((a,b)=>a.e-b.e);return rows;
+}
+function linearSlopeOrigin(pts){let a=0,b=0;for(const p of pts){a+=p.e*p.s;b+=p.e*p.e}return b>1e-16?a/b:NaN}
+function interpolateOffsetYield(pts,E){
+  let prev=null;for(const p of pts){if(p.e<0)continue;const d=p.s-E*(p.e-.002);if(prev&&prev.d>=0&&d<=0){const t=prev.d/(prev.d-d||1e-12);return {e:prev.p.e+t*(p.e-prev.p.e),s:prev.p.s+t*(p.s-prev.p.s)}}prev={p,d};}return null;
+}
+function fitSwift(plastic){
+  if(plastic.length<4)return null;let best=null;
+  const testRange=(lo,hi,N)=>{for(let j=0;j<N;j++){const z=j/(N-1),e0=Math.exp(Math.log(lo)+(Math.log(hi)-Math.log(lo))*z);const xs=[],ys=[];for(const p of plastic){if(p.ep+e0<=0||p.st<=0)continue;xs.push(Math.log(p.ep+e0));ys.push(Math.log(p.st));}if(xs.length<4)continue;const xm=xs.reduce((a,b)=>a+b,0)/xs.length,ym=ys.reduce((a,b)=>a+b,0)/ys.length;let num=0,den=0;for(let i=0;i<xs.length;i++){num+=(xs[i]-xm)*(ys[i]-ym);den+=(xs[i]-xm)*(xs[i]-xm)}if(den<1e-14)continue;const n=num/den;if(n<.02||n>.8)continue;const K=Math.exp(ym-n*xm);let sse=0;for(const p of plastic){const pred=K*Math.pow(e0+p.ep,n);sse+=(pred-p.st)*(pred-p.st)}const rmse=Math.sqrt(sse/plastic.length);if(!best||rmse<best.rmse)best={K,n,e0,rmse};}};
+  testRange(1e-6,.08,180);if(best){for(let k=0;k<3;k++){const lo=Math.max(1e-8,best.e0/1.8),hi=Math.min(.2,best.e0*1.8);testRange(lo,hi,100)}}return best;
+}
+function analyzeCurveData(rows){
+  if(rows.length<4)return {error:'Need at least four valid true plastic strain–true stress points.',rows,count:rows.length};
+  const plastic=rows.map(p=>({ep:p.e,st:p.s,input:p}));
+  const fit=fitSwift(plastic);
+  if(!fit)return {error:'Could not obtain a stable Swift fit from these plastic data.',rows,count:rows.length,plastic};
+  fit.Y0=fit.K*Math.pow(fit.e0,fit.n);
+  return {rows,count:rows.length,plastic,fit};
+}
+function currentCurveDir(){return 'RD'}
+function saveCurveText(){if($('curveData'))tensileStore.RD=$('curveData').value}
+function loadCurveDirection(dir){saveCurveText();activeCurveDir='RD';$('curveData').value=tensileStore.RD||CURVE_EXAMPLE;renderFitResults(tensileAnalysis.RD);}
+function renderFitResults(a){
+  const put=(id,val)=>{const el=$(id);if(el)el.textContent=val};
+  put('fitCount',a&&a.count!=null?a.count:'0');
+  put('fitK',a&&a.fit?a.fit.K.toFixed(1):'—');
+  put('fitN',a&&a.fit?a.fit.n.toFixed(4):'—');
+  put('fitEps0',a&&a.fit?a.fit.e0.toPrecision(5):'—');
+  put('fitY0',a&&a.fit?a.fit.Y0.toFixed(1):'—');
+  put('fitRmse',a&&a.fit?a.fit.rmse.toFixed(2):'—');
+  if(a&&a.error)$('fitStatus').textContent=a.error;
+  else if(a&&a.fit)$('fitStatus').innerHTML=`Auxiliary fit result: K = <b>${a.fit.K.toFixed(1)} MPa</b>, n = <b>${a.fit.n.toFixed(4)}</b>, ε₀ = <b>${a.fit.e0.toPrecision(5)}</b>, Y₀ = <b>${a.fit.Y0.toFixed(1)} MPa</b>. Copy these values manually to the main M–K inputs if you want to use them for FLC calculation.`;
+  else $('fitStatus').innerHTML='Editable example data are loaded. Press <b>Fit Swift law</b> to calculate K, n, ε₀ and Y₀.';
+}
+function analyzeCurrentCurve(){
+  saveCurveText();
+  const rows=parseCurveText(tensileStore.RD,'truePlastic'),a=analyzeCurveData(rows);
+  tensileAnalysis.RD=a;renderFitResults(a);drawCurveFit(baseModel(0,false));
+}
+function drawCurveFit(M){
+  if(!$('curveFit'))return;
+  const [g,W,H]=prepCanvas($('curveFit'));g.clearRect(0,0,W,H);
+  const a=tensileAnalysis.RD,raw=a&&a.rows?a.rows:parseCurveText(tensileStore.RD,'truePlastic'),p=M.p;
+  let xmax=.22,ymax=Math.max(220,flowStress(.22,p)*1.15);
+  if(raw.length){xmax=Math.max(.01,Math.max(...raw.map(q=>q.e))*1.08);ymax=Math.max(50,Math.max(...raw.map(q=>q.s))*1.15)}
+  const pad={l:52,r:14,t:16,b:38},X=x=>pad.l+x/xmax*(W-pad.l-pad.r),Y=y=>H-pad.b-y/ymax*(H-pad.t-pad.b);
+  g.strokeStyle='#4a4770';g.beginPath();g.moveTo(X(0),Y(0));g.lineTo(X(xmax),Y(0));g.moveTo(X(0),Y(0));g.lineTo(X(0),Y(ymax));g.stroke();
+  g.fillStyle='#b8b2d8';g.font='10px Segoe UI';g.fillText('true plastic strain [-]',W/2-50,H-8);g.save();g.translate(12,H/2+30);g.rotate(-Math.PI/2);g.fillText('true stress [MPa]',0,0);g.restore();
+  for(let k=1;k<=4;k++){const xx=xmax*k/4,yy=ymax*k/4;g.fillText(xx.toFixed(xx<.1?3:2),X(xx)-10,H-pad.b+15);g.fillText(yy.toFixed(0),7,Y(yy)+3)}
+  if(raw.length){g.fillStyle='#fff';for(const q of raw){g.beginPath();g.arc(X(q.e),Y(q.s),3.2,0,2*Math.PI);g.fill()}}
+  const fit=a&&a.fit?a.fit:null;
+  if(fit){
+    g.strokeStyle='#29d37d';g.lineWidth=2.3;g.beginPath();let started=false;
+    for(let j=0;j<=220;j++){const ep=xmax*j/220,st=fit.K*Math.pow(Math.max(1e-12,fit.e0+ep),fit.n);if(!started){g.moveTo(X(ep),Y(st));started=true}else g.lineTo(X(ep),Y(st))}
+    g.stroke();
+  }else{
+    g.fillStyle='#8e88aa';g.font='11px Segoe UI';g.fillText('Press “Fit Swift law” to fit the editable example data.',pad.l+14,pad.t+18);
+  }
+}
+function downloadCurrentFLC(){
+  const M=baseModel(0,true),curve=M.curve||[],p=M.p,h=hillCoeffs(p);if(!curve.length)return;const lines=[];lines.push('# MakeCoTech M-K / FLD Curve Builder v1.3');lines.push(`# yield_model=${p.yieldModel}; hill_calibration=${p.hillCal||'r'}; K_MPa=${p.K}; n=${p.n}; eps0=${p.eps0}; Y0_MPa=${initialYield(p).toFixed(6)}; f0=${p.f0}; C_loc=${p.mkCrit}; groove_step_deg=${p.angleStep}; RD_angle_deg=${p.rdAngle||0}`);if(p.yieldModel==='hill48')lines.push(`# Hill48_normalized_F=${h.F.toFixed(8)}; G=${h.G.toFixed(8)}; H=${h.H.toFixed(8)}; N=${h.N.toFixed(8)}`);lines.push('rho22,epsilon2_limit,epsilon1_limit,critical_phi0_deg,current_phi_deg,localization_ratio,reason,censored');for(const z of curve)lines.push([z.beta,z.e2crit,z.e1crit,z.phi0,z.phi,z.ratio,`"${String(z.reason||'').replace(/"/g,'""')}"`,z.censored?1:0].join(','));const blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`makecotech_FLC_${$('preset').value}_${p.yieldModel}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function xmlEsc(s){return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
+function xCell(ref,val,style=0){if(typeof val==='number'&&isFinite(val))return `<c r="${ref}" s="${style}"><v>${val}</v></c>`;return `<c r="${ref}" s="${style}" t="inlineStr"><is><t>${xmlEsc(val)}</t></is></c>`}
+function crc32Bytes(data){if(!window.__crcTable){const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0}window.__crcTable=t}let c=0xFFFFFFFF;for(const b of data)c=window.__crcTable[(c^b)&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0}
+function makeStoredZip(entries){const enc=new TextEncoder(),chunks=[],central=[];let offset=0;const u16=n=>new Uint8Array([n&255,(n>>>8)&255]),u32=n=>new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]),join=parts=>{const len=parts.reduce((a,b)=>a+b.length,0),o=new Uint8Array(len);let p=0;for(const b of parts){o.set(b,p);p+=b.length}return o};for(const [name,content] of entries){const nb=enc.encode(name),db=enc.encode(content),crc=crc32Bytes(db),local=join([u32(0x04034b50),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(db.length),u32(db.length),u16(nb.length),u16(0),nb,db]);chunks.push(local);central.push(join([u32(0x02014b50),u16(20),u16(20),u16(0),u16(0),u16(0),u16(0),u32(crc),u32(db.length),u32(db.length),u16(nb.length),u16(0),u16(0),u16(0),u16(0),u32(0),u32(offset),nb]));offset+=local.length}const cdOffset=offset,cd=join(central),eocd=join([u32(0x06054b50),u16(0),u16(0),u16(entries.length),u16(entries.length),u32(cd.length),u32(cdOffset),u16(0)]);return join([...chunks,cd,eocd])}
+async function buildCurrentFLCWorkbookBlob(){
+  const M=baseModel(0,true),curve=(M.curve||[]).slice().sort((a,b)=>a.e2crit-b.e2crit),p=M.p,h=hillCoeffs(p);if(!curve.length)throw new Error('No FLC points are available.');
+  const headers=['rho22','epsilon2_limit','epsilon1_limit','critical_phi0_deg','current_phi_deg','localization_ratio','reason','censored'];
+  let rows=`<row r="1">${headers.map((v,i)=>xCell(String.fromCharCode(65+i)+'1',v,1)).join('')}</row>`;
+  curve.forEach((z,i)=>{const r=i+2,vals=[z.beta,z.e2crit,z.e1crit,z.phi0,z.phi,z.ratio,z.reason||'',z.censored?1:0];rows+=`<row r="${r}">${vals.map((v,j)=>xCell(String.fromCharCode(65+j)+r,v)).join('')}</row>`});
+  const inputPairs=[['MakeCoTech M-K / FLD Curve Builder','v1.3'],['Preset',$('preset').value],['Yield model',p.yieldModel],['E [GPa]',p.E],['Poisson ratio',p.nu],['Swift Y0 [MPa]',initialYield(p)],['Swift K [MPa]',p.K],['Swift n',p.n],['Swift eps0',p.eps0],['M-K imperfection f0',p.f0],['Localization ratio C_loc',p.mkCrit],['Groove-angle step [deg]',p.angleStep],['RD angle [deg]',p.rdAngle||0]];
+  if(p.yieldModel==='hill48'){inputPairs.push(['Hill48 F',h.F],['Hill48 G',h.G],['Hill48 H',h.H],['Hill48 N',h.N]);}
+  let inRows='';inputPairs.forEach((q,i)=>{const r=i+1;inRows+=`<row r="${r}">${xCell('A'+r,q[0],i===0?1:0)}${xCell('B'+r,q[1],i===0?1:0)}</row>`});
+  const last=curve.length+1;
+  const sheet1=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><cols><col min="1" max="8" width="19" customWidth="1"/></cols><sheetData>${rows}</sheetData><drawing r:id="rId1"/></worksheet>`;
+  const sheet2=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><cols><col min="1" max="1" width="28" customWidth="1"/><col min="2" max="2" width="20" customWidth="1"/></cols><sheetData>${inRows}</sheetData></worksheet>`;
+  const chart=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><c:chart><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr lang="en-US"/><a:t>MakeCoTech M–K Forming Limit Curve</a:t></a:r></a:p></c:rich></c:tx><c:layout/><c:overlay val="0"/></c:title><c:plotArea><c:layout/><c:scatterChart><c:scatterStyle val="smoothMarker"/><c:varyColors val="0"/><c:ser><c:idx val="0"/><c:order val="0"/><c:tx><c:v>Current M–K FLC</c:v></c:tx><c:spPr><a:ln w="28575"><a:solidFill><a:srgbClr val="F0C24B"/></a:solidFill></a:ln></c:spPr><c:marker><c:symbol val="circle"/><c:size val="5"/></c:marker><c:xVal><c:numRef><c:f>'FLC Data'!$B$2:$B$${last}</c:f></c:numRef></c:xVal><c:yVal><c:numRef><c:f>'FLC Data'!$C$2:$C$${last}</c:f></c:numRef></c:yVal><c:smooth val="1"/></c:ser><c:dLbls><c:showLegendKey val="0"/><c:showVal val="0"/></c:dLbls><c:axId val="123456"/><c:axId val="123457"/></c:scatterChart><c:valAx><c:axId val="123456"/><c:scaling><c:orientation val="minMax"/></c:scaling><c:delete val="0"/><c:axPos val="b"/><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>Minor strain (epsilon2)</a:t></a:r></a:p></c:rich></c:tx><c:layout/><c:overlay val="0"/></c:title><c:numFmt formatCode="0.00" sourceLinked="0"/><c:majorTickMark val="out"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="123457"/><c:crosses val="autoZero"/><c:crossBetween val="midCat"/></c:valAx><c:valAx><c:axId val="123457"/><c:scaling><c:orientation val="minMax"/><c:min val="0"/></c:scaling><c:delete val="0"/><c:axPos val="l"/><c:title><c:tx><c:rich><a:bodyPr/><a:lstStyle/><a:p><a:r><a:t>Major strain (epsilon1)</a:t></a:r></a:p></c:rich></c:tx><c:layout/><c:overlay val="0"/></c:title><c:numFmt formatCode="0.00" sourceLinked="0"/><c:majorTickMark val="out"/><c:minorTickMark val="none"/><c:tickLblPos val="nextTo"/><c:crossAx val="123456"/><c:crosses val="autoZero"/><c:crossBetween val="midCat"/></c:valAx></c:plotArea><c:legend><c:legendPos val="b"/><c:overlay val="0"/></c:legend><c:plotVisOnly val="1"/><c:dispBlanksAs val="gap"/></c:chart></c:chartSpace>`;
+  const drawing=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><xdr:twoCellAnchor><xdr:from><xdr:col>9</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>1</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:from><xdr:to><xdr:col>18</xdr:col><xdr:colOff>0</xdr:colOff><xdr:row>22</xdr:row><xdr:rowOff>0</xdr:rowOff></xdr:to><xdr:graphicFrame macro=""><xdr:nvGraphicFramePr><xdr:cNvPr id="2" name="FLC Chart"/><xdr:cNvGraphicFramePr/></xdr:nvGraphicFramePr><xdr:xfrm/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart"><c:chart xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId1"/></a:graphicData></a:graphic></xdr:graphicFrame><xdr:clientData/></xdr:twoCellAnchor></xdr:wsDr>`;
+  const styles=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><fonts count="2"><font><sz val="11"/><name val="Calibri"/><family val="2"/></font><font><b/><color rgb="FFFFFFFF"/><sz val="11"/><name val="Calibri"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF1B5AA4"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="2"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>`;
+  const files=[
+    ['[Content_Types].xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/><Override PartName="/xl/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/></Types>`],
+    ['_rels/.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`],
+    ['xl/workbook.xml',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="FLC Data" sheetId="1" r:id="rId1"/><sheet name="Inputs" sheetId="2" r:id="rId2"/></sheets></workbook>`],
+    ['xl/_rels/workbook.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`],
+    ['xl/styles.xml',styles],['xl/worksheets/sheet1.xml',sheet1],['xl/worksheets/sheet2.xml',sheet2],
+    ['xl/worksheets/_rels/sheet1.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/></Relationships>`],
+    ['xl/drawings/drawing1.xml',drawing],
+    ['xl/drawings/_rels/drawing1.xml.rels',`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="../charts/chart1.xml"/></Relationships>`],
+    ['xl/charts/chart1.xml',chart]
+  ];
+  return new Blob([makeStoredZip(files)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+}
+async function downloadCurrentFLCExcel(){try{const blob=await buildCurrentFLCWorkbookBlob(),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`makecotech_FLC_${$('preset').value}_${$('yieldModel').value}.xlsx`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);}catch(err){alert(err.message||String(err));}}
+
+function drawYieldLocus(M){
+  const [g,W,H]=prepCanvas($('yieldLocus'));g.clearRect(0,0,W,H);
+  const p=M.p,sy=Math.max(1e-9,initialYield(p)),hc=hillCoeffs(p),alpha=(p.rdAngle||0)*Math.PI/180;
+  const mises=[],hill=[];
+  for(let i=0;i<=360;i++){
+    const a=2*Math.PI*i/360,c=Math.cos(a),s=Math.sin(a);
+    const qm=Math.sqrt(Math.max(1e-18,c*c-c*s+s*s)),rm=sy/qm;
+    mises.push({x:rm*c,y:rm*s});
+    const sm=rotateTensor(c,s,0,alpha);
+    const qh=Math.sqrt(Math.max(1e-18,hc.A*sm.nn*sm.nn+hc.C*sm.tt*sm.tt-2*hc.H*sm.nn*sm.tt+2*hc.N*sm.nt*sm.nt)),rh=sy/qh;
+    hill.push({x:rh*c,y:rh*s});
+  }
+  const maxAbs=Math.max(...mises.flatMap(q=>[Math.abs(q.x),Math.abs(q.y)]),...hill.flatMap(q=>[Math.abs(q.x),Math.abs(q.y)]))*1.14;
+  const pad=36,side=Math.min(W-2*pad,H-2*pad),ox=W/2,oy=H/2,S=side/(2*maxAbs),X=x=>ox+x*S,Y=y=>oy-y*S;
+  // grid / axes
+  g.strokeStyle='#223854';g.lineWidth=1;
+  for(let k=-1;k<=1;k+=.5){if(Math.abs(k)<1e-9)continue;g.beginPath();g.moveTo(X(k*sy),Y(-maxAbs));g.lineTo(X(k*sy),Y(maxAbs));g.moveTo(X(-maxAbs),Y(k*sy));g.lineTo(X(maxAbs),Y(k*sy));g.stroke();}
+  g.strokeStyle='#4a607d';g.lineWidth=1.2;g.beginPath();g.moveTo(X(-maxAbs),Y(0));g.lineTo(X(maxAbs),Y(0));g.moveTo(X(0),Y(-maxAbs));g.lineTo(X(0),Y(maxAbs));g.stroke();
+  // curves
+  function path(arr,col,dash=[]){g.strokeStyle=col;g.lineWidth=2.2;g.setLineDash(dash);g.beginPath();arr.forEach((q,i)=>{if(i)g.lineTo(X(q.x),Y(q.y));else g.moveTo(X(q.x),Y(q.y))});g.closePath();g.stroke();g.setLineDash([])}
+  path(mises,'#76a9ff',p.yieldModel==='mises'?[]:[6,4]);
+  path(hill,'#ff9438',p.yieldModel==='hill48'?[]:[6,4]);
+  // labels / orientation
+  g.fillStyle='#9fb0c8';g.font='10px Segoe UI';g.fillText('σ₁ [MPa]',W-62,oy-7);g.save();g.translate(ox+8,16);g.rotate(-Math.PI/2);g.fillText('σ₂ [MPa]',0,0);g.restore();
+  const ticks=[-1,-.5,.5,1];for(const k of ticks){const val=k*sy;g.fillText(val.toFixed(0),X(val)-10,oy+14);g.fillText(val.toFixed(0),ox+7,Y(val)+3);}
+  // small RD arrow
+  const cx=W-78,cy=58,L=34,ux=Math.cos(alpha),uy=-Math.sin(alpha);g.strokeStyle='#ffd84a';g.lineWidth=2;g.beginPath();g.moveTo(cx,cy);g.lineTo(cx+L*ux,cy+L*uy);g.stroke();g.fillStyle='#ffd84a';g.beginPath();g.arc(cx+L*ux,cy+L*uy,3,0,2*Math.PI);g.fill();g.font='bold 10px Segoe UI';g.fillText(`RD α=${(p.rdAngle||0).toFixed(0)}°`,cx-20,cy+18);
+  // summary
+  $('yieldActive').textContent=(p.yieldModel==='hill48'?'Hill48 anisotropic':'von Mises isotropic')+' + Swift hardening';
+  $('yieldOrient').textContent=`RD α = ${(p.rdAngle||0).toFixed(1)}° to global x₁ • groove φ₀ is independent`;
+  $('yieldCoeff').textContent=`F=${hc.F.toFixed(3)}, G=${hc.G.toFixed(3)}, H=${hc.H.toFixed(3)}, N=${hc.N.toFixed(3)}${hc.direct?' (direct / normalized)':' (from r-values)'}`;
+  const s90=1/Math.sqrt(Math.max(1e-12,hc.C)),s45=2/Math.sqrt(Math.max(1e-12,hc.F+hc.G+2*hc.N));
+  const pr=['RD','DD','TD'].map(k=>tensileAnalysis[k]&&isFinite(tensileAnalysis[k].Rp)?tensileAnalysis[k].Rp.toFixed(1):'—').join(' / ');
+  $('yieldRatios').textContent=`σRD : σ45 : σTD ≈ 1.000 : ${s45.toFixed(3)} : ${s90.toFixed(3)} • stored Rp0.2 = ${pr} MPa`;
+
+}
+function drawFLD(M){const [g,W,H]=prepCanvas($('fld'));g.clearRect(0,0,W,H);const pad={l:44,r:12,t:14,b:34},xmin=-.75,xmax=.65,ymin=0,ymax=.75,X=x=>pad.l+(x-xmin)/(xmax-xmin)*(W-pad.l-pad.r),Y=y=>H-pad.b-(y-ymin)/(ymax-ymin)*(H-pad.t-pad.b);
+  const rawCurve=(M.curve||[]).slice(),
+        fullCurve=rawCurve.slice().sort((a,b)=>a.e2crit-b.e2crit),
+        buildActive=!!flcBuildRAF,
+        visibleCurrent=flcDisplayReady?fullCurve:(buildActive?rawCurve.slice(0,Math.min(rawCurve.length,Math.max(0,flcBuildCount))):[]),
+        curve=flcDisplayReady?fullCurve:[],
+        mode=$('fldCompare')?$('fldCompare').value:'all';
+  const showCurrent=(flcDisplayReady||buildActive)&&['all','current','current_benchmark','current_original'].includes(mode),
+        showOriginal=flcDisplayReady&&['all','original','current_original'].includes(mode),
+        showBenchmark=['all','benchmark','current_benchmark'].includes(mode),
+        orig=showOriginal?getOriginalStyleMKCurve(M.p):[];
+  const interpCrit=(x)=>{if(!curve.length) return null; if(x<=curve[0].e2crit) return curve[0].e1crit; if(x>=curve[curve.length-1].e2crit) return curve[curve.length-1].e1crit; for(let i=0;i<curve.length-1;i++){const a=curve[i],b=curve[i+1]; if(x>=a.e2crit && x<=b.e2crit){const t=(x-a.e2crit)/(b.e2crit-a.e2crit||1e-9); return a.e1crit+t*(b.e1crit-a.e1crit);}} return null;};
+  const wrinkleY=(x)=>{if(x>=0) return 0; const q=Math.min(1,Math.max(0,(-x)/0.75)); return 0.025+0.105*Math.pow(q,1.12);};
+  if(curve.length){
+    g.beginPath(); let started=false; for(let xi=xmin;xi<=xmax+1e-6;xi+=0.01){const yc=interpCrit(xi); if(yc==null) continue; const yTop=Math.max(0,0.84*yc),yBot=Math.max(0,wrinkleY(xi)); if(!started){g.moveTo(X(xi),Y(yBot)); started=true;} g.lineTo(X(xi),Y(yTop));} for(let xi=xmax;xi>=xmin-1e-6;xi-=0.01)g.lineTo(X(xi),Y(Math.max(0,wrinkleY(xi)))); g.closePath();g.fillStyle='rgba(39,182,102,.12)';g.fill();
+    g.beginPath();started=false;for(let xi=xmin;xi<=xmax+1e-6;xi+=0.01){const yc=interpCrit(xi);if(yc==null)continue;const yLow=Math.max(wrinkleY(xi),.84*yc);if(!started){g.moveTo(X(xi),Y(yLow));started=true}g.lineTo(X(xi),Y(Math.min(ymax,yc)))}for(let xi=xmax;xi>=xmin-1e-6;xi-=0.01){const yc=interpCrit(xi);if(yc==null)continue;g.lineTo(X(xi),Y(Math.max(wrinkleY(xi),.84*yc)))}g.closePath();g.fillStyle='rgba(240,194,75,.14)';g.fill();
+    g.beginPath();started=false;for(let xi=xmin;xi<=xmax+1e-6;xi+=0.01){const yc=interpCrit(xi);if(yc==null)continue;if(!started){g.moveTo(X(xi),Y(Math.min(ymax,yc)));started=true}else g.lineTo(X(xi),Y(Math.min(ymax,yc)))}g.lineTo(X(xmax),Y(ymax));g.lineTo(X(xmin),Y(ymax));g.closePath();g.fillStyle='rgba(255,88,88,.10)';g.fill();
+    g.beginPath();g.moveTo(X(xmin),Y(0));for(let xi=xmin;xi<=0+1e-6;xi+=.01)g.lineTo(X(xi),Y(wrinkleY(xi)));g.lineTo(X(0),Y(0));g.closePath();g.fillStyle='rgba(84,160,255,.12)';g.fill();
+    g.strokeStyle='rgba(84,160,255,.8)';g.lineWidth=1.3;g.setLineDash([5,4]);g.beginPath();for(let xi=xmin;xi<=0+1e-6;xi+=.01){const yy=wrinkleY(xi);if(xi===xmin)g.moveTo(X(xi),Y(yy));else g.lineTo(X(xi),Y(yy))}g.stroke();g.setLineDash([]);
+    const zoneLabel=(label,x,y,fg,bg)=>{g.font='bold 10px Segoe UI';const tw=g.measureText(label).width,padx=6,w=tw+2*padx,h=17,px=X(x)-w/2,py=Y(y)-h/2;g.fillStyle=bg;g.fillRect(px,py,w,h);g.strokeStyle='rgba(255,255,255,.10)';g.lineWidth=1;g.strokeRect(px,py,w,h);g.fillStyle=fg;g.fillText(label,px+padx,py+12);};
+    {const x=-.18,yc=interpCrit(x);if(yc!=null)zoneLabel('safe zone',x,Math.max(wrinkleY(x)+.035,.60*.84*yc),'rgba(150,245,180,.96)','rgba(17,54,35,.82)');}
+    {const x=.16,yc=interpCrit(x);if(yc!=null)zoneLabel('near-split zone',x,.92*yc,'rgba(255,224,135,.98)','rgba(73,54,18,.84)');}
+    {const x=.24,yc=interpCrit(x);if(yc!=null)zoneLabel('split zone',x,Math.min(ymax-.025,yc+.085),'rgba(255,145,145,.98)','rgba(82,24,29,.82)');}
+    {const x=-.60;zoneLabel('wrinkle tendency',x,Math.max(.035,.55*wrinkleY(x)),'rgba(145,205,255,.98)','rgba(18,40,68,.84)');}
+  }
+  g.strokeStyle='#304862';g.lineWidth=1;g.beginPath();g.moveTo(X(0),Y(ymin));g.lineTo(X(0),Y(ymax));g.moveTo(X(xmin),Y(0));g.lineTo(X(xmax),Y(0));g.stroke();g.fillStyle='#9fb0c8';g.font='10px Segoe UI';for(let x=-.6;x<=.6+.001;x+=.2)g.fillText(x.toFixed(1),X(x)-8,H-14);for(let y=.1;y<=.6;y+=.1)g.fillText(y.toFixed(1),7,Y(y)+3);g.fillText('minor strain ε₂',W/2-34,H-4);g.save();g.translate(12,H/2+32);g.rotate(-Math.PI/2);g.fillText('major strain ε₁',0,0);g.restore();
+  // proportional strain-path guides: rho = e2/e1
+  const pathGuides=[
+    {rho:-2,label:'uniaxial compression'},
+    {rho:-1,label:'pure shear'},
+    {rho:-.5,label:'uniaxial tension'},
+    {rho:0,label:'plane strain'},
+    {rho:.5,label:'biaxial tension'},
+    {rho:1,label:'equibiaxial tension'}
+  ];
+  const guideIntersection=(rho)=>{
+    if(!curve.length)return null;
+    // Intersect x = rho*y with each piecewise-linear FLC segment.
+    for(let i=0;i<curve.length-1;i++){
+      const a=curve[i],b=curve[i+1],dx=b.e2crit-a.e2crit,dy=b.e1crit-a.e1crit,den=dx-rho*dy;
+      if(Math.abs(den)<1e-12)continue;
+      const u=(rho*a.e1crit-a.e2crit)/den;
+      if(u>=0&&u<=1){
+        const y=a.e1crit+u*dy,x=a.e2crit+u*dx;
+        if(y>=0&&x>=xmin&&x<=xmax)return {x,y};
+      }
+    }
+    return null;
+  };
+  g.save();
+  g.strokeStyle='rgba(213,95,255,.72)';
+  g.fillStyle='rgba(223,177,255,.92)';
+  g.lineWidth=1.2;
+  g.font='8.5px Segoe UI';
+  g.setLineDash([7,6]);
+  for(const pg of pathGuides){
+    const hit=guideIntersection(pg.rho);
+    if(!hit)continue;
+    g.beginPath();g.moveTo(X(0),Y(0));g.lineTo(X(hit.x),Y(hit.y));g.stroke();
+    // Put the mode name just inside the corresponding FLC intersection.
+    const q=.80,tx=hit.x*q,ty=hit.y*q;
+    let dx=5,dy=-5;
+    if(pg.rho<=-1){dx=-58;dy=-2}
+    else if(pg.rho<0){dx=-48;dy=-2}
+    else if(pg.rho===0){dx=5;dy=-2}
+    else if(pg.rho>=.9){dx=5;dy=-3}
+    g.fillText(pg.label,clamp(X(tx)+dx,4,W-105),clamp(Y(ty)+dy,10,H-38));
+  }
+  g.setLineDash([]);
+  g.restore();
+  // strain-path landmarks
+  g.font='9px Segoe UI';g.fillStyle='#7890ad';g.fillText('plane strain ρ=0',X(0)+5,Y(.07));g.fillText('drawing / uniaxial side',X(-.69),Y(.71));g.fillText('biaxial stretch side',X(.28),Y(.71));if(!flcDisplayReady&&!buildActive){
+    g.fillStyle='rgba(255,204,120,.96)';g.font='bold 13px Segoe UI';
+    const msg='Inputs changed — press “Build whole FLC” to calculate the new curve';
+    const mw=g.measureText(msg).width;g.fillText(msg,Math.max(48,(W-mw)/2),Y(.43));
+  }else if(buildActive){
+    g.fillStyle='rgba(255,226,150,.96)';g.font='bold 11px Segoe UI';
+    const msg=`Building FLC point-by-point: ${Math.min(rawCurve.length,Math.max(0,flcBuildCount))}/${rawCurve.length}`;
+    g.fillText(msg,Math.max(48,W/2-95),Y(.71));
+  }
+  if(showCurrent&&visibleCurrent.length){
+    const pts=visibleCurrent.slice().sort((a,b)=>a.e2crit-b.e2crit);
+    g.strokeStyle='#f0c24b';g.lineWidth=2;g.setLineDash([]);g.beginPath();
+    pts.forEach((q,i)=>{const xx=X(q.e2crit),yy=Y(Math.min(ymax,q.e1crit));if(i===0)g.moveTo(xx,yy);else g.lineTo(xx,yy)});
+    if(pts.length>1)g.stroke();
+    for(const q of pts){g.fillStyle=q.censored?'#7f8da3':'#f0c24b';g.beginPath();g.arc(X(q.e2crit),Y(Math.min(ymax,q.e1crit)),3.1,0,Math.PI*2);g.fill()}
+    if(buildActive&&pts.length){
+      const q=pts[pts.length-1],px=X(q.e2crit),py=Y(Math.min(ymax,q.e1crit));
+      const pulse=6+2.5*Math.sin((performance.now()/160)%Math.PI);
+      g.strokeStyle='rgba(255,216,74,.72)';g.lineWidth=1.5;g.beginPath();g.arc(px,py,pulse,0,Math.PI*2);g.stroke();
+      g.fillStyle='#ffe889';g.font='bold 9px Segoe UI';g.fillText(`point ${visibleCurrent.length}/${rawCurve.length}`,clamp(px+9,48,W-76),clamp(py-8,12,H-36));
+    }
+  }
+  if(showOriginal&&orig.length){g.strokeStyle='#c78cff';g.lineWidth=2;g.setLineDash([7,5]);g.beginPath();orig.forEach((q,i)=>{const xx=X(q.e2crit),yy=Y(Math.min(ymax,q.e1crit));if(i===0)g.moveTo(xx,yy);else g.lineTo(xx,yy)});g.stroke();g.setLineDash([]);for(const q of orig){g.fillStyle=q.censored?'#7f8da3':'#c78cff';g.beginPath();g.arc(X(q.e2crit),Y(Math.min(ymax,q.e1crit)),2.2,0,Math.PI*2);g.fill()}}
+  if(showBenchmark){g.strokeStyle='#52d6d3';g.lineWidth=2;g.setLineDash([2,4]);g.beginPath();EYCKENS_AA3003_FLC.forEach((q,i)=>{const xx=X(q[0]),yy=Y(Math.min(ymax,q[1]));if(i===0)g.moveTo(xx,yy);else g.lineTo(xx,yy)});g.stroke();g.setLineDash([]);for(const q of EYCKENS_AA3003_FLC){g.fillStyle='#52d6d3';g.globalAlpha=.8;g.beginPath();g.arc(X(q[0]),Y(Math.min(ymax,q[1])),2.0,0,Math.PI*2);g.fill()}g.globalAlpha=1;const sameAA=(M.p.yieldModel||'mises')==='mises'&&Math.abs(M.p.K-184)<1&&Math.abs(M.p.n-.224)<.003&&Math.abs(M.p.eps0-.00196)<.0002&&Math.abs(M.p.f0-.998)<.0015;g.fillStyle=sameAA?'#8ff0ed':'#86a8aa';g.font='9px Segoe UI';g.fillText(sameAA?'AA3003 benchmark — matched Mises material':'AA3003 benchmark — material / yield model differs',X(-.69),Y(.735));}
+  if(window.MK_ONLY_MODE)return;
+  // Strain cloud. The 100 rings are solved states. Dense mode only interpolates the continuous material between them for display.
+  const cloudMode=$('fldCloud')?$('fldCloud').value:'dense';
+  const pointXY=r=>({x:X(clamp(Math.min(r.e1,r.e2),xmin,xmax)),y:Y(clamp(Math.max(0,Math.max(r.e1,r.e2)),ymin,ymax))});
+  if(cloudMode==='dense'&&M.rings&&M.rings.length>1){
+    // Faint strain-space ribbon: each segment represents material between two solved annular rings.
+    g.lineCap='round';g.lineJoin='round';g.lineWidth=6;g.globalAlpha=.08;
+    for(let i=0;i<M.rings.length-1;i++){const a=M.rings[i],b=M.rings[i+1],pa=pointXY(a),pb=pointXY(b),um=.5*(a.util+b.util),wm=.5*(a.wrinkle+b.wrinkle);g.strokeStyle=riskColor(um,wm);g.beginPath();g.moveTo(pa.x,pa.y);g.lineTo(pb.x,pb.y);g.stroke();}
+    // Interpolated display points. These are visual samples only, not extra solved states.
+    g.globalAlpha=.30;const sub=6;
+    for(let i=0;i<M.rings.length-1;i++){const a=M.rings[i],b=M.rings[i+1];for(let j=1;j<sub;j++){const q=j/sub,r={e1:lerp(a.e1,b.e1,q),e2:lerp(a.e2,b.e2,q),util:lerp(a.util,b.util,q),wrinkle:lerp(a.wrinkle,b.wrinkle,q)},pnt=pointXY(r);g.fillStyle=riskColor(r.util,r.wrinkle);g.beginPath();g.arc(pnt.x,pnt.y,1.35,0,Math.PI*2);g.fill();}}
+    g.globalAlpha=.82;
+    for(const r of M.rings){const pnt=pointXY(r);g.fillStyle=riskColor(r.util,r.wrinkle);g.beginPath();g.arc(pnt.x,pnt.y,2.4,0,Math.PI*2);g.fill();}
+    g.globalAlpha=1;g.lineCap='butt';g.lineJoin='miter';
+  }else if(cloudMode==='solved'&&M.rings&&M.rings.length){
+    g.globalAlpha=.80;for(const r of M.rings){const pnt=pointXY(r);g.fillStyle=riskColor(r.util,r.wrinkle);g.beginPath();g.arc(pnt.x,pnt.y,2.7,0,Math.PI*2);g.fill();}g.globalAlpha=1;
+  }
+  if(M.crit){g.fillStyle=riskColor(M.crit.util,M.crit.wrinkle);g.beginPath();g.arc(X(clamp(M.crit.e2,xmin,xmax)),Y(clamp(M.crit.e1,ymin,ymax)),5,0,Math.PI*2);g.fill();g.strokeStyle='#fff';g.lineWidth=1.2;g.stroke()}
+  if(M.inspect&&M.inspect.ring){const r=M.inspect.ring,px=X(clamp(r.e2,xmin,xmax)),py=Y(clamp(r.e1,ymin,ymax)),limE1=Math.max(0,r.limit.e1crit),limE2=r.beta*limE1,lx=X(clamp(limE2,xmin,xmax)),ly=Y(clamp(limE1,ymin,ymax));g.strokeStyle='#6d89ad';g.globalAlpha=.72;g.lineWidth=1;g.setLineDash([3,5]);g.beginPath();g.moveTo(px,py);g.lineTo(lx,ly);g.stroke();g.setLineDash([]);g.globalAlpha=1;g.fillStyle='#081321';g.strokeStyle='#76a9ff';g.lineWidth=2;g.beginPath();g.rect(lx-4,ly-4,8,8);g.fill();g.stroke();g.fillStyle='#cfe1ff';g.font='9px Segoe UI';g.fillText('M–K limit',clamp(lx+7,46,W-58),clamp(ly-7,12,H-36));g.fillStyle=riskColor(r.util,r.wrinkle);g.beginPath();g.arc(px,py,6,0,Math.PI*2);g.fill();g.strokeStyle='#76a9ff';g.lineWidth=2.5;g.stroke();g.fillStyle='#cfe1ff';g.font='10px Segoe UI';const tx=clamp(px+8,48,W-62),ty=clamp(py-8,12,H-36);g.fillText('selected',tx,ty)}
+}
+function drawForce(M){const [g,W,H]=prepCanvas($('force'));g.clearRect(0,0,W,H);const pad={l:42,r:12,t:14,b:32},xmax=M.p.strokeMax,ymax=150,X=x=>pad.l+x/xmax*(W-pad.l-pad.r),Y=y=>H-pad.b-y/ymax*(H-pad.t-pad.b);g.strokeStyle='#304862';g.beginPath();g.moveTo(X(0),Y(0));g.lineTo(X(xmax),Y(0));g.moveTo(X(0),Y(0));g.lineTo(X(0),Y(ymax));g.stroke();g.fillStyle='#9fb0c8';g.font='10px Segoe UI';g.fillText('stroke [mm]',W/2-20,H-4);g.save();g.translate(12,H/2+22);g.rotate(-Math.PI/2);g.fillText('force [kN]',0,0);g.restore();g.strokeStyle='#76a9ff';g.lineWidth=2;g.beginPath();let current=null;for(let i=0;i<=80;i++){const s=xmax*i/80,f=estimateForceAt(s,M.p),x=X(s),y=Y(Math.min(ymax,f));if(i===0)g.moveTo(x,y);else g.lineTo(x,y);if(Math.abs(s-M.prog*xmax)<xmax/80)current={x,y}}g.stroke();if(current){g.fillStyle='#fff';g.beginPath();g.arc(current.x,current.y,4,0,Math.PI*2);g.fill()}}
+function nearestMKIndex(beta){let k=0,d=Infinity;for(let i=0;i<MK_BETAS.length;i++){const z=Math.abs(MK_BETAS[i]-beta);if(z<d){d=z;k=i}}return k}
+function setMKPointByIndex(idx){idx=Math.max(0,Math.min(MK_BETAS.length-1,idx));$('mkBeta').value=MK_BETAS[idx].toFixed(2);if(mkAnimRAF){cancelAnimationFrame(mkAnimRAF);mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point'}mkExplainCache={key:'',beta:null,trace:null,limit:null,scan:null};$('mkProgress').value=0;$('mkProgressNum').value=0;update()}
+function describeRho(beta){if(Math.abs(beta+.5)<.03)return 'uniaxial-tension end';if(Math.abs(beta)<.03)return 'plane strain';if(Math.abs(beta-1)<.03)return 'equibiaxial stretching';if(beta<0)return 'drawing / tension–compression side';return 'biaxial stretching side'}
+function mkExplainData(p,beta){
+  beta=clamp(beta,-.5,1);const key=mkKey(p)+'|'+beta.toFixed(4);
+  if(mkExplainCache.key===key&&mkExplainCache.trace)return mkExplainCache;
+  const curve=getMKCurve(p);let lim=curve.find(q=>Math.abs(q.beta-beta)<1e-8);
+  if(!lim)lim=criticalForBeta(beta,p,false);
+  const scan=mkAngleScan(beta,p),run=mkRun(beta,lim.phi0,p,Math.min(.75,lim.e1crit),.0035,true),trace=run.trace;
+  lim={...lim,phi:run.phi,ratio:run.ratio,thicknessRatio:run.thicknessRatio,reason:run.reason};
+  mkExplainCache={key,beta,trace,limit:lim,scan};return mkExplainCache;
+}
+function drawMKExplainer(M){
+  const [g,W,H]=prepCanvas($('mkAnim')),beta=clamp(v('mkBeta'),-.5,1),d=mkExplainData(M.p,beta),trace=d.trace||[];
+  g.clearRect(0,0,W,H);if(!trace.length)return;
+  const q=clamp((parseFloat($('mkProgress').value)||0)/100,0,1),localQ=q<.28?0:clamp((q-.28)/.62,0,1),i=Math.min(trace.length-1,Math.round(localQ*(trace.length-1))),z=trace[i];
+  const phi0=z.phi0*Math.PI/180,phi=z.phi*Math.PI/180;
+  const pad=28,cx=W*.37,cy=H*.48,baseW=Math.min(270,W*.47),baseH=Math.min(150,H*.50);
+  const boxW=baseW*Math.exp(.55*z.e1),boxH=baseH*Math.exp(.55*z.e2);
+  // Dotted undeformed matrix and current deformed matrix.
+  g.strokeStyle='#58708e';g.setLineDash([4,4]);g.strokeRect(cx-baseW/2,cy-baseH/2,baseW,baseH);g.setLineDash([]);
+  g.fillStyle='#0d1d31';g.strokeStyle='#395777';g.lineWidth=1.2;g.fillRect(cx-boxW/2,cy-boxH/2,boxW,boxH);g.strokeRect(cx-boxW/2,cy-boxH/2,boxW,boxH);
+  g.fillStyle='#9fb0c8';g.font='10px Segoe UI';g.fillText('matrix a — current shape',cx-boxW/2+6,cy-boxH/2+14);
+  // Draw current groove as an idealized in-plane band. Band width is schematic; thickness is shown separately.
+  const n={x:Math.cos(phi),y:-Math.sin(phi)},t={x:-n.y,y:n.x},bandW=14,L=Math.hypot(boxW,boxH)*.88;
+  const corners=[[-L/2,-bandW/2],[L/2,-bandW/2],[L/2,bandW/2],[-L/2,bandW/2]].map(([a,b])=>({x:cx+t.x*a+n.x*b,y:cy+t.y*a+n.y*b}));
+  g.fillStyle='rgba(255,216,74,.28)';g.strokeStyle='#ffd84a';g.beginPath();g.moveTo(corners[0].x,corners[0].y);for(let k=1;k<4;k++)g.lineTo(corners[k].x,corners[k].y);g.closePath();g.fill();g.stroke();
+  // Initial groove centerline as a dashed reference.
+  const n0={x:Math.cos(phi0),y:-Math.sin(phi0)},t0={x:-n0.y,y:n0.x};g.strokeStyle='#7e91aa';g.setLineDash([4,4]);g.beginPath();g.moveTo(cx-t0.x*L/2,cy-t0.y*L/2);g.lineTo(cx+t0.x*L/2,cy+t0.y*L/2);g.stroke();g.setLineDash([]);
+  // Principal direction arrows.
+  g.strokeStyle='#76a9ff';g.fillStyle='#76a9ff';g.lineWidth=1.6;g.beginPath();g.moveTo(cx-boxW*.42,cy+boxH*.37);g.lineTo(cx+boxW*.38,cy+boxH*.37);g.stroke();g.fillText('x₁ / major',cx+boxW*.22,cy+boxH*.32);g.fillText('x₂ / minor',cx-boxW*.45,cy-boxH*.40);g.fillStyle='#9fb0c8';g.font='9px Segoe UI';g.fillText('traction equilibrium across groove',cx-boxW*.44,cy+boxH*.49);g.fillText('compatibility along groove',cx-boxW*.44,cy+boxH*.57);
+  // Thickness bars on right.
+  const bx=W*.78,base=H*.72,maxBar=H*.42,ta=clamp(z.tA,0,1.2),tb=clamp(z.tB,0,1.2);g.fillStyle='#2c7be5';g.fillRect(bx-44,base-maxBar*ta,30,maxBar*ta);g.fillStyle='#ffd84a';g.fillRect(bx+14,base-maxBar*tb,30,maxBar*tb);g.fillStyle='#cfe1ff';g.font='11px Segoe UI';g.fillText('matrix a',bx-52,base+18);g.fillText('groove b',bx+5,base+18);g.fillText('through-thickness',bx-54,28);g.fillStyle='#8ea3be';g.font='9px Segoe UI';g.fillText('initial f₀ difference may be too small to see to scale',Math.max(8,bx-105),42);
+  const state=z.ratio>=M.p.mkCrit?'LOCALIZED':(z.ratio>.6*M.p.mkCrit?'accelerating':'stable');g.fillStyle=state==='LOCALIZED'?'#ff4d5a':state==='accelerating'?'#ff9438':'#29d37d';g.font='bold 12px Segoe UI';g.fillText(state,bx-18,H-22);
+  $('mkPhi0').textContent=z.phi0.toFixed(1)+'°';$('mkPhi').textContent=z.phi.toFixed(1)+'°';$('mkStrain').textContent=`ε₁=${z.e1.toFixed(3)}, ε₂=${z.e2.toFixed(3)}`;$('mkThickness').textContent=`Ta/Ta₀=${z.tA.toFixed(3)} • Tb/Ta₀=${z.tB.toFixed(3)}`;$('mkRatio').textContent=z.ratio.toFixed(2)+' ×';$('mkState').textContent=state+(d.limit.censored?' • no localization in scan':' • limit ε₁≈'+d.limit.e1crit.toFixed(3));const stepTxt=q<.28?'2 / 5 — scanning initial groove angles φ₀':q<.90?'3 / 5 — critical groove deforms toward localization':'4 / 5 — limit strain becomes one FLD point';$('mkDeriveStep').textContent=stepTxt;$('mkPoint').textContent=d.limit.censored?'no limit found in scan':`(ε₂*, ε₁*) = (${d.limit.e2crit.toFixed(3)}, ${d.limit.e1crit.toFixed(3)})`;
+  const idx=nearestMKIndex(d.beta),angStep=Math.max(1,Math.round(M.p.angleStep||5)),bounds=grooveScanBounds(M.p),ym=(M.p.yieldModel||'mises')==='hill48'?((M.p.hillCal||'r')==='direct'?`Hill48 direct (F=${M.p.hF.toFixed(3)}, G=${M.p.hG.toFixed(3)}, H=${M.p.hH.toFixed(3)}, N=${M.p.hN.toFixed(3)}, RD α=${M.p.rdAngle.toFixed(0)}°)`:`Hill48-r (r₀=${M.p.r0.toFixed(2)}, r₄₅=${M.p.r45.toFixed(2)}, r₉₀=${M.p.r90.toFixed(2)}, RD α=${M.p.rdAngle.toFixed(0)}°)`):'von Mises isotropic';if(q>=.90)flcVisited.add(idx);$('mkSearchInfo').innerHTML=`<b>FLD point ${idx+1} of ${MK_BETAS.length}</b> — <b>changed condition:</b> ρ₂₂ = ${d.beta.toFixed(2)} (${describeRho(d.beta)}).<br><b>Held fixed:</b> ${ym}; Swift K=${M.p.K.toFixed(1)} MPa, n=${M.p.n.toFixed(3)}, ε₀=${M.p.eps0.toPrecision(3)}, imperfection f₀=${M.p.f0.toFixed(3)}, C<sub>loc</sub>=${M.p.mkCrit.toFixed(1)}.<br><b>Inner search:</b> scan φ₀ = ${bounds[0]}…${bounds[1]}° in ${angStep}° steps${bounds[0]===0?' (isotropic ± symmetry)':''} and run each groove until localization.<br><b>Looking for:</b> the φ₀ giving the <i>smallest</i> matrix ε₁ when |D₃₃ᵇ|/|D₃₃ᵃ| ≥ C<sub>loc</sub> or groove equilibrium is lost.<br><b>Stored FLC point:</b> ε₁*=${d.limit.e1crit.toFixed(3)}, ε₂*=ρ₂₂ε₁*=${d.limit.e2crit.toFixed(3)}, φ₀,cr≈${d.limit.phi0.toFixed(0)}°.`;
+}
+function drawFLCBuilder(M){
+  const [g,W,H]=prepCanvas($('flcBuild'));g.clearRect(0,0,W,H);const d=mkExplainData(M.p,clamp(v('mkBeta'),-.5,1)),scan=d.scan||[],curve=M.curve||[];
+  const q=clamp((parseFloat($('mkProgress').value)||0)/100,0,1),left={x:42,y:22,w:W*.43,h:H-56},right={x:W*.54,y:22,w:W*.43-18,h:H-56};
+  g.font='10px Segoe UI';g.fillStyle='#cfe1ff';g.fillText(`A. inner loop at ρ₂₂ = ${d.beta.toFixed(2)}: scan φ₀`,left.x,left.y-6);g.fillText('B. outer loop: each ρ₂₂ gives one FLC point',right.x,right.y-6);
+  // left axes: phi0 vs localization major strain
+  const gb=grooveScanBounds(M.p),gmin=gb[0],gmax=gb[1],LX=a=>left.x+(a-gmin)/(gmax-gmin)*left.w, LY=e=>left.y+left.h-(e/.75)*left.h;
+  g.strokeStyle='#304862';g.lineWidth=1;g.beginPath();g.moveTo(left.x,left.y);g.lineTo(left.x,left.y+left.h);g.lineTo(left.x+left.w,left.y+left.h);g.stroke();
+  g.fillStyle='#8ea3be';const gticks=gmin<0?[-90,-45,0,45,90]:[0,45,90];for(const a of gticks)g.fillText(`${a}°`,LX(a)-(a<0?13:8),left.y+left.h+14);g.fillText('initial groove angle φ₀',left.x+left.w*.31,H-8);g.save();g.translate(10,left.y+left.h*.66);g.rotate(-Math.PI/2);g.fillText('major strain at localization ε₁*',0,0);g.restore();
+  let nScan=q<.28?Math.max(1,Math.ceil(scan.length*q/.28)):scan.length,best=null;
+  for(let i=0;i<nScan;i++){const z=scan[i];if(!best||z.e1<best.e1)best=z;g.fillStyle=z.failed?'#ffd84a':'#64768f';g.beginPath();g.arc(LX(z.phi0),LY(z.e1),3,0,Math.PI*2);g.fill();if(i>0){const a=scan[i-1];g.strokeStyle='rgba(240,194,75,.45)';g.beginPath();g.moveTo(LX(a.phi0),LY(a.e1));g.lineTo(LX(z.phi0),LY(z.e1));g.stroke();}}
+  if(best){g.strokeStyle='#ff4d5a';g.setLineDash([4,4]);g.beginPath();g.moveTo(LX(best.phi0),left.y+left.h);g.lineTo(LX(best.phi0),LY(best.e1));g.lineTo(left.x,LY(best.e1));g.stroke();g.setLineDash([]);g.fillStyle='#ff8d96';g.font='bold 10px Segoe UI';g.fillText(`minimum → φ₀,cr=${best.phi0.toFixed(0)}°, ε₁*=${best.e1.toFixed(3)}`,left.x+8,left.y+16);}
+  // right mini-FLD
+  const xmin=-.42,xmax=.65,ymin=0,ymax=.75,RX=x=>right.x+(x-xmin)/(xmax-xmin)*right.w,RY=y=>right.y+right.h-(y-ymin)/(ymax-ymin)*right.h;
+  g.strokeStyle='#304862';g.lineWidth=1;g.beginPath();g.moveTo(RX(0),right.y);g.lineTo(RX(0),right.y+right.h);g.moveTo(right.x,RY(0));g.lineTo(right.x+right.w,RY(0));g.stroke();g.fillStyle='#8ea3be';g.font='9px Segoe UI';g.fillText('minor strain ε₂',right.x+right.w*.42,H-8);g.save();g.translate(right.x-22,right.y+right.h*.68);g.rotate(-Math.PI/2);g.fillText('major strain ε₁',0,0);g.restore();
+  // ghost full curve for destination context
+  g.strokeStyle='rgba(127,141,163,.28)';g.lineWidth=1;g.beginPath();curve.forEach((z,i)=>{const x=RX(clamp(z.e2crit,xmin,xmax)),y=RY(Math.min(ymax,z.e1crit));if(!i)g.moveTo(x,y);else g.lineTo(x,y)});g.stroke();
+  // Published AA3003 traditional-M-K benchmark (digitized Fig. 5) for context.
+  g.strokeStyle='rgba(82,214,211,.46)';g.setLineDash([2,4]);g.beginPath();EYCKENS_AA3003_FLC.forEach((z,i)=>{const x=RX(clamp(z[0],xmin,xmax)),y=RY(Math.min(ymax,z[1]));if(!i)g.moveTo(x,y);else g.lineTo(x,y)});g.stroke();g.setLineDash([]);
+  // Keep every individually derived point visible when navigating Previous/Next.
+  if(flcVisited&&flcVisited.size){const ordered=[...flcVisited].sort((a,b)=>a-b);g.strokeStyle='rgba(255,141,150,.55)';g.lineWidth=1.4;g.beginPath();ordered.forEach((ii,k)=>{const z=curve[ii];if(!z)return;const x=RX(clamp(z.e2crit,xmin,xmax)),y=RY(Math.min(ymax,z.e1crit));if(k===0)g.moveTo(x,y);else g.lineTo(x,y)});g.stroke();for(const ii of ordered){const z=curve[ii];if(!z)continue;g.fillStyle='#ff8d96';g.beginPath();g.arc(RX(clamp(z.e2crit,xmin,xmax)),RY(Math.min(ymax,z.e1crit)),4.6,0,Math.PI*2);g.fill();}}
+  // whole-FLC build mode points
+  const count=Math.min(curve.length,Math.max(0,flcBuildCount));if(count>0){g.strokeStyle='#f0c24b';g.lineWidth=2;g.beginPath();for(let i=0;i<count;i++){const z=curve[i],x=RX(clamp(z.e2crit,xmin,xmax)),y=RY(Math.min(ymax,z.e1crit));if(i===0)g.moveTo(x,y);else g.lineTo(x,y);}g.stroke();for(let i=0;i<count;i++){const z=curve[i];g.fillStyle='#ffd84a';g.beginPath();g.arc(RX(clamp(z.e2crit,xmin,xmax)),RY(Math.min(ymax,z.e1crit)),4,0,Math.PI*2);g.fill();}}
+  // selected one-point derivation appears at final phase
+  if(q>=.90&&!d.limit.censored){const x=RX(clamp(d.limit.e2crit,xmin,xmax)),y=RY(Math.min(ymax,d.limit.e1crit));g.fillStyle='#ff4d5a';g.beginPath();g.arc(x,y,6,0,Math.PI*2);g.fill();g.strokeStyle='#fff';g.stroke();g.fillStyle='#ffd3d7';g.font='bold 10px Segoe UI';g.fillText(`ρ=${d.beta.toFixed(2)} → one FLC point`,Math.min(x+8,right.x+right.w-120),Math.max(right.y+13,y-8));}
+  g.fillStyle='#9fb0c8';g.font='9px Segoe UI';g.fillText('Change ρ₂₂ → repeat angle scan → next FLC point',right.x+8,right.y+right.h-8);
+}
+function updateInspectPanel(M,s){
+  if(!(M.inspect&&M.inspect.ring)) return;
+  const r=M.inspect.ring,cp=pathPoint(s,M.p,r),curX=M.inspect.side*cp.x,col=riskColor(r.util,r.wrinkle);
+  const dt=(r.t/M.p.thick-1)*100,margin=(1-r.util)*100;
+  $('ipRisk').style.background=col;
+  $('ipRing').textContent=`${M.inspect.index+1} / ${M.rings.length}`;
+  $('ipR0').textContent=`${fmtSigned(M.inspect.signedR0,1)} mm`;
+  $('ipPos').textContent=`(${fmtSigned(curX,1)}, ${fmtSigned(cp.y,1)}) mm`;
+  $('ipZone').textContent=r.zone;
+  $('ipThick').textContent=`${r.t.toFixed(3)} mm  (${fmtSigned(dt,1)}%)`;
+  $('ipStress').textContent=`σ̄ = ${r.sig.toFixed(0)} MPa`;
+  $('ipStrain').textContent=`ε₁=${fmtSigned(r.e1)},  ε₂=${fmtSigned(r.e2)}`;
+  $('ipFLD').textContent=`(${fmtSigned(r.e2)}, ${fmtSigned(r.e1)})`;
+  $('ipMK').textContent=r.limit&&r.limit.outside?'outside conventional FLC range':(margin>=0?`${(100*r.util).toFixed(0)}%  •  ${margin.toFixed(0)}% margin`:`${(100*r.util).toFixed(0)}%  •  limit exceeded`);
+}
+function update(){
+  // Dedicated FLC-builder update: no cup draw, punch-force calculation, or stroke sweep.
+  const M=baseModel(0,true);
+  M.inspect=null; M.crit=null;
+  drawYieldLocus(M);
+  drawCurveFit(M);
+  drawFLD(M);
+  drawMKExplainer(M);
+  drawFLCBuilder(M);
+}
+$('reset').onclick=()=>resetSelectedPreset();
+$('preset').addEventListener('change',()=>{const key=$('preset').value;if(key==='dc06lit')setDC06Literature();else if(key==='aa3003')setPaperAA3003();else if(key==='custom')setCustomDefaults();else{renderBenchmarkCard();update();}});
+$('stroke').oninput=()=>update();$('strokeNum').onchange=()=>{$('stroke').value=clamp(parseFloat($('strokeNum').value)||0,0,v('strokeMax'));update()};
+$('goTarget').onclick=()=>{$('stroke').value=v('strokeMax');$('strokeNum').value=v('strokeMax').toFixed(2);update()};
+$('inspect').oninput=()=>{$('inspectNum').value=(parseFloat($('inspect').value)||0).toFixed(1);update()};
+$('inspectNum').onchange=()=>{const B=Math.max(1,v('blankR')),x=clamp(parseFloat($('inspectNum').value)||0,-B,B);$('inspect').value=x;$('inspectNum').value=x.toFixed(1);update()};
+$('yieldModel').addEventListener('change',()=>{saveCurveText();syncYieldInputs();loadCurveDirection(currentCurveDir());resetStroke();clearModelCaches();$('mkProgress').value=0;$('mkProgressNum').value=0;$('preset').value='custom';renderBenchmarkCard();invalidateFLC();update();});
+$('hillCal').addEventListener('change',()=>{syncYieldInputs();clearModelCaches();$('preset').value='custom';renderBenchmarkCard();invalidateFLC();update();});
+
+$('analyzeCurve').onclick=()=>analyzeCurrentCurve();
+$('clearCurve').onclick=()=>{tensileStore.RD=CURVE_EXAMPLE;tensileAnalysis.RD=null;$('curveData').value=CURVE_EXAMPLE;renderFitResults(null);drawCurveFit(baseModel(0,false));};
+const dlExcel=$('downloadFLCExcel'); if(dlExcel) dlExcel.onclick=()=>downloadCurrentFLCExcel();
+ids.forEach(id=>$(id).addEventListener('change',()=>{
+  if(id==='strokeMax')$('stroke').max=v('strokeMax');if(id==='blankR')syncInspectRange();
+  if(id==='sy'){const K=Math.max(1e-9,v('K')),n=Math.max(.01,v('n')),sy=Math.max(1e-9,v('sy'));$('eps0').value=Math.pow(sy/K,1/n).toPrecision(6);}
+  if(id==='K'||id==='n'||id==='eps0'){const pp={K:v('K'),n:v('n'),eps0:v('eps0'),sy:v('sy')};$('sy').value=initialYield(pp).toFixed(2);}
+  resetStroke();clearModelCaches();$('mkProgress').value=0;$('mkProgressNum').value=0;$('preset').value='custom';renderBenchmarkCard();invalidateFLC();update();
+}));
+$('animate').onclick=()=>{if(anim){cancelAnimationFrame(anim);anim=null;$('animate').textContent='▶ Animate Draw';return}if(mkAnimRAF){cancelAnimationFrame(mkAnimRAF);mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point'}let start=null;$('animate').textContent='■ Stop';function step(t){if(!start)start=t;const dur=6500,q=((t-start)%dur)/dur;$('stroke').value=q*v('strokeMax');update();anim=requestAnimationFrame(step)}anim=requestAnimationFrame(step)};
+$('mkPrev').onclick=()=>setMKPointByIndex(nearestMKIndex(clamp(v('mkBeta'),-.5,1))-1);
+$('mkNext').onclick=()=>setMKPointByIndex(nearestMKIndex(clamp(v('mkBeta'),-.5,1))+1);
+$('mkBeta').addEventListener('change',()=>{let b=clamp(parseFloat($('mkBeta').value)||0,-.5,1);$('mkBeta').value=b.toFixed(2);if(mkAnimRAF){cancelAnimationFrame(mkAnimRAF);mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point'}mkExplainCache={key:'',beta:null,trace:null,limit:null,scan:null};flcBuildCount=0;$('mkProgress').value=0;$('mkProgressNum').value=0;update()});
+$('mkProgress').addEventListener('input',()=>{$('mkProgressNum').value=$('mkProgress').value;update()});
+$('mkProgressNum').addEventListener('change',()=>{const q=clamp(parseFloat($('mkProgressNum').value)||0,0,100);$('mkProgress').value=q;$('mkProgressNum').value=q.toFixed(0);update()});
+$('mkRestart').onclick=()=>{if(mkAnimRAF){cancelAnimationFrame(mkAnimRAF);mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point'}flcBuildCount=0;$('mkProgress').value=0;$('mkProgressNum').value=0;update()};
+$('mkPlay').onclick=()=>{if(mkAnimRAF){cancelAnimationFrame(mkAnimRAF);mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point';return}if(anim){cancelAnimationFrame(anim);anim=null;$('animate').textContent='▶ Animate Draw'}let start=null;$('mkPlay').textContent='■ Stop derivation';function step(t){if(!start)start=t;const dur=5200,q=Math.min(1,(t-start)/dur);$('mkProgress').value=Math.round(100*q);$('mkProgressNum').value=$('mkProgress').value;update();if(q<1)mkAnimRAF=requestAnimationFrame(step);else{mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point'}}mkAnimRAF=requestAnimationFrame(step)};
+$('fldCompare').addEventListener('change',()=>update());
+$('fldCloud').addEventListener('change',()=>update());
+function buildWholeFLC(){
+  if(flcBuildRAF){
+    cancelAnimationFrame(flcBuildRAF);flcBuildRAF=null;
+    setFLCBuildButtonText('▶ Build whole FLC');
+    return;
+  }
+  if(anim){cancelAnimationFrame(anim);anim=null;$('animate').textContent='▶ Animate Draw'}
+  if(mkAnimRAF){cancelAnimationFrame(mkAnimRAF);mkAnimRAF=null;$('mkPlay').textContent='▶ Run current FLD point'}
+  flcDisplayReady=false;refreshFLCBuildState();
+  const M=baseModel(0,true),N=(M.curve||[]).length;if(!N)return;
+  let start=null;flcBuildCount=0;setFLCBuildButtonText('■ Stop FLC build');
+  function step(t){
+    if(!start)start=t;
+    const dur=6500,q=Math.min(1,(t-start)/dur);
+    flcBuildCount=Math.min(N,Math.max(1,Math.floor(q*N)+1));
+    for(const id of ['flcBuildStateTop','flcBuildStateBottom']){
+      const el=$(id);if(el){el.textContent=`Building FLC… point ${flcBuildCount} of ${N}`;el.classList.remove('ready','stale');}
+    }
+    update();
+    if(q<1)flcBuildRAF=requestAnimationFrame(step);
+    else{
+      for(let ii=0;ii<N;ii++)flcVisited.add(ii);
+      flcBuildRAF=null;flcDisplayReady=true;
+      setFLCBuildButtonText('▶ Build whole FLC');
+      refreshFLCBuildState();
+      update();
+    }
+  }
+  flcBuildRAF=requestAnimationFrame(step);
+}
+$('flcBuildPlay').onclick=buildWholeFLC;
+$('flcBuildPlayTop').onclick=buildWholeFLC;
+window.addEventListener('resize',update);syncYieldInputs();setCustomDefaults();activeCurveDir='RD';$('curveDir').value='RD';$('curveData').value=tensileStore.RD;if($('fldCloud'))$('fldCloud').value='focus';if($('fldCompare'))$('fldCompare').value='current';flcDisplayReady=true;refreshFLCBuildState();renderFitResults(null);update();analyzeCurrentCurve();
+</script>
+</div>
+<script>
+const menuToggle=document.querySelector('.fld-site-header .menu-toggle');
+const siteNav=document.querySelector('.fld-site-header .nav');
+if(menuToggle&&siteNav){function setSiteMenu(open){siteNav.classList.toggle('open',open);menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu')}menuToggle.addEventListener('click',()=>setSiteMenu(!siteNav.classList.contains('open')));siteNav.addEventListener('click',e=>{if(e.target.closest('a'))setSiteMenu(false)});document.addEventListener('keydown',e=>{if(e.key==='Escape')setSiteMenu(false)})}
+</script>
+</body></html>
