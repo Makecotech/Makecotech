@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Forming Limit Diagrams & M–K Prediction | MakeCoTech</title>
+<meta name="description" content="A practical engineering guide to forming limit diagrams (FLDs), Nakajima testing, and Marciniak–Kuczynski (M–K) prediction, with the MakeCoTech interactive FLC estimation tool."/>
+<link href="style.css" rel="stylesheet"/>
+<link rel="icon" href="makecotech_mc_icon.png"/>
+<style>
+.article-page{background:#fff}
+.article-hero{background:linear-gradient(135deg,#07172f 0%,#0b2a5b 60%,#164d82 100%);color:#fff;padding:42px 24px 36px}
+.article-container{width:100%;max-width:980px;margin:0 auto}
+.article-hero .eyebrow{margin:0 0 8px;color:#7ec8ff;font-size:.76rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-hero h1{max-width:920px;margin:0;color:#fff;font-size:clamp(1.9rem,3.6vw,2.8rem);line-height:1.12;letter-spacing:-.02em}
+.article-hero .lead{max-width:850px;margin:14px 0 0;color:rgba(255,255,255,.88);font-size:1rem;line-height:1.65}
+.article-meta{display:flex;flex-wrap:wrap;gap:7px;margin-top:18px}
+.article-tag{padding:5px 9px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.82);font-size:.78rem;font-weight:600}
+.article-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:20px}
+.article-btn{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:7px;text-decoration:none;font-size:.86rem;font-weight:800}
+.article-btn.primary{background:#fff;color:#0b2a5b}.article-btn.secondary{border:1px solid rgba(255,255,255,.35);color:#fff;background:rgba(255,255,255,.06)}
+.article-body{max-width:980px;margin:0 auto;padding:40px 24px 56px}.article-body section{margin-bottom:46px}
+.article-section-label{display:block;margin-bottom:5px;color:#0074d9;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}
+.article-body h2{margin:0 0 14px;color:#0b2a5b;font-size:1.58rem;line-height:1.28;text-align:left}.article-body h3{margin:23px 0 8px;color:#163a63;font-size:1.08rem}
+.article-body p{margin:0 0 14px;color:#334155;font-size:.96rem;line-height:1.72;text-align:left}.article-intro{color:#26384d!important;font-size:1.03rem!important}
+.figure-card{margin:22px 0 12px;border:1px solid #d9e4ef;border-radius:12px;background:#fff;overflow:hidden;box-shadow:0 8px 24px rgba(11,42,91,.05)}
+.figure-card img{display:block;width:100%;height:auto}.figure-card figcaption{padding:12px 16px;color:#5b6b7d;background:#f8fbff;border-top:1px solid #e2eaf2;font-size:.84rem;line-height:1.5}
+.callout{margin:22px 0;padding:18px 20px;border:1px solid #dce8f4;border-left:4px solid #0074d9;border-radius:8px;background:#f8fbff}.callout.warning{border-left-color:#d97706;background:#fffaf0}.callout.good{border-left-color:#059669;background:#f2fbf7}.callout p:last-child{margin-bottom:0}
+.equation-box{margin:18px 0;padding:14px 18px;border-left:3px solid #0074d9;border-radius:6px;background:#f5f8fc;color:#0b2a5b;font-family:Cambria,Georgia,serif;font-size:1.03rem;font-weight:700;text-align:left;overflow:auto}
+.model-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0 12px}.model-card{padding:18px;border:1px solid #dbe5f0;border-radius:9px;background:#fff;box-shadow:0 6px 18px rgba(11,42,91,.04)}.model-card h3{margin:0 0 7px;color:#0b2a5b;font-size:1rem}.model-card p{margin:0;font-size:.9rem;line-height:1.58}
+.tool-card{margin:24px 0;padding:24px;border:1px solid #cbdcec;border-radius:12px;background:linear-gradient(135deg,#f8fbff,#eef6ff)}.tool-card h3{margin-top:0;color:#0b2a5b}.tool-card .big-question{font-size:1.35rem;font-weight:900;color:#0b2a5b;margin-bottom:8px}.tool-ref{font-size:.84rem;color:#5a6d82!important}
+.resource-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.resource-links a{display:inline-flex;padding:10px 13px;border-radius:7px;background:#0b2a5b;color:#fff;font-size:.84rem;font-weight:800;text-decoration:none}.resource-links a.alt{background:#fff;color:#0b2a5b;border:1px solid #9fbad3}
+.workflow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:22px 0}.workflow div{padding:12px 8px;border:1px solid #d6e2ee;border-radius:8px;background:#f8fbff;color:#163a63;text-align:center;font-size:.78rem;font-weight:800}
+.comparison-table-wrapper{margin:24px 0;overflow-x:auto;border:1px solid #dce5ef;border-radius:10px}.comparison-table{width:100%;border-collapse:collapse;background:#fff}.comparison-table th{padding:12px 14px;background:#0b2a5b;color:#fff;font-size:.88rem;text-align:left}.comparison-table td{padding:12px 14px;border-bottom:1px solid #e5ebf1;color:#334155;font-size:.91rem;line-height:1.48;vertical-align:top}.comparison-table tr:last-child td{border-bottom:none}.comparison-table tbody tr:nth-child(even){background:#f8fafc}
+.reliability{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:20px 0}.reliability .tier{padding:17px;border-radius:10px;border:1px solid #dbe5f0}.reliability .tier strong{display:block;color:#0b2a5b;margin-bottom:6px}.reliability .tier span{display:block;color:#64748b;font-size:.88rem;line-height:1.55}
+.reference-list{font-size:.84rem;color:#66788d}.reference-list a{color:#0074d9}.small-note{font-size:.84rem!important;color:#64748b!important}
+@media(max-width:850px){.model-grid,.reliability{grid-template-columns:1fr}.workflow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.article-actions{flex-direction:column;align-items:stretch}.workflow{grid-template-columns:1fr}.article-body{padding-left:18px;padding-right:18px}}
+
+.fld-resource-nav{display:flex;flex-wrap:wrap;gap:8px;max-width:980px;margin:0 auto;padding:14px 24px;border-bottom:1px solid #dbe5f0;background:#fff;font:600 .875rem/1.4 Arial,Helvetica,sans-serif}
+.fld-resource-nav a{display:inline-flex;align-items:center;min-height:40px;padding:8px 12px;border:1px solid #cbdcec;border-radius:6px;color:#164d82;text-decoration:none}
+.fld-resource-nav a:hover{background:#edf6ff;border-color:#0074d9}.fld-resource-nav a[aria-current="page"]{background:#0b2a5b;color:#fff;border-color:#0b2a5b}
+.overview-video{scroll-margin-top:100px}.overview-video video{display:block;width:100%;height:auto;aspect-ratio:16/9;border-radius:12px;background:#081321;box-shadow:0 10px 30px rgba(11,42,91,.12)}
+.overview-video figcaption{margin-top:10px;color:#62768c;font-size:.82rem;line-height:1.6}
+@media(max-width:560px){.fld-resource-nav{padding:12px 16px}.fld-resource-nav a{flex:1 1 calc(50% - 6px);justify-content:center;text-align:center}}
+</style>
+
+<link rel="canonical" href="https://www.makecotech.com/forming-limit-diagram-mk.html"/>
+<meta property="og:type" content="article"/>
+<meta property="og:site_name" content="MakeCoTech"/>
+<meta property="og:title" content="Forming Limit Diagrams &amp; M–K Prediction | MakeCoTech"/>
+<meta property="og:description" content="Practical guide to FLD/FLC testing, Nakajima experiments and numerical M–K forming-limit prediction with a free interactive MakeCoTech tool."/>
+<meta property="og:url" content="https://www.makecotech.com/forming-limit-diagram-mk.html"/>
+<meta name="twitter:card" content="summary"/>
+</head>
+<body class="article-page">
+<header class="site-header">
+<a aria-label="MakeCoTech home" class="brand" href="index.html"><img alt="MakeCoTech logo" src="makecotech_logo.png"/></a>
+<button aria-label="Open menu" class="menu-toggle">☰</button>
+<nav class="nav">
+<a href="index.html#home">Home</a><a href="index.html#services">Services</a><a href="index.html#industries">Industries</a><a href="index.html#resources">Technical Resources</a><a href="index.html#about">About</a><a href="index.html#founder">Founder</a><a href="index.html#contact">Contact</a>
+</nav>
+</header>
+<nav class="fld-resource-nav" aria-label="Forming limit resources">
+<a href="forming-limit-diagram-mk.html" aria-current="page">Article</a>
+<a href="MakeCoTech_MK_FLD_Explorer_v1.3.5.html">Interactive FLC tool</a>
+</nav>
+
+<main>
+<section class="article-hero"><div class="article-container">
+<p class="eyebrow">Technical Resource · Sheet Metal Formability</p>
+<h1>Forming Limit Diagrams: From Experimental Testing to M–K Prediction</h1>
+<p class="lead">Why the forming limit curve matters in sheet-metal forming, how it is measured experimentally, and how a Marciniak–Kuczynski model can provide an engineering estimate when a measured FLC is not available.</p>
+<div class="article-meta"><span class="article-tag">FLD / FLC</span><span class="article-tag">Sheet Metal Forming</span><span class="article-tag">M–K Model</span><span class="article-tag">Anisotropy</span><span class="article-tag">Abaqus / Explicit</span></div>
+<div class="article-actions"><a class="article-btn primary" href="MakeCoTech_MK_FLD_Explorer_v1.3.5.html">Open MakeCoTech M–K / FLD Curve Builder</a><a class="article-btn secondary" href="#reliability">How reliable is M–K?</a></div>
+</div></section>
+
+<div class="article-body">
+<section class="overview-video" id="video-overview">
+<span class="article-section-label">Watch the Overview</span>
+<h2>From Nakajima testing to the forming limit curve</h2>
+<p class="article-intro">Experimental forming-limit curves are built from multiple sheet-forming tests. When test data is not yet available, the MakeCoTech M–K / FLD Explorer can provide a numerical engineering estimate for screening and sensitivity studies.</p>
+<figure class="figure-card">
+<video autoplay muted loop playsinline preload="metadata" aria-label="Nakajima forming test followed by forming limit curve construction">
+<source src="assets/video/MakeCoTech-FLD-Website.mp4" type="video/mp4"/>
+</video>
+<figcaption>Experimental testing remains the preferred reference for final validation. The interactive M–K tool provides a numerical engineering estimate, not a replacement for qualification testing.</figcaption>
+</figure>
+<div class="resource-links"><a href="MakeCoTech_MK_FLD_Explorer_v1.3.5.html">Open the Free Interactive FLC Tool</a><a class="alt" href="#reliability">Model reliability</a></div>
+</section>
+
+<section>
+<span class="article-section-label">Why Forming Limits Matter</span>
+<h2>Why use a Forming Limit Diagram?</h2>
+<p class="article-intro">A sheet can look safe in a conventional stress or strain plot and still be close to localized necking. The <strong>Forming Limit Diagram (FLD)</strong> brings the two in-plane principal strains together and shows how much deformation the sheet can sustain under different strain paths.</p>
+<p>The horizontal axis is the <strong>minor strain ε₂</strong>; the vertical axis is the <strong>major strain ε₁</strong>. The forming limit curve (FLC) separates combinations of strain that are generally considered acceptable from combinations associated with localized necking. The left-hand side covers negative minor strain states such as drawing and uniaxial tension; the right-hand side covers positive minor strain states progressing toward biaxial stretching.</p>
+<figure class="figure-card"><img src="makecotech_fld_modes.png" alt="Forming limit diagram showing strain paths from uniaxial compression and pure shear through plane strain to biaxial and equibiaxial tension"/><figcaption>Different deformation modes produce different major/minor strain combinations. A complete FLC therefore needs more than one loading path.</figcaption></figure>
+<div class="callout"><p><strong>The FLD is not one material number.</strong> It is a curve built from several strain paths, and the minimum is typically close to plane strain where ε₂ ≈ 0.</p></div>
+</section>
+
+<section>
+<span class="article-section-label">Experimental Measurement</span>
+<h2>How is an experimental FLC obtained?</h2>
+<p>In a Nakajima-type test, a hemispherical punch stretches sheet specimens with different widths or geometries. Changing the specimen geometry changes the strain path. A surface grid or digital image correlation (DIC) is used to determine the local principal strains as the sheet approaches localized necking.</p>
+<figure class="figure-card"><img src="makecotech_nakajima_test.png" alt="Nakajima forming limit test setup with hemispherical punch, die, blank holder, DIC cameras, undeformed sheet grid and deformed dome with circumferential crack"/><figcaption>Conceptual Nakajima FLD test. The blank holder suppresses flange wrinkling, the hemispherical punch creates the dome, and the surface pattern reveals the local deformation. Multiple specimen geometries are required to populate the FLC.</figcaption></figure>
+<p>A narrow specimen tends toward a negative minor strain, an intermediate specimen can approach plane strain, and a wide or nearly full blank produces positive minor strain and biaxial stretching. The measured limiting strains from these different tests are assembled into the experimental forming limit curve.</p>
+</section>
+
+<section>
+<span class="article-section-label">When Test Data Is Missing</span>
+<div class="tool-card">
+<div class="big-question">Are you missing a forming limit curve?</div>
+<p>Material cards, supplier data and legacy databases do not always include an FLD. Running a complete Nakajima campaign also requires specimens, tooling, optical measurement and interpretation.</p>
+<p><strong>MakeCoTech M–K / FLD Explorer v1.3.5</strong> is intended to provide an <strong>estimated FLC</strong> from constitutive inputs using the Marciniak–Kuczynski approach. The tool scans strain paths and groove orientations, follows the competition between the nominal sheet and an initial imperfection, and identifies the onset of localization.</p>
+<div class="workflow"><div>Material Inputs</div><div>Strain Path ρ</div><div>Groove Angle Scan</div><div>Localization Check</div><div>Estimated FLC</div></div>
+<div class="resource-links"><a href="MakeCoTech_MK_FLD_Explorer_v1.3.5.html">Open the Interactive Tool</a><a class="alt" href="#reliability">Read the reliability guidance</a></div>
+</div>
+</section>
+
+<section>
+<span class="article-section-label">Marciniak–Kuczynski Method</span>
+<h2>What does the M–K model actually predict?</h2>
+<p>The M–K concept assumes that the sheet contains a small initial imperfection, commonly represented as a narrow band or groove with slightly reduced thickness. Under loading, the nominal region and the imperfection region must remain mechanically compatible and in equilibrium. If the imperfect region begins to deform much faster than the surrounding sheet, strain localizes and the corresponding major/minor strain state is taken as the forming limit.</p>
+<div class="equation-box">f₀ = t<sub>groove,0</sub> / t<sub>sheet,0</sub></div>
+<p>The initial imperfection factor <strong>f₀</strong> is therefore important. The predicted curve also depends strongly on the constitutive description used for the sheet: yield surface, hardening law, anisotropy, strain-rate sensitivity and strain-path history can all shift the predicted limit.</p>
+</section>
+
+<section id="reliability">
+<span class="article-section-label">Model Reliability</span>
+<h2>How reliable is M–K compared with experimental FLD data?</h2>
+<p class="article-intro"><strong>M–K is one of the most widely used theoretical frameworks for predicting forming-limit curves, but it is not a universal replacement for an experiment.</strong> Reviews of the method show that it can reproduce experimental trends well, and individual studies report good agreement when the constitutive model and calibration are appropriate. At the same time, the prediction is sensitive to the assumed imperfection and to the material model used.</p>
+<div class="reliability">
+<div class="tier"><strong>Screening / early design</strong><span>Very useful for estimating the shape of the FLC, comparing material assumptions and exploring sensitivity when no measured FLD exists.</span></div>
+<div class="tier"><strong>Calibrated engineering prediction</strong><span>Can give good agreement when anisotropy, hardening and rate effects are represented properly and the imperfection factor is calibrated or justified.</span></div>
+<div class="tier"><strong>Final qualification</strong><span>An experimental FLC remains the preferred reference for production release, safety-critical validation or material certification.</span></div>
+</div>
+
+<h3>Why can two M–K predictions differ?</h3>
+<div class="model-grid">
+<div class="model-card"><h3>Yield criterion</h3><p>Von Mises, Hill-type and advanced anisotropic yield functions can produce noticeably different FLCs.</p></div>
+<div class="model-card"><h3>Hardening law</h3><p>Swift, Voce and combined hardening assumptions change post-yield response and therefore localization.</p></div>
+<div class="model-card"><h3>Imperfection factor f₀</h3><p>The initial groove depth is not generally known directly. Uncalibrated choices can shift the absolute level of the FLC.</p></div>
+<div class="model-card"><h3>Strain-rate & path effects</h3><p>Rate sensitivity and nonlinear strain histories can change forming limits and should be included when relevant.</p></div>
+</div>
+
+<div class="callout good"><p><strong>Best practice for the MakeCoTech tool:</strong> if no experimental FLD is available, present the result as an <em>uncalibrated estimate</em> and run a sensitivity range for f₀. If one reliable experimental point is available—especially near plane strain—it can be used to calibrate f₀ before predicting the rest of the curve.</p></div>
+<div class="callout warning"><p><strong>Important:</strong> a visually plausible FLC is not proof that the material is represented correctly. The M–K curve should be treated as a model prediction whose credibility depends on the quality of the constitutive inputs and validation data.</p></div>
+</section>
+
+<section>
+<span class="article-section-label">Recommended Workflow</span>
+<h2>From missing FLC to an engineering decision</h2>
+<div class="comparison-table-wrapper"><table class="comparison-table"><thead><tr><th>Available data</th><th>Recommended use of M–K</th><th>Confidence</th></tr></thead><tbody>
+<tr><td>Stress–strain curve only</td><td>Generate a preliminary FLC and perform f₀ sensitivity. Use for screening, not qualification.</td><td>Low–moderate</td></tr>
+<tr><td>Stress–strain + r-values / anisotropy</td><td>Use an anisotropic yield law and compare sensitivity to hardening assumptions.</td><td>Moderate</td></tr>
+<tr><td>One experimental forming-limit point</td><td>Calibrate f₀ to the measured point, then predict the remaining strain paths.</td><td>Moderate–good</td></tr>
+<tr><td>Several experimental FLD points</td><td>Validate the complete predicted curve and use M–K to interpolate, investigate parameters or study alternate paths.</td><td>Good for the validated domain</td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+<span class="article-section-label">References</span>
+<h2>Technical background</h2>
+<div class="reference-list">
+<p>Banabic, D., Kami, A., Comsa, D.-S., Eyckens, P. “Developments of the Marciniak–Kuczynski model for sheet metal formability: A review.” <em>Journal of Materials Processing Technology</em>, 287 (2021), 116446. DOI: 10.1016/j.jmatprotec.2019.116446.</p>
+<p>Signorelli, J.W., Bertinetti, M.A., Roatta, A. “A review of recent investigations using the Marciniak–Kuczynski technique in conjunction with crystal plasticity models.” <em>Journal of Materials Processing Technology</em>, 287 (2021), 116517.</p>
+<p>SIMULIA / Abaqus documentation: Marciniak–Kuczynski (M–K) damage criterion for Abaqus/Explicit.</p>
+<p class="small-note">The MakeCoTech M–K / FLD Curve Builder is intended for education, engineering exploration and preliminary estimation. Results should be validated against appropriate experimental data before use in safety-critical or production decisions.</p>
+</div>
+</section>
+</div>
+</main>
+<script>
+const menuToggle=document.querySelector('.menu-toggle');
+const siteNav=document.querySelector('.site-header .nav');
+if(menuToggle&&siteNav){
+ function setMenu(open){siteNav.classList.toggle('open',open);menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu');}
+ menuToggle.addEventListener('click',()=>setMenu(!siteNav.classList.contains('open')));
+ siteNav.addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+}
+</script>
+</body>
+</html>
