@@ -1,0 +1,2183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MakeCoTech Wafer Bow & Thin-Film Stress Explorer v0.27 Offline</title>
+<style>
+:root{
+  --bg:#0a1118;--panel:#111a24;--panel2:#16212d;--card:#0d161f;--line:#263746;
+  --text:#eef5fb;--muted:#9bb0c3;--accent:#4fb3ff;--good:#5dd39e;--warn:#f2c14e;--bad:#ff6b6b;
+  --shadow:0 12px 34px rgba(0,0,0,.24)
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#081017,#0c151e 48%,#091119);color:var(--text);
+font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+button,input,select{min-height:42px}
+.wrap{max-width:1540px;margin:0 auto;padding:18px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:14px}
+.brand h1{font-size:clamp(22px,3vw,34px);margin:0 0 5px;letter-spacing:-.03em}
+.brand .sub{color:var(--muted);font-size:14px;line-height:1.45;max-width:980px}
+.badge{border:1px solid var(--line);background:#0f1923;border-radius:999px;padding:8px 12px;color:#cfe5f7;font-size:12px;white-space:nowrap}
+.layout{display:grid;grid-template-columns:390px minmax(0,1fr);gap:14px;align-items:start}
+.panel{background:rgba(17,26,36,.95);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.controls{padding:12px;position:sticky;top:10px;max-height:calc(100vh - 20px);overflow:auto}
+.controlGroup{border:1px solid var(--line);background:#0c151e;border-radius:13px;margin:8px 0;overflow:hidden}
+.controlGroup>summary{cursor:pointer;list-style:none;padding:11px 12px;font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.08em;color:#dceaf6}
+.controlGroup>summary::-webkit-details-marker{display:none}
+.controlGroup>summary:after{content:"+";float:right;color:var(--muted);font-size:16px}
+.controlGroup[open]>summary:after{content:"−"}
+.groupBody{border-top:1px solid var(--line);padding:10px 12px 12px}
+label{display:block;font-size:12px;color:var(--muted);margin:9px 0 4px}
+input[type=number],select,textarea{width:100%;background:#09131c;color:var(--text);border:1px solid #314456;border-radius:10px;padding:9px 10px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(79,179,255,.12)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rangeRow{display:grid;grid-template-columns:1fr 70px;gap:8px;align-items:center}
+input[type=range]{width:100%;accent-color:var(--accent);min-height:34px}
+button{border:1px solid #31516a;background:#12283a;color:#e8f4fe;border-radius:10px;padding:9px 11px;cursor:pointer}
+button:hover{background:#17364d}
+button.primary{background:#0f5d8f;border-color:#187dbb}
+button.primary:hover{background:#126fa9}
+button.ghost{background:#0d1720}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.note{font-size:11px;line-height:1.5;color:var(--muted)}
+.statusline{font-size:11px;color:var(--muted);margin-top:8px;min-height:16px}
+.modeChoice{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:5px 0 7px}
+.modeChoice button{min-height:40px;background:#0b1721;border:1px solid #314456;font-size:12px;font-weight:700}
+.modeChoice button.active{background:#0f5d8f;border-color:#39a8ed;color:#fff;box-shadow:0 0 0 2px rgba(79,179,255,.10)}
+.limitNote{margin:8px 0;padding:8px 9px;border:1px solid #2f4658;border-radius:10px;background:#0b1720;font-size:10px;line-height:1.45;color:#b6cada}
+.limitNote b{color:#eef5fb}
+.methodGuide{margin-top:9px;border:1px solid #2d4354;border-radius:10px;background:#0b1720;overflow:hidden}
+.methodGuide summary{cursor:pointer;padding:9px 10px;font-size:11px;font-weight:750;color:#e8f4fc;list-style:none}
+.methodGuide summary::-webkit-details-marker{display:none}
+.methodGuide summary:after{content:"+";float:right;color:var(--muted);font-size:15px;line-height:1}
+.methodGuide[open] summary:after{content:"−"}
+.methodGuideBody{padding:0 10px 10px;color:#b9cfde;font-size:10px;line-height:1.5}
+.methodGuideBody h4{margin:8px 0 3px;color:#fff;font-size:10.5px}
+.methodGuideBody p{margin:0 0 6px}
+.methodGuideBody .eq{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;color:#dceeff;background:#09131b;border-radius:6px;padding:5px 7px;margin:5px 0 7px}
+.methodGuideBody .tip{border-left:2px solid var(--accent);padding-left:7px}
+.dimmedControl{opacity:.42}
+.verifyToggles{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0 5px}
+.verifyToggle{display:flex;align-items:center;gap:7px;background:#0b1721;border:1px solid #2d4354;border-radius:9px;padding:8px 9px;font-size:10px;color:#d9e9f4;cursor:pointer;user-select:none}
+.verifyToggle input{width:auto;margin:0;accent-color:#39a8ed}
+.verifyToggle span{line-height:1.2}
+.visualTools{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.visualTools .verifyToggle{padding:6px 8px;min-height:32px;background:#0d1d29}
+.visualTools .verifyToggle.disabled{opacity:.42;cursor:not-allowed}
+.visualTools .toolLabel{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-right:1px}
+.pointLegendDot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#eaf7ff;border:1px solid #081018;box-shadow:0 0 0 1px rgba(89,190,255,.9);vertical-align:middle;margin-right:3px}
+.fitLegendLine{display:inline-block;width:18px;border-top:2px dashed #ffcf70;vertical-align:middle;margin-right:4px}
+.sourceSelect{font-size:11px}
+.fileDrop{margin:8px 0 10px;padding:10px;border:1px dashed #3b5a70;border-radius:11px;background:#0a151f}.fileDrop input[type=file]{width:100%;min-height:42px;color:var(--muted);font-size:12px}.fileDrop input[type=file]::file-selector-button{margin-right:9px;border:1px solid #31516a;background:#12283a;color:#e8f4fe;border-radius:8px;padding:8px 10px;cursor:pointer}.fileMeta{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.4}textarea{min-height:180px;resize:vertical;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;line-height:1.45}
+.main{display:grid;gap:14px}
+.summary{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:11px 12px;min-width:0}
+.metric .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.metric .v{font-size:18px;font-weight:750;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.metric .s{font-size:10px;color:var(--muted);margin-top:2px}
+.validity{display:flex;align-items:center;gap:7px}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.visual{padding:14px}
+.visualHead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.visualHead h2{margin:0;font-size:16px}
+.visualHead p{margin:4px 0 0;color:var(--muted);font-size:12px}
+.contours{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.contourCard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;min-width:0;position:relative}
+.contourTitle{display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:7px}
+.contourTitle strong{font-size:13px}.contourTitle span{font-size:10px;color:var(--muted)}
+.waferCanvas{width:100%;aspect-ratio:1/1;display:block;border-radius:11px;background:#081018;touch-action:pan-y}
+.legend{height:12px;border-radius:999px;margin-top:8px;background:linear-gradient(90deg,#214f9c,#67b7df,#f2f4f6,#f3a36f,#b92e3b);border:1px solid #314456}
+.legendLabels{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:3px}
+.workspaceLower{display:grid;grid-template-columns:minmax(390px,.92fr) minmax(0,1.08fr);gap:9px;margin-top:9px;align-items:stretch}
+.canvas3d{width:100%;height:225px;display:block;border-radius:12px;background:radial-gradient(circle at 50% 25%,#182a38,#081018 70%);touch-action:none}
+.viewerCtl{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.viewerCtl h3{font-size:13px;margin:0 0 9px}
+.toggle{display:flex;gap:6px;flex-wrap:wrap}
+.toggle button.active{background:#0f5d8f;border-color:#187dbb}
+.sectionMini{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.sectionMini h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 6px;color:#dceaf6}
+.profileGrid{display:grid;grid-template-columns:1fr;grid-template-rows:repeat(3,1fr);gap:6px;height:260px}
+.plotCanvas{width:100%;height:82px;display:block;background:#0a121a;border:1px solid var(--line);border-radius:12px}
+.infoGrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.info{padding:14px}
+.info h3{margin:0 0 7px;font-size:14px}
+.info p,.info li{font-size:12px;line-height:1.55;color:var(--muted)}
+.info ul{padding-left:18px;margin:5px 0}
+.history{padding:14px}
+.history h2{margin:0 0 4px;font-size:16px}
+.historyLead{font-size:12px;color:var(--muted);margin-bottom:10px}
+.historyGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.hitem{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;min-width:0}
+.hitem .hk{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:4px}
+.hitem .hv{font-size:12px;line-height:1.48;color:#dceaf6}
+.hitem.wide{grid-column:span 2}
+.historyLinks{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+.historyLinks a{display:inline-block;text-decoration:none;color:#dff2ff;background:#10283a;border:1px solid #31516a;border-radius:9px;padding:7px 9px;font-size:11px}
+.historyLinks a:hover{background:#17364d}
+
+.reportPanel{padding:14px}
+.reportHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.reportHead h2{margin:0;font-size:16px}
+.reportActions{display:flex;gap:7px;flex-wrap:wrap}
+.reportActions button,.reportActions label.uploadBtn{font-size:11px;min-height:34px;padding:7px 10px;border:1px solid #31516a;border-radius:9px;background:#10283a;color:#e9f5ff;cursor:pointer}
+.reportActions button:hover,.reportActions label.uploadBtn:hover{background:#17364d}
+.reportActions input[type=file]{display:none}
+.reportGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.reportField{min-width:0}
+.reportField.wide{grid-column:span 2}
+.reportField.full{grid-column:1/-1}
+.reportField label{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:0 0 4px}
+.reportField input,.reportField textarea{width:100%;background:#0b1721;border:1px solid #2d4253;color:#edf7ff;border-radius:9px;padding:8px 9px;font:inherit;font-size:11px;line-height:1.35;min-height:36px}
+.reportField textarea{resize:vertical;min-height:54px}
+.reportHint{font-size:10px;color:var(--muted);margin-top:8px}
+.reportDetail{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-top:10px;overflow:hidden}
+.reportDetail>summary{list-style:none;cursor:pointer;padding:12px 14px;font-weight:750;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.reportDetail>summary::-webkit-details-marker{display:none}
+.reportDetail>summary:after{content:"+";font-size:18px;color:var(--muted)}
+.reportDetail[open]>summary:after{content:"−"}
+.reportDetailBody{padding:0 14px 14px}
+.reportDetail .validation,.reportDetail .history,.reportDetail .info{border:0;background:transparent;box-shadow:none;padding:0}
+.reportDetail .validationIntro,.reportDetail .historyLead{font-size:10px;margin-bottom:8px}
+.reportDetail .vcard,.reportDetail .hitem{padding:8px}
+.reportDetail .vcard .big{font-size:15px}
+.reportDetail .hitem .hv,.reportDetail .info p,.reportDetail .info li{font-size:10px;line-height:1.4}
+.printOnly{display:none}
+@media(max-width:1000px){.reportGrid{grid-template-columns:1fr 1fr}.reportField.wide{grid-column:span 2}}
+@media(max-width:620px){.reportGrid{grid-template-columns:1fr}.reportField.wide,.reportField.full{grid-column:1}}
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  html,body{background:#fff!important;color:#111!important}
+  body{font-size:9pt}
+  .wrap{max-width:none!important;padding:0!important}
+  header{margin:0 0 4mm!important;padding:0 0 3mm!important;border-bottom:1px solid #bbb!important}
+  header h1{font-size:18pt!important;color:#111!important;margin:0!important}
+  header .sub,.headerActions,.badge,.mobileQuick,.controls,.expandBtn,.openView,
+  .coverageKey,.visualTools,.mapRangeMini,.viewerControlsLocal,.analysisNotes,
+  .reportActions,.reportHint,.reportDetail,footer,.topPrint,.probeTip{display:none!important}
+
+  .layout{display:block!important}
+  main{width:100%!important;display:block!important}
+  .panel,.visual,.contourCard,.viewBox,.metric,.reportPanel{
+    box-shadow:none!important;background:#fff!important;border-color:#aaa!important;color:#111!important
+  }
+  .summary{display:grid!important;grid-template-columns:repeat(6,1fr)!important;gap:2mm!important;margin-bottom:3mm!important;break-inside:avoid!important}
+  .metric{padding:2.5mm!important;border-radius:2mm!important}
+  .metric .k,.metric .v,.metric .s{color:#111!important}
+  .metric .k{font-size:7.5pt!important}.metric .v{font-size:11pt!important}.metric .s{font-size:7pt!important}
+
+  .visual{padding:0!important;border:0!important}
+  .visualHead{margin:0 0 2mm!important}
+  .visualHead h2{font-size:12pt!important;color:#111!important}
+  .visualHead p{display:none!important}
+
+  /* Page 1: summary + all four wafer maps */
+  .contours{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:2mm!important;align-items:start!important;break-inside:avoid!important}
+  .contourCard{padding:2mm!important;border-radius:2mm!important;break-inside:avoid!important}
+  .contourCard>.graphicHead{min-height:10mm!important}
+  .contourTitle strong,.contourTitle span{color:#111!important}
+  .waferStage{min-height:0!important}
+  .waferCanvas{width:100%!important;height:auto!important;aspect-ratio:1/1!important;background:#081018!important}
+  .legend{height:3mm!important;margin-top:1.5mm!important}
+  .legendLabels{font-size:7pt!important;color:#333!important}
+
+  /* Page 2: 3D view + all three centerline plots */
+  .workspaceLower{
+    break-before:page!important;
+    display:grid!important;
+    grid-template-columns:42% 58%!important;
+    gap:3mm!important;
+    align-items:start!important;
+    margin-top:0!important;
+    min-height:0!important
+  }
+  .workspaceLower>.viewBox{display:block!important;padding:2mm!important;break-inside:avoid!important}
+  .viewerTopBar{margin-bottom:1mm!important}
+  .viewerTopBar strong,.graphicHead strong{color:#111!important}
+  .viewerFieldSelect{display:none!important}
+  .canvas3d{display:block!important;width:100%!important;height:112mm!important;background:#081018!important;border:1px solid #999!important}
+  .profileGrid{display:grid!important;grid-template-rows:repeat(3,auto)!important;height:auto!important;gap:2mm!important}
+  .profileGrid>.viewBox{display:block!important;padding:1.5mm!important;break-inside:avoid!important}
+  .profileGrid .graphicHead{min-height:6mm!important;margin-bottom:1mm!important}
+  .plotCanvas{display:block!important;width:100%!important;height:47mm!important;min-height:0!important;background:#0a121a!important;border:1px solid #999!important}
+
+  /* Page 3: report metadata only */
+  .reportPanel{
+    display:block!important;
+    break-before:page!important;
+    margin:0!important;
+    padding:5mm!important;
+    border:1px solid #aaa!important
+  }
+  .reportHead{margin-bottom:4mm!important}.reportHead h2{font-size:14pt!important;color:#111!important}
+  .reportGrid{display:none!important}.printOnly{display:block!important}
+  .printMetaGrid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:5mm 8mm!important}
+  .printMetaItem{border-bottom:1px solid #ccc!important;padding-bottom:2mm!important}
+  .printMetaKey{font-size:8pt!important;text-transform:uppercase;color:#666!important;margin-bottom:1mm!important}
+  .printMetaVal{font-size:9pt!important;color:#111!important;white-space:pre-wrap!important}
+}
+
+@media(max-width:820px){.historyGrid{grid-template-columns:1fr 1fr}.hitem.wide{grid-column:span 2}}
+@media(max-width:620px){.contours{grid-template-columns:1fr}.analysisNotes .noteGrid{grid-template-columns:1fr}}
+@media(max-width:470px){.historyGrid{grid-template-columns:1fr}.hitem.wide{grid-column:span 1}}
+.validation{padding:14px}
+.validation h2{margin:0 0 4px;font-size:16px}
+.validationIntro{font-size:12px;color:var(--muted);margin-bottom:10px}
+.validationGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px;min-width:0}
+.vcard .vh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.vcard .vh strong{font-size:12px}.vstatus{font-size:10px;border-radius:999px;border:1px solid var(--line);padding:4px 7px}
+.vcard .big{font-size:18px;font-weight:750;margin:7px 0 2px}
+.vcard .small{font-size:10px;color:var(--muted);line-height:1.4}
+.pass{color:var(--good)}.caution{color:var(--warn)}.fail{color:var(--bad)}
+.sourceLine{margin-top:10px;border-top:1px solid var(--line);padding-top:10px;font-size:11px;color:var(--muted);line-height:1.5}
+.refLinks a,.info a{color:#77c7ff;text-decoration:none;border-bottom:1px dotted #77c7ff66}.refLinks a:hover,.info a:hover{color:#b4e3ff;border-bottom-color:#b4e3ff}.refLinks{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px}.refLinks a{display:inline-block;border:1px solid #31516a;border-radius:8px;padding:4px 7px;background:#0d1c28;font-size:10px}.curvControls{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:6px 0 8px}.curvControls label{margin:0 0 3px;font-size:10px}.curvControls select{min-height:36px;padding:6px 8px;font-size:11px}
+.curvControls{display:none!important}
+.curv2dToolbar{display:flex;align-items:end;gap:7px;flex-wrap:wrap;margin:0 0 9px;padding:7px 9px;border:1px solid var(--line);border-radius:10px;background:#0b141d}
+.curv2dToolbar.hidden{display:none}
+.curv2dToolbar .ctLabel{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);align-self:center;margin-right:2px}
+.curv2dToolbar .miniField{min-width:145px}
+.curv2dToolbar label{font-size:8.5px;margin:0 0 3px;color:var(--muted)}
+.curv2dToolbar select{min-height:31px;padding:4px 7px;font-size:10px}
+.contours{align-items:stretch}
+.contourCard{display:flex;flex-direction:column}
+.contourCard>.graphicHead{min-height:43px;align-items:flex-start}
+.contourCard .contourTitle{margin:0;min-height:34px}
+.waferStage{display:flex;align-items:center;justify-content:center;min-height:0}
+.waferStage .waferCanvas{width:100%;aspect-ratio:1/1}
+.mapFooter{margin-top:auto}
+.workspaceLower{align-items:stretch}
+.profileGrid{height:260px}
+.plotCanvas{height:82px}
+.viewerTopBar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+.viewerFieldSelect{display:flex;align-items:center;gap:6px}
+.viewerFieldSelect label{font-size:9px;color:var(--muted);margin:0}
+.viewerFieldSelect select{min-height:30px;padding:4px 7px;font-size:10px;min-width:130px}
+.viewerControlsLocal{display:grid;grid-template-columns:minmax(180px,1.55fr) minmax(92px,.72fr) minmax(92px,.72fr) auto;gap:8px;align-items:end;margin-top:8px;padding-top:8px;border-top:1px solid #263846}
+.viewerControlsLocal .ctrl{min-width:0}
+.viewerControlsLocal .ctrl label{font-size:8.5px;margin:0 0 3px;color:var(--muted)}
+.viewerControlsLocal .ctrl input[type=number]{min-height:31px;padding:4px 7px;font-size:10px}
+.viewerControlsLocal .ctrl .rangeRow{grid-template-columns:minmax(90px,1fr) 68px;gap:6px}
+.viewerControlsLocal .reset3d{min-height:31px;padding:5px 10px;font-size:10px;white-space:nowrap}
+.viewerControlsLocal .viewerHelp{grid-column:1/-1;font-size:8.8px;color:#9fb7c8;line-height:1.35}
+@media(max-width:1050px){.viewerControlsLocal{grid-template-columns:1fr 1fr}.viewerControlsLocal .reset3d{width:100%}}
+
+/* v0.25 readability/alignment */
+.workspaceLower{grid-template-columns:minmax(440px,.96fr) minmax(0,1.04fr);align-items:stretch}
+.workspaceLower>.viewBox{display:flex;flex-direction:column}
+.canvas3d{height:465px}
+.profileGrid{height:625px;grid-template-rows:repeat(3,minmax(0,1fr))}
+.profileGrid>.viewBox{display:flex;flex-direction:column;min-height:0}
+.plotCanvas{height:172px;flex:1;min-height:158px}
+.coverageKey{display:flex;gap:13px;flex-wrap:wrap;align-items:center;margin:0 0 10px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:#0b141d;font-size:10px;color:var(--muted)}
+.coverageKey span{display:inline-flex;gap:6px;align-items:center}.coverageKey i{display:inline-block;width:16px;height:10px;border-radius:3px;border:1px solid rgba(255,255,255,.18)}
+.coverageKey .used{background:linear-gradient(90deg,#315f9d,#e8edf1,#bc4a50)}.coverageKey .excluded{background:#8a7652}.coverageKey .nodata{background:#46515b}
+
+.headerActions{display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+.topPrint{min-height:38px;padding:8px 13px;border-radius:11px;border:1px solid #4aa9e8;background:linear-gradient(180deg,#176b9e,#0d4f78);color:#fff;font-weight:800;font-size:12px;box-shadow:0 5px 18px rgba(24,126,190,.18);cursor:pointer}
+.topPrint:hover{background:linear-gradient(180deg,#2180b8,#12618f);transform:translateY(-1px)}
+.rangePanel{margin:0 0 10px;border:1px solid var(--line);border-radius:12px;background:#0b141d;overflow:hidden}
+.rangePanel>summary{cursor:pointer;padding:9px 11px;font-weight:750;font-size:11px;list-style:none;display:flex;align-items:center;justify-content:space-between}
+.rangePanel>summary::-webkit-details-marker{display:none}.rangePanel>summary:after{content:"+";font-size:16px;color:var(--muted)}.rangePanel[open]>summary:after{content:"−"}
+.rangeBody{padding:0 10px 10px}
+.rangeGrid{display:grid;grid-template-columns:minmax(110px,1.15fr) minmax(145px,1.25fr) minmax(90px,.8fr) minmax(90px,.8fr);gap:6px;align-items:center}
+.rangeGrid .rh{font-size:9px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);padding:0 3px 2px}
+.rangeGrid .rname{font-size:10px;font-weight:750;color:#e8f4fc;padding:0 3px}
+.rangeGrid select,.rangeGrid input{min-height:32px;padding:5px 7px;font-size:10px}
+.rangeGrid input:disabled{opacity:.62;color:#b7c9d5}
+.clipKey{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:9px;font-size:10px;color:var(--muted)}
+.clipSwatch{width:16px;height:10px;border-radius:3px;border:1px solid rgba(255,255,255,.25);display:inline-block;vertical-align:middle;margin-right:4px}
+.clipHigh{background:rgb(220,70,255)}.clipLow{background:rgb(156,164,172)}
+.rangeNote{margin-top:7px;font-size:10px;line-height:1.45;color:var(--muted)}
+.mapRangeMini{display:grid;grid-template-columns:minmax(94px,1.25fr) minmax(54px,.75fr) minmax(54px,.75fr);gap:5px;align-items:center;margin-top:7px;padding-top:7px;border-top:1px solid #243542}
+.mapRangeMini select,.mapRangeMini input{min-width:0;min-height:29px;padding:4px 6px;font-size:9px;border-radius:7px}
+.mapRangeMini input:disabled{opacity:.64;color:#b6c8d4}
+.mapRangeMini .miniClip{grid-column:1/-1;display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:#8fa7b9;font-size:8.5px;line-height:1.2}
+.mapRangeMini .miniClip .clipSwatch{width:10px;height:7px;margin-right:2px}
+.probeHelp{font-size:9px;color:#9fb7c8;white-space:nowrap}
+.probeTip{display:none;position:absolute;z-index:25;pointer-events:none;min-width:142px;max-width:220px;padding:7px 8px;border:1px solid #4d7189;border-radius:8px;background:rgba(5,15,23,.96);box-shadow:0 6px 18px rgba(0,0,0,.28);font-size:9px;line-height:1.4;color:#eaf6ff;white-space:nowrap}
+.probeTip .ptitle{font-weight:800;color:#fff;margin-bottom:3px}
+.probeTip .prow{display:flex;justify-content:space-between;gap:12px}
+.probeTip .pk{color:#8faabe}.probeTip .pv{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+.probeTip .pstatus{margin-top:3px;padding-top:3px;border-top:1px solid #2b4252;color:#9fb7c8}
+.viewBox{position:relative}
+@media(max-width:900px){.mapRangeMini{grid-template-columns:1fr 1fr}.mapRangeMini select{grid-column:1/-1}.probeHelp{white-space:normal}}
+@media(max-width:900px){.rangeGrid{grid-template-columns:1fr 1fr}.rangeGrid .rh{display:none}.headerActions{justify-content:flex-start}}
+
+.graphicHead{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-bottom:6px}.graphicHead .contourTitle{margin:0;flex:1}.openView{min-height:28px;height:28px;padding:3px 7px;font-size:11px;border-radius:8px;background:#0d1c28}.viewBox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px;min-width:0}.viewBox>.graphicHead strong{font-size:12px}.analysisNotes{padding:12px}.analysisNotes summary{cursor:pointer;font-weight:750;font-size:13px}.analysisNotes .noteGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.signBox{border:1px solid #31516a;background:#0d1c28;border-radius:11px;padding:10px;font-size:11px;line-height:1.55;color:#cfe5f7}.signBox b{color:#fff}.viewWindowHint{font-size:10px;color:var(--muted);margin-top:5px}.belowText{display:grid;gap:14px}.visualHead.compact{margin-bottom:7px}.visualHead.compact p{display:none}
+
+.mobileQuick{display:none}
+footer{color:#70889c;font-size:11px;line-height:1.5;padding:5px 2px 18px}
+@media(max-width:1180px){
+  .layout{grid-template-columns:1fr}.controls{position:static;max-height:none}
+  .summary{grid-template-columns:repeat(3,1fr)}.validationGrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:820px){
+  .wrap{padding:9px}.brand .sub{font-size:12px}header>.badge{display:none}.headerActions .badge{display:none}.topPrint{min-height:34px;padding:6px 9px;font-size:11px}
+  .mobileQuick{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;align-items:end;position:sticky;top:4px;z-index:30;
+    padding:8px;background:rgba(10,17,24,.96);border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);backdrop-filter:blur(8px)}
+  .mobileQuick label{margin:0 0 2px;font-size:10px}.mobileQuick input[type=range]{min-height:28px}
+  .controls{padding:7px}.controlGroup{margin:6px 0}.groupBody{padding:8px 10px 10px}
+  .contours{grid-template-columns:repeat(2,1fr)}.workspaceLower,.infoGrid{grid-template-columns:1fr}.profileGrid{height:auto;grid-template-rows:none}.plotCanvas{height:170px}.summary{grid-template-columns:repeat(2,1fr)}
+  .validationGrid{grid-template-columns:1fr 1fr}.canvas3d{height:350px}.plotCanvas{height:180px}.row2{grid-template-columns:1fr 1fr}
+  .visual{padding:9px}.contourCard{padding:8px}
+}
+@media(max-width:620px){.contours{grid-template-columns:1fr}.analysisNotes .noteGrid{grid-template-columns:1fr}}
+@media(max-width:470px){
+  .row2{grid-template-columns:1fr}.validationGrid{grid-template-columns:1fr}.summary{gap:7px}
+  .metric{padding:9px}.metric .v{font-size:16px}.mobileQuick{grid-template-columns:1fr 1fr}.mobileQuick button{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">
+    <h1>MakeCoTech Wafer Bow & Thin-Film Stress Explorer <span style="color:var(--accent)">v0.27</span></h1>
+    <div class="sub">Offline-first browser tool for before/after wafer geometry, curvature and Stoney-equivalent thin-film stress. Calculations and embedded benchmark/demo cases run locally; your uploaded measurement files stay on this device. Reference links are optional and are not required for analysis.</div>
+  </div>
+  <div class="headerActions">
+      <div class="badge">Offline · browser-side · print-friendly</div>
+      <button id="topPrintReport" class="topPrint" type="button" title="Open the browser print dialog with the report-friendly layout">🖨 Print-friendly report</button>
+    </div>
+</header>
+
+<div class="mobileQuick">
+  <div><label>Section angle <span id="angleQuickVal">0°</span></label><input id="angleQuick" type="range" min="0" max="180" step="1" value="0"></div>
+  <div><label>Z exaggeration <span id="zQuickVal">×500</span></label><input id="zQuick" type="range" min="1" max="1000" step="1" value="500"></div>
+  <button id="mobileReset" class="ghost">Reset view</button>
+</div>
+
+<div class="layout">
+<aside class="panel controls">
+  <details class="controlGroup" open>
+    <summary>Measurement points</summary>
+    <div class="groupBody">
+      <label for="preset">Data source / benchmark</label>
+      <select id="preset" class="sourceSelect">
+        <optgroup label="Your data">
+          <option value="custom" selected>Measurement points</option>
+        </optgroup>
+        <optgroup label="Validation benchmarks">
+          <option value="wafer40">50 mm Si / 3C-SiC — published-fit offline reconstruction</option>
+          <option value="toray300">300 mm Si / SiO₂ — −441 MPa</option>
+          <option value="k1">300 mm SOI — Slot 1A</option>
+          <option value="k15">300 mm SOI — Slot 15B</option>
+          <option value="k25">300 mm SOI — Slot 25C</option>
+          <option value="glass_b270">25 mm B270 glass / Ti — +576 MPa</option>
+          <option value="sapphire_ruby">25.4 mm sapphire / ruby</option>
+          <option value="sio2_jsss">100 mm Si / SiO₂ — −130 MPa</option>
+          <option value="sin_lpcvd">100 mm Si / SiN — +1300 MPa</option>
+        </optgroup>
+        <optgroup label="Workflow / analytic demo">
+          <option value="xyz_demo">Full-field x,y,z — analytic demo</option>
+        </optgroup>
+      </select>
+      <div id="presetNote" class="note" style="margin-top:7px"></div>
+      <div id="officialStatus" class="statusline"></div>
+
+      <label style="margin-top:9px">Measurement format</label>
+      <div class="modeChoice" role="group" aria-label="Measurement format">
+        <button id="modeProfileBtn" type="button" class="active">1D profile</button>
+        <button id="modeMapBtn" type="button">Full x,y,z map</button>
+      </div>
+      <select id="customMode" style="display:none" aria-hidden="true">
+        <option value="profile">1D profile</option>
+        <option value="map2d">Full x,y,z map</option>
+      </select>
+      <div class="note">1D accepts a single diameter scan or optional 0° + 90° orthogonal scans. Full x,y,z accepts measured points distributed over the wafer surface.</div>
+      <div class="limitNote"><b>No fixed point-count limit.</b> Minimum: 7 numeric rows for 1D, 9 numeric points for x,y,z. CSV/TXT/TSV upload limit: 25 MB. The rows shown in the editor are format examples only.</div>
+      <div id="inputSourceStatus" class="statusline" style="margin-top:7px">Measurement points · editable and active</div>
+      <div class="note" style="margin-top:5px">This editor is the actual calculation input. Upload, paste or type your measurements. Selecting a benchmark copies its data here so you can inspect the exact input format and values.</div>
+
+      <div id="custom1dBox">
+        <p class="note"><b>1D columns:</b> x_mm, z_before_0_um, z_after_0_um. Optional: z_before_90_um, z_after_90_um for the orthogonal scan.</p>
+        <div class="fileDrop">
+          <label for="file1d">Upload 1D measurement points</label>
+          <input id="file1d" type="file" accept=".csv,.txt,.tsv,text/csv,text/plain,text/tab-separated-values">
+          <div id="file1dMeta" class="fileMeta">CSV, TXT or TSV · file stays on this device; no upload to a server.</div>
+          <div class="btnrow"><button id="template1d" type="button" class="ghost">Download 1D template</button></div>
+        </div>
+        <textarea id="dataText1d" spellcheck="false">x_mm,z_before_0_um,z_after_0_um
+-25,0.0,0.0
+-20,1.0,2.0
+-15,2.0,4.5
+-10,3.0,7.0
+-5,3.8,8.5
+0,4.0,9.0
+5,3.8,8.5
+10,3.0,7.0
+15,2.0,4.5
+20,1.0,2.0
+25,0.0,0.0</textarea>
+      </div>
+
+      <div id="custom2dBox" style="display:none">
+        <p class="note"><b>Full x,y,z columns:</b> x_mm, y_mm, z_before_um, z_after_um. Regular-grid or scattered points are supported. Z is interpolated for display; curvature is calculated from local 2D quadratic surface fits to nearby measured points, yielding κx, κy, κ1, κ2 and mean curvature.</p>
+        <div class="fileDrop">
+          <label for="file2d">Upload full x,y,z measurement points</label>
+          <input id="file2d" type="file" accept=".csv,.txt,.tsv,text/csv,text/plain,text/tab-separated-values">
+          <div id="file2dMeta" class="fileMeta">CSV, TXT or TSV · file stays on this device; no upload to a server.</div>
+          <div class="btnrow"><button id="template2d" type="button" class="ghost">Download x,y,z template</button></div>
+        </div>
+        <textarea id="dataText2d" spellcheck="false">x_mm,y_mm,z_before_um,z_after_um
+-20,-10,0.0,1.5
+-10,-10,0.3,2.6
+0,-10,0.5,3.0
+10,-10,0.3,2.6
+20,-10,0.0,1.5
+-20,0,0.4,2.0
+-10,0,0.8,3.4
+0,0,1.0,4.0
+10,0,0.8,3.4
+20,0,0.4,2.0
+-20,10,0.0,1.5
+-10,10,0.3,2.6
+0,10,0.5,3.0
+10,10,0.3,2.6
+20,10,0.0,1.5</textarea>
+      </div>
+
+      <div class="btnrow"><button id="loadCustom" class="primary">Load measurement points</button></div>
+      <div id="parseStatus" class="statusline"></div>
+    </div>
+  </details>
+
+  <details class="controlGroup" open>
+    <summary>Wafer & film</summary>
+    <div class="groupBody">
+      <div class="row2">
+        <div><label>Wafer diameter (mm)</label><input id="diameter" type="number" min="1" step="1" value="50"></div>
+        <div><label>Substrate thickness (µm)</label><input id="subThk" type="number" min="1" step="1" value="280"></div>
+      </div>
+      <div class="row2">
+        <div><label>Film thickness (nm)</label><input id="filmThk" type="number" min="0.1" step="1" value="1000"></div>
+        <div><label>Edge exclusion (mm)</label><input id="edgeCut" type="number" min="0" step=".5" value="2"></div>
+      </div>
+      <label>Substrate elastic model</label>
+      <select id="substrate">
+        <option value="si001">Si (001)/(100) · biaxial modulus 180.3 GPa</option>
+        <option value="si111">Si (111) · biaxial modulus 229.1 GPa</option>
+        <option value="iso">Isotropic / custom</option>
+      </select>
+      <div id="isoBox" class="row2" style="display:none">
+        <div><label>Young's modulus E (GPa)</label><input id="young" type="number" min=".1" step=".1" value="130"></div>
+        <div><label>Poisson's ratio ν</label><input id="nu" type="number" min="-0.49" max=".49" step=".01" value=".28"></div>
+      </div>
+      <div id="filmNote" class="note" style="margin-top:7px"></div><div class="note" style="margin-top:5px"><b>MakeCoTech sign convention:</b> +Z is upward. Positive curvature is concave-up / bow-down (wafer center toward −Z). Positive Δκ or ΔH gives positive tensile Stoney stress; negative gives compressive stress. Imported metrology may use the opposite curvature sign.</div>
+    </div>
+  </details>
+
+  <details class="controlGroup" open>
+    <summary>Profile processing</summary>
+    <div class="groupBody">
+      <label>Curvature / smoothing method</label>
+      <select id="method">
+        <option value="local">Local quadratic regression</option>
+        <option value="global">Global quadratic (classical constant curvature)</option>
+      </select>
+      <div id="smoothControl">
+        <label>Local-fit half-window k / n (%)</label>
+        <div class="rangeRow"><input id="smoothPct" type="range" min="1" max="20" step=".5" value="10"><input id="smoothPctN" type="number" min="1" max="20" step=".5" value="10"></div>
+        <div class="note">Used only for Local quadratic regression. k is the number of retained raw points on each side of each fitted point; 10% is a useful starting value for wafer40.</div>
+      </div>
+
+      <details class="methodGuide">
+        <summary>Smoothing methods — theory & guidance</summary>
+        <div class="methodGuideBody">
+          <h4>Local quadratic regression</h4>
+          <p>A quadratic is fitted repeatedly around each evaluation position. The before- and after-deposition profiles are fitted separately, then their local curvature difference is used for Stoney-equivalent stress.</p>
+          <div class="eq">z ≈ a + b·(x−x₀) + c·(x−x₀)² → κ = 2c / (1+b²)^(3/2)</div>
+          <p><b>Smaller window:</b> preserves local S/M-shape features but follows measurement noise more strongly. <b>Larger window:</b> gives smoother curvature/stress but can smear localized features.</p>
+          <p class="tip"><b>Best for:</b> non-uniform bow, asymmetric profiles, local curvature changes, and experimental scans where spatial variation matters.</p>
+
+          <h4>Global quadratic</h4>
+          <p>One quadratic is fitted to the entire retained diameter after edge exclusion. It gives a single classical, nearly constant-curvature representation and is naturally less sensitive to point-to-point noise.</p>
+          <div class="eq">one quadratic fit over the full retained profile → one global κ</div>
+          <p>Local S-shapes, M-shapes and edge/local variations are intentionally averaged out.</p>
+          <p class="tip"><b>Best for:</b> classical Stoney analysis, approximately parabolic wafers, benchmark mean curvature, or a stable global stress value.</p>
+
+          <p><b>Important:</b> the measured before/after Z profile is never replaced by either fit. The selected method changes only curvature and derived stress. Curvature is a second derivative, so smoothing can strongly affect local peaks; compare more than one reasonable local window when peak stress matters.</p>
+        </div>
+      </details>
+      <div class="note" style="margin-top:7px"><b>Expected behavior:</b> changing Local ↔ Global must not change the measured before/after Z profile or 3D wafer geometry. Only curvature and Stoney-equivalent stress should change.</div>
+      <div class="note">Visual verification switches are now in the <b>Wafer maps & profile views</b> toolbar above the graphics.</div>
+      <label>Center cross-section angle</label>
+      <div class="rangeRow"><input id="angle" type="range" min="0" max="180" step="1" value="0"><input id="angleN" type="number" min="0" max="180" step="1" value="0"></div>
+      <div class="btnrow"><button id="exportCsv">Export section CSV</button></div>
+    </div>
+  </details>
+
+
+
+</aside>
+
+<main class="main">
+  <section class="summary">
+    <div class="metric"><div class="k">After-deposition bow</div><div class="v" id="mBow">—</div><div class="s">included profile max Z − min Z</div></div>
+    <div class="metric"><div class="k" id="mCurvLabel">Mean scan Δκ</div><div class="v" id="mCurv">—</div><div class="s" id="mCurvSub">inside retained scan region</div></div>
+    <div class="metric"><div class="k" id="mStressLabel">Mean scan stress</div><div class="v" id="mStress">—</div><div class="s" id="mStressSub">Stoney-equivalent</div></div>
+    <div class="metric"><div class="k">Stress range</div><div class="v" id="mRange">—</div><div class="s" id="mRangeSub">min … max over reported region</div></div>
+    <div class="metric"><div class="k">D / h</div><div class="v" id="mDh">—</div><div class="s">geometry ratio</div></div>
+    <div class="metric"><div class="k">Stoney validity</div><div class="v validity" id="mValid">—</div><div class="s" id="mA">A = —</div></div>
+  </section>
+
+
+  <section class="panel visual">
+    <div class="visualHead compact">
+      <div><h2>Wafer maps & profile views</h2><p>Before/after displacement, curvature and stress are synchronized to the selected centerline.</p></div>
+      <div class="visualTools">
+        <span class="toolLabel">Verify</span>
+        <label class="verifyToggle" id="pointsToggleWrap"><input id="showMeasuredPoints" type="checkbox" checked><span>Measured points</span></label>
+        <label class="verifyToggle" id="fitToggleWrap"><input id="showFitOverlay" type="checkbox" checked><span>Fit overlay</span></label>
+        <button id="resetRanges" type="button" class="ghost" style="min-height:32px;padding:5px 8px;font-size:9px">Reset ranges</button>
+        <span class="probeHelp">Hover = probe · drag wafer = rotate section</span>
+        <div class="badge" id="reconBadge">Orthogonal scans → reconstructed 2D field</div>
+      </div>
+    </div>
+    <div class="coverageKey" aria-label="Measurement coverage legend">
+      <span><i class="used"></i>Measured & used</span>
+      <span><i class="excluded"></i>Edge-excluded</span>
+      <span><i class="nodata"></i>No measurement coverage</span>
+      <span><span class="pointLegendDot"></span>Measured locations</span>
+      <span>↗ opens the current view in a larger window</span>
+    </div>
+        <div id="curv2dToolbar" class="curv2dToolbar hidden">
+      <span class="ctLabel">Full x,y,z curvature view</span>
+      <div class="miniField"><label for="curvState">State</label><select id="curvState"><option value="delta">Change (after − before)</option><option value="after">After deposition</option><option value="before">Before deposition</option></select></div>
+      <div class="miniField"><label for="curvComponent">Component</label><select id="curvComponent"><option value="mean">Mean curvature H</option><option value="kx">κx</option><option value="ky">κy</option><option value="k1">Principal κ1</option><option value="k2">Principal κ2</option></select></div>
+      <span class="note" style="margin:0">These options apply only to full-field x,y,z data. 1D mode always shows scan-direction Δκ.</span>
+    </div>
+    <div class="contours">
+      <div class="contourCard">
+        <div class="graphicHead"><div class="contourTitle"><strong>Before-deposition displacement Z</strong><span>µm</span></div><button class="openView" data-canvas="mapZBefore" data-title="Before-deposition displacement Z">↗</button></div>
+        <div class="waferStage"><canvas id="mapZBefore" class="waferCanvas" width="440" height="440"></canvas></div>
+        <div class="mapFooter">
+          <div class="legend"></div><div class="legendLabels"><span id="zBMin">—</span><span id="zBCenter">0</span><span id="zBMax">—</span></div>
+          <div class="mapRangeMini" aria-label="Before Z display range"><select id="rangeZBMode" title="Display range mode"><option value="sym" selected>Auto ±</option><option value="data">Auto min–max</option><option value="manual">Manual</option></select><input id="rangeZBMin" type="number" step="any" aria-label="Before Z minimum" title="Minimum display value"><input id="rangeZBMax" type="number" step="any" aria-label="Before Z maximum" title="Maximum display value"><div class="miniClip"><span><i class="clipSwatch clipLow"></i>&lt; min</span><span><i class="clipSwatch clipHigh"></i>&gt; max</span></div></div>
+        </div>
+      </div>
+      <div class="contourCard">
+        <div class="graphicHead"><div class="contourTitle"><strong>After-deposition displacement Z</strong><span>µm</span></div><button class="openView" data-canvas="mapZ" data-title="After-deposition displacement Z">↗</button></div>
+        <div class="waferStage"><canvas id="mapZ" class="waferCanvas" width="440" height="440"></canvas></div>
+        <div class="mapFooter">
+          <div class="legend"></div><div class="legendLabels"><span id="zMin">—</span><span id="zCenter">0</span><span id="zMax">—</span></div>
+          <div class="mapRangeMini" aria-label="After Z display range"><select id="rangeZMode" title="Display range mode"><option value="sym" selected>Auto ±</option><option value="data">Auto min–max</option><option value="manual">Manual</option></select><input id="rangeZMin" type="number" step="any" aria-label="After Z minimum" title="Minimum display value"><input id="rangeZMax" type="number" step="any" aria-label="After Z maximum" title="Maximum display value"><div class="miniClip"><span><i class="clipSwatch clipLow"></i>&lt; min</span><span><i class="clipSwatch clipHigh"></i>&gt; max</span></div></div>
+        </div>
+      </div>
+      <div class="contourCard">
+        <div class="graphicHead"><div class="contourTitle"><strong id="curvMapTitle">Curvature change Δκ (scan-direction effective)</strong><span>1/m</span></div><button class="openView" data-canvas="mapK" data-title="Curvature map">↗</button></div>
+        <div class="waferStage"><canvas id="mapK" class="waferCanvas" width="440" height="440"></canvas></div>
+        <div class="mapFooter">
+          <div class="legend"></div><div class="legendLabels"><span id="kMin">—</span><span id="kCenter">0</span><span id="kMax">—</span></div>
+          <div class="mapRangeMini" aria-label="Curvature display range"><select id="rangeKMode" title="Display range mode"><option value="sym" selected>Auto ±</option><option value="data">Auto min–max</option><option value="manual">Manual</option></select><input id="rangeKMin" type="number" step="any" aria-label="Curvature minimum" title="Minimum display value"><input id="rangeKMax" type="number" step="any" aria-label="Curvature maximum" title="Maximum display value"><div class="miniClip"><span><i class="clipSwatch clipLow"></i>&lt; min</span><span><i class="clipSwatch clipHigh"></i>&gt; max</span></div></div>
+        </div>
+      </div>
+      <div class="contourCard">
+        <div class="graphicHead"><div class="contourTitle"><strong id="stressMapTitle">Estimated film stress <span style="font-weight:500;color:var(--muted)">(+ tensile / − compressive)</span></strong><span>MPa</span></div><button class="openView" data-canvas="mapS" data-title="Estimated film stress">↗</button></div>
+        <div class="waferStage"><canvas id="mapS" class="waferCanvas" width="440" height="440"></canvas></div>
+        <div class="mapFooter">
+          <div class="legend"></div><div class="legendLabels"><span id="sMin">—</span><span id="sCenter">0</span><span id="sMax">—</span></div>
+          <div class="mapRangeMini" aria-label="Stress display range"><select id="rangeSMode" title="Display range mode"><option value="sym" selected>Auto ±</option><option value="data">Auto min–max</option><option value="manual">Manual</option></select><input id="rangeSMin" type="number" step="any" aria-label="Stress minimum" title="Minimum display value"><input id="rangeSMax" type="number" step="any" aria-label="Stress maximum" title="Maximum display value"><div class="miniClip"><span><i class="clipSwatch clipLow"></i>&lt; min</span><span><i class="clipSwatch clipHigh"></i>&gt; max</span></div></div>
+        </div>
+      </div>
+    </div>
+
+<div class="workspaceLower">
+      <div class="viewBox">
+        <div class="viewerTopBar"><div class="graphicHead" style="margin:0"><strong>3D wafer</strong><button class="openView" data-canvas="view3d" data-title="3D wafer view">↗</button></div><div class="viewerFieldSelect"><label for="field3dSelect">Plotted value</label><select id="field3dSelect"><option value="z">After Z</option><option value="k">Curvature</option><option value="s">Stress</option></select></div></div>
+        <canvas id="view3d" class="canvas3d" width="1050" height="650"></canvas>
+        <div class="viewerControlsLocal">
+          <div class="ctrl">
+            <label for="zmag">Z exaggeration</label>
+            <div class="rangeRow"><input id="zmag" type="range" min="1" max="1000" step="1" value="500"><input id="zmagN" type="number" min="1" max="5000" step="10" value="500"></div>
+          </div>
+          <div class="ctrl"><label for="yaw">Yaw (°)</label><input id="yaw" type="number" min="-180" max="180" step="5" value="-30"></div>
+          <div class="ctrl"><label for="pitch">Pitch (°)</label><input id="pitch" type="number" min="5" max="85" step="5" value="58"></div>
+          <button id="resetView" class="ghost reset3d" type="button">Reset 3D view</button>
+          <div class="viewerHelp">Drag the 3D wafer to rotate. Mouse wheel or two-finger pinch changes camera zoom. Double-click/tap or <b>Reset 3D view</b> restores the default camera. Z exaggeration affects geometry only; the color range is inherited from the corresponding upper map.</div>
+        </div>
+      </div>
+      <div class="profileGrid">
+        <div class="viewBox"><div class="graphicHead"><strong>Centerline: displacement</strong><button class="openView" data-canvas="plotZ" data-title="Centerline displacement">↗</button></div><canvas id="plotZ" class="plotCanvas" width="1160" height="390"></canvas></div>
+        <div class="viewBox"><div class="graphicHead"><strong>Centerline: curvature</strong><button class="openView" data-canvas="plotK" data-title="Centerline curvature">↗</button></div><canvas id="plotK" class="plotCanvas" width="1160" height="390"></canvas></div>
+        <div class="viewBox"><div class="graphicHead"><strong>Centerline: film stress</strong><button class="openView" data-canvas="plotS" data-title="Centerline film stress">↗</button></div><canvas id="plotS" class="plotCanvas" width="1160" height="390"></canvas></div>
+      </div>
+    </div>
+  </section>
+
+  <details class="panel analysisNotes">
+    <summary>Analysis controls, sign convention & processing notes</summary>
+    <div class="noteGrid">
+      <div>
+        <h3 style="font-size:12px;margin:0 0 7px">3D wafer view</h3>
+        <div class="viewWindowHint">Choose After Z, Curvature or Stress in the 3D panel. The 3D colors use the <b>same range, clipping limits and colors</b> as the corresponding upper map. Section angle: <b id="angleRead">0°</b>.</div>
+      </div>
+      <div class="signBox"><b>MakeCoTech sign convention</b><br>+Z is upward. <b>Positive curvature</b> = concave-up / bow-down, with the wafer center displaced toward −Z. Positive Δκ/ΔH → <b>tensile</b> Stoney-equivalent film stress; negative → <b>compressive</b>. Imported metrology may use the opposite curvature sign.</div>
+      <div><h3 style="font-size:12px;margin:0 0 7px">Measurement / processing</h3><div class="note" id="coverageNote"></div><div class="note" id="processingNote" style="margin-top:7px"></div></div>
+    </div>
+
+    <details class="methodGuide" style="margin-top:10px">
+      <summary>Stress averaging — formulas & interpretation</summary>
+      <div class="methodGuideBody">
+        <p>Every reported stress value starts from the local Stoney-equivalent relation:</p>
+        <div class="eq">σᵢ = [Mₛ hₛ² / (6 t_f)] · Δκᵢ</div>
+
+        <h4>Single 1D diameter scan</h4>
+        <p>The reported mean is the arithmetic mean of the valid local stress values along the retained scan:</p>
+        <div class="eq">σ̄_scan = (1/N) · Σ σᵢ</div>
+        <p>This is a <b>line average</b>, not a whole-wafer area average.</p>
+
+        <h4>Two orthogonal scans (0° + 90°)</h4>
+        <p>Each direction is averaged separately, then both scan directions are given equal weight:</p>
+        <div class="eq">σ̄_dir = ½(σ̄₀° + σ̄₉₀°)</div>
+        <p>The summary also shows the 0° and 90° means individually so directional anisotropy remains visible. This is still not a full-area integral.</p>
+
+        <h4>Full x,y,z wafer map</h4>
+        <p>Stress is calculated from local mean-curvature change ΔH on each valid, equally spaced internal grid cell. The reported area mean is:</p>
+        <div class="eq">σ̄_area ≈ [Σ σᵢⱼ ΔA] / [Σ ΔA] = (1/N_valid) · Σ σᵢⱼ</div>
+        <p>Because the internal x,y grid has uniform cell area, equal-cell averaging is equivalent to area weighting over the valid measured region after edge exclusion.</p>
+
+        <h4>Full x,y,z curvature fitting</h4><p>Full-field mode does not use the 1D Local/Global selector. At each evaluation location, a local quadratic surface is fitted directly to nearby measured x,y,z points; derivatives are obtained analytically rather than by differentiating an interpolated contour.</p><div class="eq">z ≈ a + bx + cy + dx² + exy + fy² → κx, κy, κ1, κ2, H</div><p><b>Interpretation:</b> scan means, directional averages and area means answer different questions. The summary label changes automatically so a 1D line average is never presented as a whole-wafer average.</p>
+      </div>
+    </details>
+  </details>
+
+
+
+  <section class="panel reportPanel" id="reportPanel">
+    <div class="reportHead">
+      <h2>Process / report information</h2>
+      <div class="reportActions">
+        <label class="uploadBtn" for="processInfoFile">Upload process info</label>
+        <input id="processInfoFile" type="file" accept=".json,.txt,.csv,text/plain,application/json,text/csv">
+        <button id="downloadProcessInfo" type="button">Download info</button>
+        <button id="useBenchmarkInfo" type="button">Use benchmark info</button>
+        <button id="printReport" type="button">🖨 Print-friendly report</button>
+      </div>
+    </div>
+    <div class="reportGrid">
+      <div class="reportField"><label for="rProject">Project / sample ID</label><input id="rProject" placeholder="e.g. Lot A · wafer 07"></div>
+      <div class="reportField"><label for="rDate">Date / run</label><input id="rDate" placeholder="e.g. 2026-11-03 · Run 14"></div>
+      <div class="reportField"><label for="rOperator">Operator / source</label><input id="rOperator" placeholder="Name, lab, supplier or paper"></div>
+      <div class="reportField wide"><label for="rStack">Sample stack</label><input id="rStack" placeholder="Substrate / film stack"></div>
+      <div class="reportField"><label for="rMetrology">Metrology</label><input id="rMetrology" placeholder="Instrument / scan method"></div>
+      <div class="reportField wide"><label for="rProcess">Deposition / process</label><textarea id="rProcess" placeholder="Process, tool, recipe or treatment"></textarea></div>
+      <div class="reportField"><label for="rTemp">Temperature / thermal history</label><textarea id="rTemp" placeholder="Deposition, anneal, measurement temperature"></textarea></div>
+      <div class="reportField full"><label for="rNotes">Notes</label><textarea id="rNotes" placeholder="Any additional process, measurement or interpretation notes"></textarea></div>
+    </div>
+    <div class="reportHint">Editable fields are optional and stay in this browser session. Upload JSON, CSV key/value, or simple “key: value” text. Print report includes these fields with the current maps, plots and summary metrics.</div>
+    <div class="printOnly" id="printReportInfo">
+      <div class="printMetaGrid" id="printMetaGrid"></div>
+    </div>
+  </section>
+
+  <details class="reportDetail">
+    <summary>Validation checks</summary>
+    <div class="reportDetailBody">
+      <section class="validation">
+        <div class="validationIntro">Raw-data integrity checks, benchmark targets and internal curvature self-tests.</div>
+        <div class="validationGrid">
+          <div class="vcard">
+            <div class="vh"><strong>1D / 2D curvature self-test</strong><span class="vstatus" id="vSelfStatus">—</span></div>
+            <div class="big" id="vSelfValue">—</div>
+            <div class="small" id="vSelfText">Exact parabola + 2D saddle → recovered curvature tensor.</div>
+          </div>
+          <div class="vcard">
+            <div class="vh"><strong>50 mm wafer40 offline reconstruction</strong><span class="vstatus" id="v50Status">—</span></div>
+            <div class="big" id="v50Value">—</div>
+            <div class="small" id="v50Text">Embedded published-fit reconstruction; no runtime internet dependency.</div>
+          </div>
+          <div class="vcard">
+            <div class="vh"><strong>300 mm Toray stress</strong><span class="vstatus" id="vTorayStatus">—</span></div>
+            <div class="big" id="vTorayValue">—</div>
+            <div class="small" id="vTorayText">Published target: −441 MPa compressive for 100 nm SiO₂.</div>
+          </div>
+          <div class="vcard">
+            <div class="vh"><strong>300 mm k-Space curvature</strong><span class="vstatus" id="vKStatus">—</span></div>
+            <div class="big" id="vKValue">—</div>
+            <div class="small" id="vKText">Published static mean curvature target depends on slot.</div>
+          </div>
+          <div class="vcard">
+            <div class="vh"><strong>Additional active benchmark</strong><span class="vstatus" id="vNonSiStatus">—</span></div>
+            <div class="big" id="vNonSiValue">—</div>
+            <div class="small" id="vNonSiText">Glass, sapphire, x,y,z analytic demo, SiO₂ and SiN presets report here.</div>
+          </div>
+        </div>
+        <div class="sourceLine" id="validationSource"></div>
+      </section>
+    </div>
+  </details>
+
+  <details class="reportDetail">
+    <summary>Benchmark provenance</summary>
+    <div class="reportDetailBody">
+      <section class="history">
+        <div class="historyLead">Experimental context and provenance for the selected preset.</div>
+        <div class="historyGrid">
+          <div class="hitem"><div class="hk">Publication / origin</div><div class="hv" id="hOrigin">—</div></div>
+          <div class="hitem"><div class="hk">Sample stack</div><div class="hv" id="hStack">—</div></div>
+          <div class="hitem"><div class="hk">Validation type</div><div class="hv" id="hType">—</div></div>
+          <div class="hitem"><div class="hk">Deposition / process</div><div class="hv" id="hProcess">—</div></div>
+          <div class="hitem"><div class="hk">Temperature / thermal history</div><div class="hv" id="hTemp">—</div></div>
+          <div class="hitem"><div class="hk">Metrology</div><div class="hv" id="hMetrology">—</div></div>
+          <div class="hitem wide"><div class="hk">What the tool uses</div><div class="hv" id="hToolUse">—</div></div>
+          <div class="hitem"><div class="hk">Published target / result</div><div class="hv" id="hTarget">—</div></div>
+        </div>
+        <div class="historyLinks" id="hLinks"></div>
+      </section>
+    </div>
+  </details>
+
+  <details class="reportDetail">
+    <summary>Physics, sign convention & references</summary>
+    <div class="reportDetailBody">
+      <section class="infoGrid">
+        <div class="info">
+          <h3>Physics / sign convention</h3>
+          <ul>
+            <li>+Z is upward. Positive curvature is concave-up / bow-down.</li>
+            <li>Positive Δκ or ΔH maps to tensile Stoney-equivalent film stress; negative maps to compressive.</li>
+            <li>Local 1D mode uses quadratic fitting; full x,y,z mode computes surface curvatures from spatial derivatives.</li>
+            <li>Edge exclusion removes edge points from curvature fitting; no-data zones are not treated as zero stress.</li>
+          </ul>
+        </div>
+        <div class="info">
+          <h3>Validation sources</h3>
+          <p><b>Janssen et al. (2009)</b> — Stoney centenary review.</p>
+          <div class="refLinks"><a href="https://www.sciencedirect.com/science/article/pii/S0040609008007669" target="_blank" rel="noopener">Publisher</a><a href="https://web.mit.edu/scholvin/www/nt245/Documents/Stress%20-%20celebrating_the_100th_anniversary_of_the_stoney_equation_for_film_stress.pdf" target="_blank" rel="noopener">PDF</a></div>
+          <p><b>wafer40</b> — measured before/after 0° and 90° profiles.</p>
+          <div class="refLinks"><a href="https://osavchuk.r-universe.dev/npregderiv" target="_blank" rel="noopener">Data</a><a href="https://www.sciencedirect.com/science/article/abs/pii/S0263224121002505" target="_blank" rel="noopener">Paper</a></div>
+          <p><b>Toray / k-Space / non-Si / SiN</b> — direct source links are retained in benchmark provenance when the corresponding preset is selected.</p>
+        </div>
+      </section>
+    </div>
+  </details>
+
+  <footer><b>Offline build:</b> all calculations and embedded presets run without an internet connection. External publication/reference links are optional verification links only.<br>
+    Educational / engineering exploration prototype. Local Stoney application to strongly nonuniform, patterned, multilayer, large-deflection or edge-dominated wafers is an approximation. In full-map mode, κx/κy/principal/mean curvatures are geometric surface curvatures; the Stoney-equivalent stress shown here uses ΔH. Verify material properties, thickness, crystallographic orientation, metrology sign convention and processing before process/design decisions.
+  </footer>
+</main>
+</div>
+</div>
+
+<script>
+(()=>{"use strict";
+const $=id=>document.getElementById(id);
+const OFFLINE_BUILD=true;
+const state={
+  raw0:null,raw90:null,profile0:null,profile90:null,map2d:null,inputMode:"profile",hasOrthogonal:false,field3d:"z",meta:{},
+  camZoom:1,points3d:new Map(),pinchDist:null,pinchZoom:null,mapDrag:false
+};
+const HISTORY={
+  wafer40:{
+    origin:"Savchuk & Volinsky, Measurement 177 (2021). Offline preset uses an embedded published-fit reconstruction; the public npregderiv::wafer40 raw dataset remains linked only for external verification.",
+    stack:"50 mm (100) Si substrate with deposited 3C-SiC film; film thickness is spatially nonuniform in the study.",
+    type:"Embedded published-fit 1D reconstruction for offline use. It is not presented as the 7,755-point raw public dataset.",
+    process:"3C-SiC thin-film study. The current tool does not claim a deposition recipe because the validation dataset is used primarily for before/after surface profiles and local curvature.",
+    temp:"Deposition/process temperature is not encoded in the wafer40 dataset itself; consult the paper for sample-preparation details.",
+    metrology:"Surface profilometer measurements before and after deposition in 0° and 90° radial directions.",
+    toolUse:"Uses the embedded published-fit before/after profile reconstruction, applies edge exclusion and local/global quadratic curvature estimation, then evaluates Stoney-equivalent stress with the user/preset geometry.",
+    target:"7,755 points; 0.005 mm design-point spacing. This case validates profile processing more directly than one single stress number.",
+    links:[["wafer40 package","https://osavchuk.r-universe.dev/npregderiv"],["Paper","https://www.sciencedirect.com/science/article/abs/pii/S0263224121002505"]]
+  },
+  toray:{
+    origin:"Toray Research Center application/measurement example.",
+    stack:"300 mm Si wafer with 100 nm SiO₂ film.",
+    type:"Published numerical stress benchmark; the tool reconstructs an analytic parabola from the reported target rather than digitizing raw metrology.",
+    process:"Industrial thin-film stress example. The accessible validation sheet does not provide a complete deposition recipe in the data used here.",
+    temp:"Process/deposition temperature: not reported/verified in the validation sheet used by this tool.",
+    metrology:"Before/after wafer-shape/curvature measurement reported by Toray; converted to film stress.",
+    toolUse:"Generates a constant-curvature profile that should return the published target under the stated geometry. This checks Stoney arithmetic and sign/magnitude handling.",
+    target:"−441 MPa compressive.",
+    links:[["Toray validation PDF","https://files.microcms-assets.io/assets/3b3ccd510373412e9d699702451a6d90/b23941ee3aeb4175bbfb95b3f9b45088/P01494_e.pdf"]]
+  },
+  kspace:{
+    origin:"k-Space Associates 300 mm SOI wafer-curvature test report.",
+    stack:"300 mm silicon-on-insulator wafer; this is a curvature-metrology test rather than a dedicated film-deposition benchmark.",
+    type:"Published mean-curvature benchmark with reconstructed curve shape.",
+    process:"No deposition process is being modeled here. The report evaluates static SOI wafer curvature across multiple slots/samples.",
+    temp:"Measurement temperature/process thermal history: not specified in the benchmark information used here.",
+    metrology:"57 measurement positions at 5 mm spacing with 7.5 mm edge exclusion.",
+    toolUse:"Uses reconstructed profiles normalized to the published slot-average curvature. It validates scan geometry, edge exclusion and mean curvature reporting, not raw point-by-point reproduction.",
+    target:"Mean curvature: Slot 1A −0.00617, Slot 15B −0.00889, Slot 25C −0.01299 1/m.",
+    links:[["k-Space test PDF","https://www.k-space.com/wp-content/uploads/300mm_SOI_Wafer_Curvature_Test_Results.pdf"]]
+  },
+  glass:{
+    origin:"Tien et al., Materials (2025), Ti/WC films on B270 and H-K9L glass.",
+    stack:"25 mm B270 modified soda-lime glass, 1.5 mm thick, with a 0.69 µm Ti reference film.",
+    type:"Published numerical stress benchmark on a non-silicon isotropic substrate; analytic constant-curvature reconstruction.",
+    process:"The study prepared Ti/WC coatings by reactive pulsed-DC magnetron sputtering. The tool uses the reported Ti reference-film result on B270 glass.",
+    temp:"Substrate/process temperature for the specific Ti reference stress value is not verified from the accessible excerpt; the tool does not invent it.",
+    metrology:"Optical interferometer + FFT method to determine substrate radius of curvature before/after deposition, then Stoney conversion.",
+    toolUse:"Applies E = 71.5 GPa and ν = 0.219 for B270, 1.5 mm substrate thickness and 690 nm Ti thickness to reproduce the reported tensile stress.",
+    target:"+576 MPa tensile on B270 glass.",
+    links:[["Open-access paper","https://pmc.ncbi.nlm.nih.gov/articles/PMC11944007/"],["Publisher","https://www.mdpi.com/1996-1944/18/6/1269"]]
+  },
+  sapphire:{
+    origin:"Straley, Dorfman & Nicholas, Journal of Applied Physics 125, 245904 (2019).",
+    stack:"25.4 mm diameter, nominally 200 µm thick (001) sapphire with ~330 nm crystalline ruby (Cr-doped α-Al₂O₃).",
+    type:"Low-stress control case from a study that cross-calibrated curvature stress against ruby fluorescence.",
+    process:"Pulsed Laser Deposition (PLD), 248 nm laser at 10 Hz, 42.1 mm target distance; target/substrate rotation ~50 rpm.",
+    temp:"Substrate held at approximately 650 °C during deposition; post-deposition cooling generates different thermal-mismatch stress depending on substrate.",
+    metrology:"Multibeam Optical Stress Sensor (MOSS) and profilometry-derived curvature, independently compared with ruby piezospectroscopic fluorescence.",
+    toolUse:"Uses the sapphire-backed ruby samples as a near-zero-stress control. The preset is not a raw curvature trace and should not be read as a point-by-point reproduction.",
+    target:"Near zero compared with the strongly compressive YSZ-backed ruby samples; source discusses roughly 100 MPa-scale stress resolution.",
+    links:[["DOI","https://doi.org/10.1063/1.5094141"],["Author-group publication page","https://www.egr.msu.edu/nicholasgroup/publications.php"]]
+  },
+  xyz_demo:{
+    origin:"Synthetic MakeCoTech analytic full-field demonstration; no external raw-data source.",
+    stack:"Generic isotropic substrate/film geometry used only to demonstrate full x,y,z processing.",
+    type:"Analytic 2D paraboloid with known principal curvatures. This is a workflow/self-check case, not a material benchmark.",
+    process:"No physical deposition process is asserted. The before surface is flat; the after surface is a prescribed anisotropic paraboloid.",
+    temp:"Not applicable — analytic demonstration.",
+    metrology:"Synthetic x,y,z measurement points on a regular circular grid.",
+    toolUse:"Validates full-field interpolation, local quadratic surface fitting, κx/κy/principal curvature/mean curvature, measured-point display and area averaging.",
+    target:"Analytic target: κ1 = +0.015 1/m, κ2 = +0.005 1/m, H = +0.010 1/m under the MakeCoTech +Z convention.",
+    links:[]
+  },
+  sio2jsss:{
+    origin:"Long et al., Journal of Sensors and Sensor Systems 15, 167–175 (2026), thermal-stress extraction.",
+    stack:"100 mm n-type (100) Si wafer, 498 µm thick, with 300 nm SiO₂ film; backside deposited film etched away before the thermal curvature measurement.",
+    type:"Published numerical stress + temperature-dependent curvature benchmark. The tool uses an analytic room-temperature-equivalent curvature profile for the −130 MPa compressive residual-stress target.",
+    process:"SiO₂ thin film on silicon. The benchmark comes from the same thermal-curvature experiment as the SiN case.",
+    temp:"Curvature measured while temperature was scanned from 50 to 350 °C.",
+    metrology:"Tencor FLX2900 wafer-curvature system; measured curvature versus temperature was fitted with the multilayer thermo-mechanical model.",
+    toolUse:"At the preset geometry, −130 MPa compressive is converted into the corresponding curvature change under the MakeCoTech +Z convention. The source curvature plot uses the opposite curvature sign convention, so the tool preserves the published stress sign while using its own curvature sign.",
+    target:"Residual stress −130 MPa compressive; published fitted value −1.3×10^8 Pa.",
+    links:[["Open-access JSSS article","https://jsss.copernicus.org/articles/15/167/2026/"],["DOI","https://doi.org/10.5194/jsss-15-167-2026"]]
+  },
+  sin:{
+    origin:"Long et al., Journal of Sensors and Sensor Systems 15, 167–175 (2026), experiment III / thermal-stress extraction.",
+    stack:"100 mm n-type (100) Si wafer, 498 µm thick, with 100.7 nm SiN film; backside deposited film etched away before the thermal curvature measurement.",
+    type:"Published numerical stress + temperature-dependent curvature benchmark. The tool uses an analytic room-temperature-equivalent curvature profile for the +1300 MPa tensile intrinsic-stress target.",
+    process:"Normal LPCVD silicon nitride. The paper contrasts this +1300 MPa film with stress-reduced LPCVD SiN made using a high DCS:NH₃ flow ratio in a separate experiment.",
+    temp:"Curvature measured while temperature was scanned from 50 to 350 °C. Exact SiN deposition temperature for experiment III is not stated in the section used here.",
+    metrology:"Tencor FLX2900 wafer-curvature system; measured curvature versus temperature was fitted with the multilayer thermo-mechanical model.",
+    toolUse:"At the preset geometry, +1300 MPa tensile corresponds to |Δκ| ≈ 0.0176 1/m. The source plot uses a curvature sign convention that is opposite to the tool's +Z convention, so the tool validates magnitude and reports its own tensile-positive stress convention explicitly.",
+    target:"Intrinsic residual stress +1300 MPa tensile; measured curvature magnitude around 0.017–0.019 1/m over the thermal sweep.",
+    links:[["Open-access JSSS article","https://jsss.copernicus.org/articles/15/167/2026/"],["DOI","https://doi.org/10.5194/jsss-15-167-2026"]]
+  },
+  custom:{
+    origin:"User-supplied data.",stack:"Defined by the user.",type:"Custom analysis; not a literature benchmark.",process:"Defined by the user / not known to the tool.",temp:"Defined by the user / not known to the tool.",metrology:"Depends on uploaded/pasted measurements.",toolUse:"The tool processes the supplied 1D or x,y,z data using the selected geometry and material properties.",target:"No literature target.",links:[]
+  }
+};
+function renderHistory(){
+  const key=state.meta.historyKey||state.meta.kind||"custom",h=HISTORY[key]||HISTORY.custom;
+  $("hOrigin").textContent=h.origin;$("hStack").textContent=h.stack;$("hType").textContent=h.type;$("hProcess").textContent=h.process;
+  $("hTemp").textContent=h.temp;$("hMetrology").textContent=h.metrology;$("hToolUse").textContent=h.toolUse;$("hTarget").textContent=h.target;
+  $("hLinks").innerHTML=(h.links||[]).map(([label,url])=>`<a href="${url}" target="_blank" rel="noopener">${label}</a>`).join("");
+}
+
+function currentHistory(){
+  const key=state.meta.historyKey||state.meta.kind||"custom";
+  return HISTORY[key]||HISTORY.custom;
+}
+function reportFields(){
+  return {
+    project:$("rProject").value.trim(),
+    date:$("rDate").value.trim(),
+    operator:$("rOperator").value.trim(),
+    stack:$("rStack").value.trim(),
+    metrology:$("rMetrology").value.trim(),
+    process:$("rProcess").value.trim(),
+    temperature:$("rTemp").value.trim(),
+    notes:$("rNotes").value.trim()
+  };
+}
+function applyReportInfo(obj={}){
+  const map={
+    project:"rProject",sample:"rProject",sample_id:"rProject",
+    date:"rDate",run:"rDate",
+    operator:"rOperator",source:"rOperator",
+    stack:"rStack",sample_stack:"rStack",
+    metrology:"rMetrology",instrument:"rMetrology",
+    process:"rProcess",deposition:"rProcess",
+    temperature:"rTemp",thermal_history:"rTemp",temp:"rTemp",
+    notes:"rNotes"
+  };
+  Object.entries(obj).forEach(([k,v])=>{
+    const id=map[String(k).toLowerCase()];
+    if(id&&v!=null)$(id).value=String(v);
+  });
+  updatePrintReportInfo();
+}
+function useBenchmarkReportInfo(){
+  const h=currentHistory();
+  applyReportInfo({
+    operator:h.origin,
+    stack:h.stack,
+    metrology:h.metrology,
+    process:h.process,
+    temperature:h.temp,
+    notes:`Validation type: ${h.type}\nPublished target/result: ${h.target}`
+  });
+}
+function updatePrintReportInfo(){
+  const f=reportFields();
+  const items=[
+    ["Project / sample ID",f.project],["Date / run",f.date],["Operator / source",f.operator],
+    ["Sample stack",f.stack],["Metrology",f.metrology],["Deposition / process",f.process],
+    ["Temperature / thermal history",f.temperature],["Notes",f.notes]
+  ].filter(x=>x[1]);
+  $("printMetaGrid").innerHTML=items.length?items.map(([k,v])=>`<div class="printMetaItem"><div class="printMetaKey">${escapeHtml(k)}</div><div class="printMetaVal">${escapeHtml(v)}</div></div>`).join(""):`<div class="printMetaItem"><div class="printMetaVal">No process/report metadata entered.</div></div>`;
+}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function downloadProcessInfo(){
+  const data={...reportFields(),preset:$("preset").value,measurement_format:$("customMode").value};
+  downloadTextFile("MakeCoTech_process_info_v0.20.json",JSON.stringify(data,null,2),"application/json");
+}
+function parseProcessInfoText(text){
+  const t=String(text||"").trim();if(!t)return{};
+  try{return JSON.parse(t)}catch(_){}
+  const out={};
+  const lines=t.split(/\r?\n/);
+  for(const line of lines){
+    let parts=line.includes(",")?line.split(/,(.+)/):line.split(/:(.+)/);
+    if(parts.length>=2){out[parts[0].trim()]=parts[1].trim()}
+  }
+  return out;
+}
+function readProcessInfoFile(){
+  const file=$("processInfoFile").files&&$("processInfoFile").files[0];if(!file)return;
+  if(file.size>2*1024*1024){alert("Process-info file is too large. Please use a file below 2 MB.");$("processInfoFile").value="";return}
+  const r=new FileReader();
+  r.onload=()=>{applyReportInfo(parseProcessInfoText(r.result));};
+  r.readAsText(file);
+}
+
+function clamp(v,a,b){return Math.max(a,Math.min(b,v))}
+function mean(a){const b=a.filter(Number.isFinite);return b.length?b.reduce((s,v)=>s+v,0)/b.length:NaN}
+function minmax(a){const b=a.filter(Number.isFinite);return b.length?[Math.min(...b),Math.max(...b)]:[NaN,NaN]}
+function fmt(v,d=2){if(!Number.isFinite(v))return"—";if(Math.abs(v)>0&&Math.abs(v)<0.001)return v.toExponential(2);return v.toFixed(d)}
+function status(el,kind,text){el.textContent=text;el.className="vstatus "+(kind||"")}
+function setVals(o){Object.entries(o).forEach(([k,v])=>{if($(k))$(k).value=v})}
+function syncQuickLabels(){$("angleQuickVal").textContent=$("angle").value+"°";$("zQuickVal").textContent="×"+Math.round(+$("zmagN").value)}
+function getBiaxialModulus(){
+  const s=$("substrate").value;
+  if(s==="si001")return 180.3e9;
+  if(s==="si111")return 229.1e9;
+  const E=(+$("young").value)*1e9,nu=+$("nu").value;return E/(1-nu);
+}
+function normalizeProfile(x,b,a){
+  const rows=x.map((v,i)=>[+v,+b[i],+a[i]]).filter(r=>r.every(Number.isFinite)).sort((p,q)=>p[0]-q[0]);
+  return {x:rows.map(r=>r[0]),b:rows.map(r=>r[1]),a:rows.map(r=>r[2])};
+}
+function updateCurvatureControls(){
+  const full2d=state.inputMode==="map2d" || ($("preset").value==="custom" && $("customMode").value==="map2d");
+  const bar=$("curv2dToolbar");if(bar)bar.classList.toggle("hidden",!full2d);
+}
+function updateVerificationUi(){
+  const full2d=state.inputMode==="map2d" || ($("preset").value==="custom" && $("customMode").value==="map2d");
+  const fit=$("showFitOverlay"),wrap=$("fitToggleWrap");
+  if(fit){
+    fit.disabled=full2d;
+    if(wrap)wrap.classList.toggle("disabled",full2d);
+    if(wrap)wrap.title=full2d?"Quadratic fit overlay applies only to 1D profile mode.":"Show the fitted after-deposition Z curve on the centerline plot.";
+  }
+  const pwrap=$("pointsToggleWrap");
+  if(pwrap)pwrap.title=full2d?"Show actual measured x,y locations on maps and 3D wafer.":"Show actual measured scan locations on maps, 3D wafer and aligned centerline.";
+}
+function updateMethodUi(){
+  const full2d=state.inputMode==="map2d" || ($("preset").value==="custom" && $("customMode").value==="map2d"),isLocal=$("method").value==="local";$("method").disabled=full2d;$("method").title=full2d?"1D-only control. Full x,y,z mode uses local 2D quadratic surface fits to measured neighbors.":"";const box=$("smoothControl");if(box)box.classList.toggle("dimmedControl",!isLocal||full2d);$("smoothPct").disabled=!isLocal||full2d;$("smoothPctN").disabled=!isLocal||full2d;
+}
+function updateCustomMode(){
+  const m=$("customMode").value;
+  $("custom1dBox").style.display=m==="profile"?"block":"none";
+  $("custom2dBox").style.display=m==="map2d"?"block":"none";
+  if($("modeProfileBtn"))$("modeProfileBtn").classList.toggle("active",m==="profile");
+  if($("modeMapBtn"))$("modeMapBtn").classList.toggle("active",m==="map2d");
+  if($("preset").value==="custom" && $("inputSourceStatus")){
+    const applied=(m==="map2d"&&state.inputMode==="map2d")||(m==="profile"&&state.inputMode==="profile");
+    if(!applied)$("inputSourceStatus").textContent=(m==="map2d"?"Full x,y,z editor selected":"1D profile editor selected")+" · click Load measurement points to apply";
+  }
+  updateVerificationUi();
+  updateMethodUi();
+  updateCurvatureControls();
+}
+function idwAt(points,x,y,key,k=8){
+  const best=[];
+  for(const p of points){
+    const dx=p.x-x,dy=p.y-y,d2=dx*dx+dy*dy;
+    if(d2<1e-14)return p[key];
+    if(best.length<k){best.push([d2,p]);best.sort((a,b)=>a[0]-b[0])}
+    else if(d2<best[best.length-1][0]){best[best.length-1]=[d2,p];best.sort((a,b)=>a[0]-b[0])}
+  }
+  if(!best.length)return NaN;
+  let sw=0,sv=0;
+  for(const [d2,p] of best){const w=1/(Math.pow(d2,.75)+1e-9);sw+=w;sv+=w*p[key]}
+  return sv/sw;
+}
+function solveLinear(A,b){
+  const n=b.length,M=A.map((r,i)=>[...r,b[i]]);
+  for(let i=0;i<n;i++){
+    let p=i;for(let r=i+1;r<n;r++)if(Math.abs(M[r][i])>Math.abs(M[p][i]))p=r;
+    [M[i],M[p]]=[M[p],M[i]];if(Math.abs(M[i][i])<1e-13)return null;
+    const q=M[i][i];for(let c=i;c<=n;c++)M[i][c]/=q;
+    for(let r=0;r<n;r++)if(r!==i){const f=M[r][i];for(let c=i;c<=n;c++)M[r][c]-=f*M[i][c]}
+  }
+  return M.map(r=>r[n]);
+}
+function convexHull(points){
+  const a=points.map(p=>[p.x,p.y]).sort((p,q)=>p[0]-q[0]||p[1]-q[1]);if(a.length<=2)return a;
+  const cross=(o,p,q)=>(p[0]-o[0])*(q[1]-o[1])-(p[1]-o[1])*(q[0]-o[0]);
+  const lo=[];for(const p of a){while(lo.length>=2&&cross(lo[lo.length-2],lo[lo.length-1],p)<=0)lo.pop();lo.push(p)}
+  const hi=[];for(let i=a.length-1;i>=0;i--){const p=a[i];while(hi.length>=2&&cross(hi[hi.length-2],hi[hi.length-1],p)<=0)hi.pop();hi.push(p)}
+  lo.pop();hi.pop();return lo.concat(hi);
+}
+function pointInPolygon(x,y,poly){
+  if(!poly||poly.length<3)return false;let inside=false;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+    const xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];
+    const hit=((yi>y)!==(yj>y))&&(x<(xj-xi)*(y-yi)/(yj-yi+1e-30)+xi);if(hit)inside=!inside;
+  }
+  return inside;
+}
+function dedupeXY(points){
+  const m=new Map();
+  for(const p of points){const key=`${p.x.toPrecision(12)}|${p.y.toPrecision(12)}`;if(!m.has(key))m.set(key,{x:p.x,y:p.y,b:p.b,a:p.a,n:1});else{const q=m.get(key);q.b+=p.b;q.a+=p.a;q.n++}}
+  return [...m.values()].map(p=>({x:p.x,y:p.y,b:p.b/p.n,a:p.a/p.n}));
+}
+function nearestSurfacePoints(points,x,y,k){
+  const best=[];for(const p of points){const dx=p.x-x,dy=p.y-y,d2=dx*dx+dy*dy;if(best.length<k){best.push([d2,p]);best.sort((a,b)=>a[0]-b[0])}else if(d2<best[best.length-1][0]){best[best.length-1]=[d2,p];best.sort((a,b)=>a[0]-b[0])}}return best;
+}
+function curvatureFromDerivs(zx,zy,zxx,zxy,zyy){
+  const norm=Math.sqrt(1+zx*zx+zy*zy),E=1+zx*zx,F=zx*zy,G=1+zy*zy,L=zxx/norm,M=zxy/norm,N2=zyy/norm,W=E*G-F*F;if(!(W>0))return null;
+  const H=(E*N2-2*F*M+G*L)/(2*W),K=(L*N2-M*M)/W,disc=Math.sqrt(Math.max(0,H*H-K));return{kx:L/E,ky:N2/G,mean:H,k1:H+disc,k2:H-disc,zx,zy};
+}
+function localSurfaceFits(points,x,y,k){
+  const near=nearestSurfacePoints(points,x,y,Math.min(k,points.length));if(near.length<6)return null;
+  const Lmm=Math.max(Math.sqrt(near[near.length-1][0]),1e-6),A=Array.from({length:6},()=>Array(6).fill(0)),tb=Array(6).fill(0),ta=Array(6).fill(0);
+  for(const [d2,p] of near){const u=(p.x-x)/Lmm,v=(p.y-y)/Lmm,phi=[1,u,v,u*u,u*v,v*v],w=1/(1+Math.pow(Math.sqrt(d2)/(0.7*Lmm+1e-12),2));for(let r=0;r<6;r++){tb[r]+=w*phi[r]*p.b;ta[r]+=w*phi[r]*p.a;for(let c=0;c<6;c++)A[r][c]+=w*phi[r]*phi[c]}}
+  const cb=solveLinear(A,tb),ca=solveLinear(A,ta);if(!cb||!ca)return null;
+  const derive=c=>{const zx=c[1]/Lmm*1e-3,zy=c[2]/Lmm*1e-3,zxx=2*c[3]/(Lmm*Lmm),zxy=c[4]/(Lmm*Lmm),zyy=2*c[5]/(Lmm*Lmm);return{z:c[0],curv:curvatureFromDerivs(zx,zy,zxx,zxy,zyy)}};
+  return{before:derive(cb),after:derive(ca)};
+}
+function build2DMap(rows){
+  const R=(+$("diameter").value)/2,N=61,step=2*R/(N-1);let pts=rows.map(r=>({x:+r[0],y:+r[1],b:+r[2],a:+r[3]})).filter(p=>[p.x,p.y,p.b,p.a].every(Number.isFinite)&&Math.hypot(p.x,p.y)<=R*1.05);pts=dedupeXY(pts);if(pts.length<9)throw new Error("Need at least 9 unique valid x,y,z points.");
+  const stride=Math.max(1,Math.ceil(pts.length/1400)),src=pts.filter((_,i)=>i%stride===0),hull=convexHull(pts),coverageR=Math.min(R,Math.max(...pts.map(p=>Math.hypot(p.x,p.y)))),neighborCount=Math.min(src.length,Math.max(9,Math.min(30,Math.round(Math.sqrt(src.length)*1.4))));
+  const zb=new Array(N*N).fill(NaN),za=new Array(N*N).fill(NaN),names=["kx","ky","mean","k1","k2"],before={},after={},delta={};for(const n of names){before[n]=new Array(N*N).fill(NaN);after[n]=new Array(N*N).fill(NaN);delta[n]=new Array(N*N).fill(NaN)}
+  for(let j=0;j<N;j++){const y=-R+j*step;for(let i=0;i<N;i++){const x=-R+i*step,r=Math.hypot(x,y),q=j*N+i;if(r>R||!pointInPolygon(x,y,hull))continue;zb[q]=idwAt(src,x,y,"b",8);za[q]=idwAt(src,x,y,"a",8);const fits=localSurfaceFits(src,x,y,neighborCount);if(!fits||!fits.before.curv||!fits.after.curv)continue;for(const n of names){before[n][q]=fits.before.curv[n];after[n][q]=fits.after.curv[n];delta[n][q]=fits.after.curv[n]-fits.before.curv[n]}}}
+  state.map2d={rows:pts,N,R,step,coverageR,hull,neighborCount,zb,za,before,after,delta,dk:delta.mean,stress:new Array(N*N).fill(NaN),diameterAtBuild:+$("diameter").value};update2DStress();
+}
+function update2DStress(){
+  if(!state.map2d)return;
+  const M=getBiaxialModulus(),h=(+$('subThk').value)*1e-6,tf=(+$('filmThk').value)*1e-9;
+  state.map2d.stress=state.map2d.delta.mean.map(k=>Number.isFinite(k)?M*h*h*k/(6*tf)/1e6:NaN);
+}
+function field2DArray(arr,x,y,clampToCoverage=false){
+  const m=state.map2d;if(!m)return NaN;
+  let xx=x,yy=y,r=Math.hypot(xx,yy);
+  if(clampToCoverage&&r>m.coverageR&&r>0){xx*=m.coverageR/r;yy*=m.coverageR/r;r=m.coverageR}
+  const fx=(xx+m.R)/m.step,fy=(yy+m.R)/m.step,i=Math.floor(fx),j=Math.floor(fy);
+  if(i<0||j<0||i>=m.N-1||j>=m.N-1)return NaN;
+  const tx=fx-i,ty=fy-j,q=j*m.N+i,v00=arr[q],v10=arr[q+1],v01=arr[q+m.N],v11=arr[q+m.N+1];
+  const vals=[v00,v10,v01,v11].filter(Number.isFinite);
+  if(!vals.length)return NaN;
+  if(![v00,v10,v01,v11].every(Number.isFinite)){
+    let best=NaN,bd=1e9;
+    [[v00,0,0],[v10,1,0],[v01,0,1],[v11,1,1]].forEach(([v,ix,iy])=>{if(Number.isFinite(v)){const d=(tx-ix)**2+(ty-iy)**2;if(d<bd){bd=d;best=v}}});
+    return best;
+  }
+  return v00*(1-tx)*(1-ty)+v10*tx*(1-ty)+v01*(1-tx)*ty+v11*tx*ty;
+}
+function selectedCurvArray(){
+  const m=state.map2d;if(!m)return null;
+  const st=$('curvState')?$('curvState').value:'delta',comp=$('curvComponent')?$('curvComponent').value:'mean';
+  return m[st]&&m[st][comp]?m[st][comp]:m.delta.mean;
+}
+function curvDisplayLabel(){
+  if(state.inputMode!=='map2d')return state.meta.kind==='kspace'?'Static curvature κ (scan-direction effective)':'Curvature change Δκ (scan-direction effective)';
+  const st=$('curvState').value,comp=$('curvComponent').value;
+  const s={delta:'Change Δ',after:'After ',before:'Before '}[st];
+  const c={mean:'mean curvature H',kx:'κx',ky:'κy',k1:'principal κ1',k2:'principal κ2'}[comp];
+  return s+c;
+}
+function field2D(kind,x,y,allowOutside=false){
+  const m=state.map2d;if(!m)return NaN;
+  const r=Math.hypot(x,y),R=(+$("diameter").value)/2,cut=clamp(+$("edgeCut").value||0,0,R);if(r>R)return NaN;
+  if(!allowOutside&&(!pointInPolygon(x,y,m.hull)||r>R-cut))return NaN;
+  const arr=kind==="zb"?m.zb:kind==="z"?m.za:kind==="k"?selectedCurvArray():m.stress;return field2DArray(arr,x,y,allowOutside&&(kind==="z"||kind==="zb"));
+}
+
+function nearestIndex(xs,x){
+  let lo=0,hi=xs.length-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(xs[m]<x)lo=m;else hi=m}
+  return Math.abs(xs[lo]-x)<=Math.abs(xs[hi]-x)?lo:hi;
+}
+function interp(xs,ys,x){
+  if(!xs||xs.length<2||x<xs[0]||x>xs[xs.length-1])return NaN;
+  if(x===xs[0])return ys[0];if(x===xs[xs.length-1])return ys[ys.length-1];
+  let lo=0,hi=xs.length-1;
+  while(hi-lo>1){const m=(lo+hi)>>1;if(xs[m]<=x)lo=m;else hi=m}
+  const t=(x-xs[lo])/(xs[hi]-xs[lo]);return ys[lo]*(1-t)+ys[hi]*t;
+}
+function solve3(A,b){
+  A=A.map((r,i)=>[...r,b[i]]);
+  for(let i=0;i<3;i++){
+    let p=i;for(let r=i+1;r<3;r++)if(Math.abs(A[r][i])>Math.abs(A[p][i]))p=r;
+    [A[i],A[p]]=[A[p],A[i]];
+    if(Math.abs(A[i][i])<1e-30)return[NaN,NaN,NaN];
+    const q=A[i][i];for(let c=i;c<4;c++)A[i][c]/=q;
+    for(let r=0;r<3;r++)if(r!==i){const f=A[r][i];for(let c=i;c<4;c++)A[r][c]-=f*A[i][c]}
+  }
+  return[A[0][3],A[1][3],A[2][3]];
+}
+function quadFit(xs,ys,l,r,x0){
+  let s0=0,s1=0,s2=0,s3=0,s4=0,t0=0,t1=0,t2=0;
+  for(let j=l;j<=r;j++){
+    const u=xs[j]-x0,y=ys[j],u2=u*u;
+    s0++;s1+=u;s2+=u2;s3+=u2*u;s4+=u2*u2;t0+=y;t1+=u*y;t2+=u2*y;
+  }
+  const [a,b,c]=solve3([[s0,s1,s2],[s1,s2,s3],[s2,s3,s4]],[t0,t1,t2]);
+  const d2=2*c;return{z:a,d1:b,d2,k:d2/Math.pow(1+b*b,1.5)};
+}
+function processProfile(raw){
+  const R=(+$("diameter").value)/2,cut=clamp(+$("edgeCut").value||0,0,R*.95);
+  let rows=raw.x.map((x,i)=>({x,b:raw.b[i],a:raw.a[i]})).filter(r=>Math.abs(r.x)<=R-cut+1e-9);
+  if(rows.length<7)rows=raw.x.map((x,i)=>({x,b:raw.b[i],a:raw.a[i]}));
+  const xMm=rows.map(r=>r.x),bUm=rows.map(r=>r.b),aUm=rows.map(r=>r.a);
+  const xs=xMm.map(v=>v/1000),zb=bUm.map(v=>v/1e6),za=aUm.map(v=>v/1e6),n=xs.length;
+  const method=$("method").value,pct=clamp(+$("smoothPctN").value||10,1,20);
+  const k=Math.max(3,Math.min(Math.floor((n-1)/2),Math.round(n*pct/100)));
+
+  // Evaluate across the full retained measurement span for BOTH methods.
+  // Local mode uses asymmetric windows near the retained ends rather than
+  // dropping k points from each side. This preserves measurement coverage.
+  const evalN=Math.min(n,321),idx=[];
+  if(evalN===1)idx.push(0);
+  else for(let i=0;i<evalN;i++)idx.push(Math.round(i*(n-1)/(evalN-1)));
+
+  const pb=[],pa=[],xo=[];
+  if(method==="global"){
+    const xbar=mean(xs),fb=quadFit(xs,zb,0,n-1,xbar),fa=quadFit(xs,za,0,n-1,xbar);
+    for(const ii of idx){
+      const u=xs[ii]-xbar;
+      pb.push({k:fb.k,zfit:fb.z+fb.d1*u+0.5*fb.d2*u*u});
+      pa.push({k:fa.k,zfit:fa.z+fa.d1*u+0.5*fa.d2*u*u});
+      xo.push(xMm[ii]);
+    }
+  }else{
+    for(const ii of idx){
+      const l=Math.max(0,ii-k),r=Math.min(n-1,ii+k);
+      const fb=quadFit(xs,zb,l,r,xs[ii]),fa=quadFit(xs,za,l,r,xs[ii]);
+      pb.push({k:fb.k,zfit:fb.z});
+      pa.push({k:fa.k,zfit:fa.z});
+      xo.push(xMm[ii]);
+    }
+  }
+
+  // Z shown in maps/plots remains the measured profile, linearly interpolated
+  // only onto the evaluation x positions. Fitting is used ONLY for curvature.
+  const bMeasured=xo.map(x=>interp(xMm,bUm,x));
+  const aMeasured=xo.map(x=>interp(xMm,aUm,x));
+
+  const dk=pa.map((p,i)=>p.k-pb[i].k),M=getBiaxialModulus(),h=(+$("subThk").value)*1e-6,tf=(+$("filmThk").value)*1e-9;
+  const stress=dk.map(q=>M*h*h*q/(6*tf)/1e6);
+  return{
+    x:xo,b:bMeasured,a:aMeasured,
+    kb:pb.map(p=>p.k),ka:pa.map(p=>p.k),dk,stress,
+    fitB:pb.map(p=>p.zfit*1e6),fitA:pa.map(p=>p.zfit*1e6),
+    k,nRetained:n,raw,cut
+  };
+}
+function fallback50(){
+  const x=[],b0=[],a0=[],b90=[],a90=[];
+  for(let xx=-19.385;xx<=19.385+1e-10;xx+=0.05){
+    const xm=xx+19.385,c=19.385;
+    const f1=t=>0.1708+0.3911*t-0.01854*t*t;
+    const f2=t=>1.299+2.740*t+0.05116*t*t-0.002157*t*t*t;
+    const y1=f1(xm)-f1(c),y2=f2(xm)-f2(c);
+    x.push(xx);b0.push(y1);a0.push(y2);b90.push(.96*y1+.03*Math.cos(xx/5));a90.push(.93*y2+.12*Math.sin(xx/7));
+  }
+  return{p0:normalizeProfile(x,b0,a0),p90:normalizeProfile(x,b90,a90)};
+}
+function toray300(){
+  const h=775e-6,tf=100e-9,M=180.3e9,target=-441e6,dk=target*6*tf/(M*h*h),x=[],b=[],a=[];
+  for(let xx=-145;xx<=145;xx+=2.5){const xm=xx/1000;x.push(xx);b.push(0);a.push(.5*dk*xm*xm*1e6)}
+  return{p0:normalizeProfile(x,b,a),p90:normalizeProfile(x,b,a),targetStress:-441};
+}
+function benchmarkParabola(diameterMm,subThkUm,filmThkNm,targetStressMPa,biaxialModulusGPa,spanMm=null,stepMm=.25){
+  const h=subThkUm*1e-6,tf=filmThkNm*1e-9,M=biaxialModulusGPa*1e9,target=targetStressMPa*1e6;
+  const dk=(M&&tf)?target*6*tf/(M*h*h):0,R=diameterMm/2,span=spanMm===null?Math.max(0,R-.5):spanMm;
+  const x=[],b=[],a=[];
+  for(let xx=-span;xx<=span+1e-12;xx+=stepMm){const xm=xx/1000;x.push(+xx.toFixed(6));b.push(0);a.push(.5*dk*xm*xm*1e6)}
+  return{p0:normalizeProfile(x,b,a),p90:normalizeProfile(x,b,a),targetStress:targetStressMPa};
+}
+function xyzDemoMapPreset(){
+  const R=12.7,rows=[],kx=0.015,ky=0.005; // exact analytic principal curvatures, 1/m; before = flat
+  for(let y=-R;y<=R+1e-9;y+=1.27){
+    for(let x=-R;x<=R+1e-9;x+=1.27){
+      if(Math.hypot(x,y)<=R+1e-6){
+        const xm=x/1000,ym=y/1000;
+        const zAfter=0.5*(kx*xm*xm+ky*ym*ym)*1e6;
+        rows.push([+x.toFixed(3),+y.toFixed(3),0,+zAfter.toFixed(6)]);
+      }
+    }
+  }
+  return rows;
+}
+function kspace(slot){
+  const cfg={k1:{avg:-.00617},k15:{avg:-.00889},k25:{avg:-.01299}}[slot],x=[],kap=[];
+  for(let i=0;i<57;i++){
+    const xx=-140+i*5,t=xx/140;
+    let v=cfg.avg+.0032*(t*t-.34)+.0015*Math.cos(2.5*Math.PI*t)+.00075*Math.sin(9*Math.PI*t);
+    if(slot==="k15")v+=-.0017*Math.exp(-Math.pow((t-.55)/.17,2))+.0012*Math.exp(-Math.pow((t+.75)/.2,2));
+    if(slot==="k25")v+=-.0020*Math.exp(-Math.pow((t-.35)/.2,2))+.0010*Math.exp(-Math.pow((t+.7)/.15,2));
+    x.push(xx);kap.push(v);
+  }
+  const delta=cfg.avg-mean(kap);for(let i=0;i<kap.length;i++)kap[i]+=delta;
+  const z=new Array(x.length).fill(0),sl=new Array(x.length).fill(0),mid=28;
+  for(let i=mid+1;i<x.length;i++){const dx=(x[i]-x[i-1])/1000;sl[i]=sl[i-1]+.5*(kap[i]+kap[i-1])*dx;z[i]=z[i-1]+.5*(sl[i]+sl[i-1])*dx}
+  for(let i=mid-1;i>=0;i--){const dx=(x[i+1]-x[i])/1000;sl[i]=sl[i+1]-.5*(kap[i]+kap[i+1])*dx;z[i]=z[i+1]-.5*(sl[i]+sl[i+1])*dx}
+  const zum=z.map(v=>v*1e6),b=z.map(()=>0);
+  return{p0:normalizeProfile(x,b,zum),p90:normalizeProfile(x,b,zum),referenceCurvature:cfg.avg};
+}
+function parseDatasetJson(obj){
+  let rows=null;
+  if(Array.isArray(obj)){
+    if(obj.length&&typeof obj[0]==="object"&&!Array.isArray(obj[0])) rows=obj;
+  }else if(obj&&Array.isArray(obj.data)){
+    if(obj.data.length&&typeof obj.data[0]==="object"&&!Array.isArray(obj.data[0]))rows=obj.data;
+    else if(Array.isArray(obj.columns)&&Array.isArray(obj.data[0]))rows=obj.data.map(r=>Object.fromEntries(obj.columns.map((c,i)=>[typeof c==="string"?c:(c.name||c.itemOID||i),r[i]])));
+  }else if(obj&&Array.isArray(obj.x_dat)){
+    const n=obj.x_dat.length;rows=Array.from({length:n},(_,i)=>({x_dat:obj.x_dat[i],y_before_0:obj.y_before_0[i],y_after_0:obj.y_after_0[i],y_before_90:obj.y_before_90[i],y_after_90:obj.y_after_90[i]}));
+  }
+  if(!rows||!rows.length)throw new Error("Unsupported JSON structure");
+  const key=(row,names)=>{for(const n of names)if(n in row)return n;return null};
+  const r0=rows[0],kx=key(r0,["x_dat","x.dat","x"]),kb0=key(r0,["y_before_0","y.before.0"]),ka0=key(r0,["y_after_0","y.after.0"]),kb90=key(r0,["y_before_90","y.before.90"]),ka90=key(r0,["y_after_90","y.after.90"]);
+  if(!kx||!kb0||!ka0||!kb90||!ka90)throw new Error("Expected wafer40 columns not found");
+  const xM=rows.map(r=>+r[kx]),center=.5*(xM[0]+xM[xM.length-1]),x=xM.map(v=>(v-center)*1000);
+  return{
+    p0:normalizeProfile(x,rows.map(r=>+r[kb0]*1e6),rows.map(r=>+r[ka0]*1e6),
+    ),
+    p90:normalizeProfile(x,rows.map(r=>+r[kb90]*1e6),rows.map(r=>+r[ka90]*1e6))
+  };
+}
+function clearAnalysisDisplay(message="Loading selected dataset…"){
+  ["mBow","mCurv","mStress","mRange","mDh"].forEach(id=>{if($(id))$(id).textContent="—"});
+  if($("mValid"))$("mValid").innerHTML=`<span style="font-size:12px;color:var(--muted)">${message}</span>`;
+  if($("mA"))$("mA").textContent="";
+  ["mapZBefore","mapZ","mapK","mapS","view3d","plotZ","plotK","plotS"].forEach(id=>{
+    const c=$(id);if(!c)return;const ctx=c.getContext("2d");ctx.clearRect(0,0,c.width,c.height);ctx.fillStyle="#081018";ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle="#9bb0c3";ctx.font="14px system-ui";ctx.textAlign="center";ctx.fillText(message,c.width/2,c.height/2);ctx.textAlign="left";
+  });
+}
+function loadOffline50(){
+  const q=fallback50();
+  state.raw0=q.p0;state.raw90=q.p90;state.hasOrthogonal=false;
+  state.meta={
+    kind:"wafer40",historyKey:"wafer40",official:false,
+    title:"wafer40 published-fit offline reconstruction",
+    note:"Offline embedded reconstruction based on the published wafer40 profile fits. No internet connection is used. This case is suitable for algorithm/UI verification and literature-fit comparison, but it is not the official 7,755-point raw dataset."
+  };
+  $("officialStatus").textContent="Offline embedded published-fit reconstruction loaded.";
+  populateEditorFromActivePreset();
+  recompute();
+}
+function loadPreset(){
+  const p=$("preset").value;
+  state.map2d=null;state.inputMode="profile";state.hasOrthogonal=false;state.raw0=null;state.raw90=null;state.profile0=null;state.profile90=null;
+  clearAnalysisDisplay("Loading selected dataset…");
+  $("customMode").value="profile";updateCustomMode();$("officialStatus").textContent="";
+  if(p==="wafer40"){
+    // Published sample metadata: 50 mm Si(100), ts=275 µm, Es=130 GPa, nu=0.279.
+    setVals({diameter:50,subThk:275,filmThk:1000,edgeCut:2,substrate:"iso",young:130,nu:.279,smoothPct:10,smoothPctN:10,method:"local"});
+    $("isoBox").style.display="grid";
+    $("filmNote").innerHTML="<b>50 mm paper metadata applied.</b> The published SiC film thickness is spatially nonuniform (the paper fits a thickness profile), so the 1000 nm field is only a user-editable constant placeholder for this prototype's stress display.";
+    state.meta={kind:"wafer40",historyKey:"wafer40",official:false,title:"wafer40 published-fit offline reconstruction",note:"Embedded offline reconstruction based on the published wafer40 profile fits; no network request is made."};
+    $("presetNote").textContent=state.meta.note;
+    $("mStressLabel").textContent="Stoney-equivalent stress (input t_f)";
+    $("mStressSub").textContent="offline published-fit reconstruction";
+    loadOffline50();return;
+  }
+  if(p==="toray300"){
+    setVals({diameter:300,subThk:775,filmThk:100,edgeCut:5,substrate:"si001",smoothPct:5,smoothPctN:5,method:"global"});
+    $("isoBox").style.display="none";
+    $("filmNote").innerHTML="<b>Toray benchmark metadata applied:</b> 300 mm Si wafer and 100 nm SiO₂ film. Substrate thickness is set to the 775 µm 300 mm-wafer value used by this benchmark implementation.";
+    const q=toray300();state.raw0=q.p0;state.raw90=q.p90;
+    state.meta={kind:"toray",historyKey:"toray",targetStress:q.targetStress,official:false,title:"Toray 300 mm stress benchmark",note:"Published target is −441 MPa for a 300 mm Si wafer with 100 nm SiO₂. The displacement profile here is an analytic parabola generated from that reported target; it validates the Stoney arithmetic and curvature extraction, not the original raw Toray metrology."};
+  }else if(["k1","k15","k25"].includes(p)){
+    setVals({diameter:300,subThk:775,filmThk:1000,edgeCut:7.5,substrate:"si001",smoothPct:7,smoothPctN:7,method:"local"});
+    $("isoBox").style.display="none";
+    $("filmNote").innerHTML="<b>k-Space geometry applied:</b> 300 mm wafer, 7.5 mm edge exclusion, 57 sites at 5 mm spacing. This source validates curvature rather than a specific film stack, so film thickness remains a user-editable placeholder.";
+    const q=kspace(p);state.raw0=q.p0;state.raw90=q.p90;
+    state.meta={kind:"kspace",historyKey:"kspace",slot:p,targetCurvature:q.referenceCurvature,official:false,title:"k-Space 300 mm SOI reference",note:"The source publishes 57 sites, 5 mm spacing, 7.5 mm edge exclusion and mean curvature. The shaped curve here is reconstructed and normalized to the published mean; this is a summary-target validation, not raw-data reproduction."};
+  }else if(p==="glass_b270"){
+    setVals({diameter:25,subThk:1500,filmThk:690,edgeCut:1,substrate:"iso",young:71.5,nu:.219,smoothPct:8,smoothPctN:8,method:"global"});
+    $("isoBox").style.display="grid";
+    $("filmNote").innerHTML="<b>B270 modified soda-lime glass benchmark metadata applied:</b> 25 mm diameter, 1.5 mm thick substrate, E = 71.5 GPa, ν = 0.219, and 0.69 µm Ti film. This preset reproduces the published tensile-stress benchmark as an analytic constant-curvature profile.";
+    const q=benchmarkParabola(25,1500,690,576,71.5/(1-.219),12,.25);state.raw0=q.p0;state.raw90=q.p90;
+    state.meta={kind:"glass",historyKey:"glass",targetStress:q.targetStress,official:false,title:"B270 modified soda-lime glass / Ti benchmark",note:"Based on the open-access glass/Ti curvature study. This case is an isotropic-substrate benchmark using the reported 0.69 µm Ti result of about +576 MPa tensile stress."};
+  }else if(p==="sapphire_ruby"){
+    setVals({diameter:25.4,subThk:200,filmThk:330,edgeCut:1,substrate:"iso",young:345,nu:.23,smoothPct:8,smoothPctN:8,method:"global"});
+    $("isoBox").style.display="grid";
+    $("filmNote").innerHTML="<b>Sapphire/ruby control metadata applied:</b> 25.4 mm diameter, nominally 200 µm thick sapphire wafer and ~330 nm ruby film. This preset is a near-zero-stress control inspired by the curvature/fluorescence study rather than a strong-stress benchmark.";
+    const q=benchmarkParabola(25.4,200,330,0,345/(1-.23),12.2,.25);state.raw0=q.p0;state.raw90=q.p90;
+    state.meta={kind:"sapphire",historyKey:"sapphire",targetStress:0,official:false,title:"Sapphire / ruby near-zero control",note:"The source reports the sapphire-backed ruby films as nearly stress-free compared with the strongly compressed YSZ-backed films. This preset therefore acts as a low-stress control case."};
+  }else if(p==="xyz_demo"){
+    setVals({diameter:25.4,subThk:1000,filmThk:1000,edgeCut:1,substrate:"iso",young:70,nu:.22,smoothPct:10,smoothPctN:10,method:"local"});
+    $("isoBox").style.display="grid";
+    $("filmNote").innerHTML="<b>Analytic full-field x,y,z demo:</b> generic isotropic values are used only so the Stoney-equivalent stress display has a finite scale. The prescribed surface has κ₁ = +0.015 1/m, κ₂ = +0.005 1/m and H = +0.010 1/m. This is not a material benchmark.";
+    state.inputMode="map2d";state.hasOrthogonal=false;build2DMap(xyzDemoMapPreset());
+    state.meta={kind:"xyz_demo",historyKey:"xyz_demo",official:false,title:"Full-field x,y,z analytic demo",targetH:.010,targetK1:.015,targetK2:.005,note:"Synthetic analytic x,y,z points with known curvature are used to verify the full-field workflow. Stress is illustrative because the substrate/film properties are generic editable demo values."};
+  }else if(p==="sio2_jsss"){
+    setVals({diameter:100,subThk:498,filmThk:300,edgeCut:5,substrate:"si001",smoothPct:7,smoothPctN:7,method:"global"});
+    $("isoBox").style.display="none";
+    $("filmNote").innerHTML="<b>Published SiO₂ thermal-curvature benchmark applied:</b> 100 mm n-type Si(100), 498 µm substrate, 300 nm SiO₂, <b>−130 MPa compressive</b> fitted residual stress. Curvature was measured from 50–350 °C with a Tencor FLX2900; this preset uses a room-temperature-equivalent analytic curvature for the published stress target.";
+    const q=benchmarkParabola(100,498,300,-130,180.3,45,.5);state.raw0=q.p0;state.raw90=q.p90;
+    state.meta={kind:"sio2jsss",historyKey:"sio2jsss",targetStress:q.targetStress,official:false,title:"100 mm Si(100) / SiO₂ thermal-curvature benchmark",note:"Long et al. (JSSS, 2026): fitted SiO₂ residual stress −130 MPa compressive. The source curvature plot uses the opposite curvature sign convention; the tool keeps compressive stress negative under its own +Z convention and validates the published magnitude."};
+  }else if(p==="sin_lpcvd"){
+    setVals({diameter:100,subThk:498,filmThk:100.7,edgeCut:5,substrate:"si001",smoothPct:7,smoothPctN:7,method:"global"});
+    $("isoBox").style.display="none";
+    $("filmNote").innerHTML="<b>Published SiN thermal-curvature benchmark applied:</b> 100 mm n-type Si(100), 498 µm substrate, 100.7 nm SiN, <b>+1300 MPa tensile</b> intrinsic stress. The paper measured curvature from 50–350 °C with a Tencor FLX2900; this preset uses a room-temperature-equivalent analytic curvature for the intrinsic-stress target.";
+    const q=benchmarkParabola(100,498,100.7,1300,180.3,45,.5);state.raw0=q.p0;state.raw90=q.p90;
+    state.meta={kind:"sin",historyKey:"sin",targetStress:q.targetStress,official:false,title:"100 mm Si(100) / LPCVD SiN thermal-curvature benchmark",note:"Long et al. (JSSS, 2026): fitted intrinsic SiN residual stress +1300 MPa tensile. The source curvature plot uses the opposite curvature sign convention; the tool keeps tensile stress positive under its own +Z convention and validates the magnitude."};
+  }else{
+    $("filmNote").textContent="Measurement points: enter the actual wafer and film dimensions above before calculating stress.";
+    state.meta={kind:"custom",historyKey:"custom",official:false,title:"Measurement points",note:"The editable input area above is the active data source. Upload, paste or modify the values, then click Load measurement points."};
+    $("presetNote").textContent=state.meta.note;
+    $("inputSourceStatus").textContent="Measurement points · editable and active";
+    parseCustom();return;
+  }
+  $("presetNote").textContent=state.meta.note;
+  state.camZoom=1;
+  populateEditorFromActivePreset();
+  updateVerificationUi();
+  recompute();
+}
+function inputNum(v){
+  if(v===""||v===null||v===undefined)return "";
+  if(!Number.isFinite(+v))return "";
+  const n=+v;if(Math.abs(n)<1e-14)return "0";
+  return Number(n.toPrecision(10)).toString();
+}
+function populateProfileEditor(p0,p90,label){
+  if(!p0||!p0.x||!p0.x.length)return;
+  const q90=p90&&p90.x&&p90.x.length?p90:null;
+  const lines=["x_mm,z_before_0_um,z_after_0_um,z_before_90_um,z_after_90_um"];
+  for(let i=0;i<p0.x.length;i++){
+    const x=p0.x[i],b0=p0.b[i],a0=p0.a[i];
+    let b90="",a90="";
+    if(q90){
+      const j=q90.x.length===p0.x.length?i:nearestIndex(q90.x,x);
+      b90=q90.b[j];a90=q90.a[j];
+    }
+    lines.push([x,b0,a0,b90,a90].map(inputNum).join(","));
+  }
+  $("customMode").value="profile";updateCustomMode();
+  $("dataText1d").value=lines.join("\n");
+  $("inputSourceStatus").textContent=`Loaded into editable input: ${label} · ${p0.x.length.toLocaleString()} profile rows · 1D/orthogonal format`;
+  $("file1dMeta").textContent=`Preset data · ${p0.x.length.toLocaleString()} numeric rows · edit directly or replace with your own CSV/TXT/TSV.`;
+  $("parseStatus").textContent="Benchmark data copied into Measurement Points. Edit if needed, then click Load measurement points to analyze your modified values.";
+}
+function populateMapEditor(rows,label){
+  if(!rows||!rows.length)return;
+  const lines=["x_mm,y_mm,z_before_um,z_after_um"];
+  for(const r of rows){
+    const a=Array.isArray(r)?r:[r.x,r.y,r.b,r.a];
+    lines.push(a.slice(0,4).map(inputNum).join(","));
+  }
+  $("customMode").value="map2d";updateCustomMode();
+  $("dataText2d").value=lines.join("\n");
+  $("inputSourceStatus").textContent=`Loaded into editable input: ${label} · ${rows.length.toLocaleString()} x,y,z points · full-field format`;
+  $("file2dMeta").textContent=`Preset data · ${rows.length.toLocaleString()} x,y,z rows · edit directly or replace with your own CSV/TXT/TSV.`;
+  $("parseStatus").textContent="Benchmark data copied into Measurement Points. Edit if needed, then click Load measurement points to analyze your modified values.";
+}
+function populateEditorFromActivePreset(){
+  if(state.inputMode==="map2d"&&state.map2d&&state.map2d.rows)populateMapEditor(state.map2d.rows,state.meta.title||"selected preset");
+  else if(state.raw0)populateProfileEditor(state.raw0,state.hasOrthogonal?state.raw90:null,state.meta.title||"selected preset");
+}
+function readLocalDataFile(inputId,textAreaId,mode){
+  const input=$(inputId),file=input&&input.files?input.files[0]:null;
+  if(!file)return;
+  const maxBytes=25*1024*1024;
+  if(file.size>maxBytes){$("parseStatus").textContent=`File is ${(file.size/1024/1024).toFixed(1)} MB. Current browser import limit is 25 MB.`;input.value="";return}
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const content=String(reader.result||"").replace(/^\uFEFF/,"");
+    $(textAreaId).value=content;
+    $("customMode").value=mode;updateCustomMode();
+    const lines=content.trim()?content.trim().split(/\r?\n/).length:0;
+    const meta=$(inputId+"Meta");if(meta)meta.textContent=`${file.name} · ${(file.size/1024).toFixed(1)} KB · ${lines.toLocaleString()} lines · ready to inspect/edit and load.`;
+    $("inputSourceStatus").textContent=`Local file ready: ${file.name} · editable`;$("parseStatus").textContent=`Read ${file.name}. Review the data below, then click Load measurement points.`;
+  };
+  reader.onerror=()=>{$("parseStatus").textContent=`Could not read ${file.name}.`;};
+  reader.readAsText(file);
+}
+function downloadTextFile(name,content,type="text/csv"){
+  const blob=new Blob([content],{type}),u=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),500);
+}
+function downloadInputTemplate(mode){
+  if(mode==="profile")downloadTextFile("MakeCoTech_1D_profile_template.csv","x_mm,z_before_0_um,z_after_0_um,z_before_90_um,z_after_90_um\n-10,0,0,,,\n0,0,0,,,\n10,0,0,,,\n");
+  else downloadTextFile("MakeCoTech_XYZ_map_template.csv","x_mm,y_mm,z_before_um,z_after_um\n-10,0,0,0\n0,0,0,0\n10,0,0,0\n0,-10,0,0\n0,10,0,0\n");
+}
+function parseCustom(){
+  const mode=$("customMode").value;
+  if(mode==="profile"){
+    const lines=$("dataText1d").value.trim().split(/\n+/),rows=[];
+    for(const line of lines){const vals=line.trim().split(/[,\t; ]+/).map(Number);if(vals.length>=3&&vals.slice(0,3).every(Number.isFinite))rows.push(vals)}
+    if(rows.length<7){$("parseStatus").textContent="Need at least 7 numeric rows for a profile.";return}
+    rows.sort((a,b)=>a[0]-b[0]);
+    state.raw0=normalizeProfile(rows.map(r=>r[0]),rows.map(r=>r[1]),rows.map(r=>r[2]));
+    state.hasOrthogonal=rows.every(r=>r.length>=5&&Number.isFinite(r[3])&&Number.isFinite(r[4]));
+    if(state.hasOrthogonal)state.raw90=normalizeProfile(rows.map(r=>r[0]),rows.map(r=>r[3]),rows.map(r=>r[4]));
+    else state.raw90=normalizeProfile(rows.map(r=>r[0]),rows.map(r=>r[1]),rows.map(r=>r[2]));
+    state.map2d=null;state.inputMode="profile";
+    $("preset").value="custom";state.meta={kind:"custom",historyKey:"custom",official:false,title:"Measurement points — 1D profile",note:state.hasOrthogonal?"Two orthogonal diameter scans loaded.":"Single diameter scan loaded; 90° is mirrored only for the reconstructed wafer visualization."};
+    $("inputSourceStatus").textContent=`Measurement points active · ${rows.length.toLocaleString()} profile rows`;$("parseStatus").textContent=`Loaded ${rows.length} profile rows.`;
+  }else{
+    const lines=$("dataText2d").value.trim().split(/\n+/),rows=[];
+    for(const line of lines){const vals=line.trim().split(/[,\t; ]+/).map(Number);if(vals.length>=4&&vals.slice(0,4).every(Number.isFinite))rows.push(vals.slice(0,4))}
+    if(rows.length<9){$("parseStatus").textContent="Need at least 9 numeric x,y,z rows.";return}
+    try{state.inputMode="map2d";state.hasOrthogonal=false;state.raw0=null;state.raw90=null;state.profile0=null;state.profile90=null;build2DMap(rows)}
+    catch(err){state.inputMode="profile";$("parseStatus").textContent=err.message;return}
+    $("preset").value="custom";state.meta={kind:"custom2d",historyKey:"custom",official:false,title:"Measurement points — full x,y,z map",note:"Full x,y,z data loaded. The 2D contour is interpolated from measured points; curvature is the change in mean surface curvature from the before/after maps."};
+    $("inputSourceStatus").textContent=`Measurement points active · ${rows.length.toLocaleString()} x,y,z points`;$("parseStatus").textContent=`Loaded ${rows.length} x,y,z points. Measured radial coverage ≈ ${fmt(state.map2d.coverageR,2)} mm.`;
+  }
+  $("filmNote").textContent="Measurement points: stress uses the wafer/substrate/film values entered above.";
+  $("presetNote").textContent=state.meta.note;recompute();
+}
+function rawCoverageRadius(){
+  const R=(+$("diameter").value)/2;
+  if(state.inputMode==="map2d"&&state.map2d)return Math.min(R,state.map2d.coverageR);
+  function cov(p){if(!p||!p.x||!p.x.length)return 0;return Math.min(R,Math.max(Math.abs(p.x[0]),Math.abs(p.x[p.x.length-1])))}
+  return Math.min(cov(state.raw0),cov(state.raw90||state.raw0));
+}
+function coverageClass(r){
+  const R=(+$("diameter").value)/2,cut=clamp(+$("edgeCut").value||0,0,R),cov=rawCoverageRadius();if(r>cov+1e-9)return"nodata";if(r>R-cut+1e-9)return"excluded";return"used";
+}
+function coverageClassXY(x,y){
+  const r=Math.hypot(x,y),R=(+$("diameter").value)/2,cut=clamp(+$("edgeCut").value||0,0,R);if(state.inputMode==="map2d"&&state.map2d){if(!pointInPolygon(x,y,state.map2d.hull))return"nodata";if(r>R-cut+1e-9)return"excluded";return"used"}return coverageClass(r);
+}
+function interpClamp(xs,ys,x){
+  if(!xs||xs.length<2)return NaN;
+  return interp(xs,ys,clamp(x,xs[0],xs[xs.length-1]));
+}
+function rawZBlendClamped(xmm,ymm){
+  const r=Math.hypot(xmm,ymm),R=(+$("diameter").value)/2;if(r>R)return NaN;
+  if(state.inputMode==="map2d"&&state.map2d)return field2D("z",xmm,ymm,true);
+  const th=Math.atan2(ymm,xmm),c=Math.cos(th),ss=Math.sin(th),sx=(c>=0?1:-1)*r,sy=(ss>=0?1:-1)*r;
+  const p0=state.raw0,p90=state.raw90||state.raw0;if(!p0)return 0;
+  const a=interpClamp(p0.x,p0.a,sx),b=interpClamp(p90.x,p90.a,sy);
+  if(!Number.isFinite(a)||!Number.isFinite(b))return 0;
+  return a*c*c+b*ss*ss;
+}
+function blend(kind,xmm,ymm){
+  const r=Math.hypot(xmm,ymm),R=(+$("diameter").value)/2;if(r>R||coverageClassXY(xmm,ymm)!=="used")return NaN;
+  if(state.inputMode==="map2d"&&state.map2d)return field2D(kind,xmm,ymm,false);
+  const th=Math.atan2(ymm,xmm),c=Math.cos(th),ss=Math.sin(th),sx=(c>=0?1:-1)*r,sy=(ss>=0?1:-1)*r;
+
+  // Displacement maps are measurement-driven and independent of the
+  // curvature/smoothing method.
+  if(kind==="zb"||kind==="z"){
+    const p0=state.raw0,p90=state.raw90||state.raw0;if(!p0||!p90)return NaN;
+    const arr0=kind==="zb"?p0.b:p0.a,arr90=kind==="zb"?p90.b:p90.a;
+    const a=interp(p0.x,arr0,sx),b=interp(p90.x,arr90,sy);
+    if(!Number.isFinite(a)||!Number.isFinite(b))return NaN;
+    return a*c*c+b*ss*ss;
+  }
+
+  // Curvature and stress come from the selected local/global fit.
+  const p0=state.profile0,p90=state.profile90;if(!p0||!p90)return NaN;
+  let a,b;
+  if(kind==="k"){a=interp(p0.x,p0.dk,sx);b=interp(p90.x,p90.dk,sy)}
+  if(kind==="s"){a=interp(p0.x,p0.stress,sx);b=interp(p90.x,p90.stress,sy)}
+  if(!Number.isFinite(a)||!Number.isFinite(b))return NaN;
+  return a*c*c+b*ss*ss;
+}
+function fieldRange(kind){
+  const R=(+$('diameter').value)/2,vals=[];
+  for(let iy=-24;iy<=24;iy++)for(let ix=-24;ix<=24;ix++){
+    const x=R*ix/24,y=R*iy/24;if(Math.hypot(x,y)<=R){const v=blend(kind,x,y);if(Number.isFinite(v))vals.push(v)}
+  }
+  return minmax(vals);
+}
+const RANGE_IDS={
+  zb:{mode:"rangeZBMode",min:"rangeZBMin",max:"rangeZBMax"},
+  z:{mode:"rangeZMode",min:"rangeZMin",max:"rangeZMax"},
+  k:{mode:"rangeKMode",min:"rangeKMin",max:"rangeKMax"},
+  s:{mode:"rangeSMode",min:"rangeSMin",max:"rangeSMax"}
+};
+function safeDataRange(kind){
+  const rr=fieldRange(kind);let mn=rr[0],mx=rr[1];
+  if(!Number.isFinite(mn)||!Number.isFinite(mx)){mn=-1;mx=1}
+  if(mn===mx){const d=Math.max(Math.abs(mn)*.05,1e-9);mn-=d;mx+=d}
+  return[mn,mx];
+}
+function resolveDisplayRange(kind){
+  const ids=RANGE_IDS[kind],mode=$(ids.mode).value,[dataMin,dataMax]=safeDataRange(kind);
+  let lo,hi;
+  if(mode==="data"){lo=dataMin;hi=dataMax}
+  else if(mode==="manual"){
+    lo=+$ (ids.min).value;hi=+$ (ids.max).value;
+    if(!Number.isFinite(lo)||!Number.isFinite(hi)||!(hi>lo)){
+      const m=Math.max(Math.abs(dataMin),Math.abs(dataMax))||1;lo=-m;hi=m;
+    }
+  }else{
+    const m=Math.max(Math.abs(dataMin),Math.abs(dataMax))||1;lo=-m;hi=m;
+  }
+  const manual=mode==="manual";
+  $(ids.min).disabled=!manual;$(ids.max).disabled=!manual;
+  if(!manual){$(ids.min).value=Number(lo.toPrecision(7));$(ids.max).value=Number(hi.toPrecision(7))}
+  return{lo,hi,dataMin,dataMax,mode};
+}
+function rangeColor(v,lo,hi){
+  if(!Number.isFinite(v)||!Number.isFinite(lo)||!Number.isFinite(hi)||!(hi>lo))return[70,83,94];
+  if(v<lo)return[156,164,172];       // below min: light grey
+  if(v>hi)return[220,70,255];        // above max: violet/pink
+  const white=[242,244,246],blue=[33,79,156],red=[185,46,59];
+  const mix=(a,b,t)=>a.map((q,i)=>Math.round(q+(b[i]-q)*clamp(t,0,1)));
+  if(lo<0&&hi>0){
+    if(v<0)return mix(blue,white,(v-lo)/(0-lo));
+    return mix(white,red,v/hi);
+  }
+  if(lo>=0)return mix(white,red,(v-lo)/(hi-lo));
+  if(hi<=0)return mix(blue,white,(v-lo)/(hi-lo));
+  return white;
+}
+function legendCenter(lo,hi){return lo<=0&&hi>=0?0:(lo+hi)/2}
+function updateRangeInputs(){
+  ["zb","z","k","s"].forEach(resolveDisplayRange);
+}
+function coverageColor(cls){
+  if(cls==='excluded')return[138,118,82];
+  if(cls==='nodata')return[70,81,91];
+  return[95,110,122];
+}
+function drawMeasuredPointsOnMap(ctx,cx,cy,Rpx,R){
+  if(!$("showMeasuredPoints")||!$("showMeasuredPoints").checked)return;
+  const cut=+$("edgeCut").value;
+  ctx.save();
+  if(state.inputMode==="map2d"&&state.map2d){
+    const pts=state.map2d.rows||[],stride=Math.max(1,Math.ceil(pts.length/3500));
+    for(let i=0;i<pts.length;i+=stride){
+      const p=pts[i],r=Math.hypot(p.x,p.y);
+      if(r>R*1.02)continue;
+      const px=cx+(p.x/R)*Rpx,py=cy-(p.y/R)*Rpx;
+      ctx.fillStyle=r<=R-cut+1e-9?"rgba(235,248,255,.95)":"rgba(240,205,126,.95)";
+      ctx.strokeStyle="rgba(5,14,21,.9)";ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(px,py,2.05,0,Math.PI*2);ctx.fill();ctx.stroke();
+    }
+  }else{
+    const drawScan=(raw,axis)=>{
+      if(!raw||!raw.x)return;
+      const stride=Math.max(1,Math.ceil(raw.x.length/2500));
+      for(let i=0;i<raw.x.length;i+=stride){
+        const q=raw.x[i],x=axis==="x"?q:0,y=axis==="y"?q:0,r=Math.hypot(x,y);
+        if(r>R*1.02)continue;
+        const px=cx+(x/R)*Rpx,py=cy-(y/R)*Rpx;
+        ctx.fillStyle=r<=R-cut+1e-9?"rgba(235,248,255,.95)":"rgba(240,205,126,.95)";
+        ctx.strokeStyle="rgba(5,14,21,.9)";ctx.lineWidth=.9;
+        ctx.beginPath();ctx.arc(px,py,1.8,0,Math.PI*2);ctx.fill();ctx.stroke();
+      }
+    };
+    drawScan(state.raw0,"x");
+    if(state.hasOrthogonal&&state.raw90)drawScan(state.raw90,"y");
+  }
+  ctx.restore();
+}
+function measuredSectionPoints(){
+  if(!$("showMeasuredPoints")||!$("showMeasuredPoints").checked)return[];
+  const angle=(+$("angle").value||0)*Math.PI/180,R=(+$("diameter").value)/2,cut=+$("edgeCut").value;
+  if(state.inputMode==="map2d"&&state.map2d){
+    const ca=Math.cos(angle),sa=Math.sin(angle);
+    // Show actual full-field points close to the selected diameter.
+    const tol=Math.max(state.map2d.step*.75,R*.012);
+    return state.map2d.rows.map(p=>{
+      const along=p.x*ca+p.y*sa,perp=-p.x*sa+p.y*ca;
+      return{s:along,z:p.a,dist:Math.abs(perp),used:Math.hypot(p.x,p.y)<=R-cut+1e-9};
+    }).filter(p=>p.dist<=tol&&Math.abs(p.s)<=R+1e-9);
+  }
+  const deg=((+$("angle").value||0)%180+180)%180;
+  let raw=null,sign=1;
+  if(Math.min(Math.abs(deg),Math.abs(deg-180))<=2){raw=state.raw0;sign=1}
+  else if(Math.abs(deg-90)<=2){raw=state.hasOrthogonal&&state.raw90?state.raw90:null;sign=1}
+  if(!raw)return[];
+  return raw.x.map((x,i)=>({s:sign*x,z:raw.a[i],used:Math.abs(x)<=R-cut+1e-9}));
+}
+function fitSectionData(){
+  if(!$("showFitOverlay")||!$("showFitOverlay").checked||state.inputMode==="map2d"||!state.profile0)return[];
+  const R=(+$("diameter").value)/2,a=(+$("angle").value)*Math.PI/180,N=181,p0=state.profile0,p90=state.profile90||p0,arr=[];
+  for(let i=0;i<N;i++){
+    const ss=-R+2*R*i/(N-1),x=ss*Math.cos(a),y=ss*Math.sin(a),r=Math.hypot(x,y);
+    const th=Math.atan2(y,x),cc=Math.cos(th),sn=Math.sin(th),sx=(cc>=0?1:-1)*r,sy=(sn>=0?1:-1)*r;
+    const z0=interp(p0.x,p0.fitA,sx),z90=interp(p90.x,p90.fitA,sy);
+    arr.push({s:ss,z:(Number.isFinite(z0)&&Number.isFinite(z90))?z0*cc*cc+z90*sn*sn:NaN});
+  }
+  return arr;
+}
+function drawMap(id,kind){
+  const c=$(id),ctx=c.getContext('2d'),W=c.width,H=c.height,Rpx=Math.min(W,H)*.44,cx=W/2,cy=H/2,R=(+$('diameter').value)/2,cut=+$('edgeCut').value,cov=rawCoverageRadius();
+  const range=resolveDisplayRange(kind),img=ctx.createImageData(W,H),d=img.data;
+  for(let py=0;py<H;py++)for(let px=0;px<W;px++){
+    const dx=(px-cx)/Rpx,dy=(py-cy)/Rpx,rr=Math.hypot(dx,dy),idx=(py*W+px)*4;
+    if(rr<=1){
+      const xw=dx*R,yw=-dy*R,r=rr*R,cls=coverageClassXY(xw,yw);let col;
+      if(cls==='used')col=rangeColor(blend(kind,xw,yw),range.lo,range.hi);else col=coverageColor(cls);
+      d[idx]=col[0];d[idx+1]=col[1];d[idx+2]=col[2];d[idx+3]=255;
+    }else{d[idx]=8;d[idx+1]=16;d[idx+2]=24;d[idx+3]=255}
+  }
+  ctx.putImageData(img,0,0);ctx.save();ctx.translate(cx,cy);
+  ctx.strokeStyle='#d6e4ef';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,Rpx,0,Math.PI*2);ctx.stroke();
+  if(cut>0&&cut<R){ctx.strokeStyle='rgba(240,205,126,.95)';ctx.setLineDash([7,5]);ctx.beginPath();ctx.arc(0,0,Rpx*(R-cut)/R,0,Math.PI*2);ctx.stroke();ctx.setLineDash([])}
+  if(cov<R-.05){ctx.strokeStyle='#70bfff';ctx.setLineDash([3,4]);ctx.beginPath();ctx.arc(0,0,Rpx*cov/R,0,Math.PI*2);ctx.stroke();ctx.setLineDash([])}
+  // Physical notch: the only cutout in the wafer silhouette.
+  ctx.fillStyle='#081018';ctx.strokeStyle='#d6e4ef';ctx.beginPath();ctx.moveTo(-10,Rpx-1);ctx.lineTo(0,Rpx-12);ctx.lineTo(10,Rpx-1);ctx.closePath();ctx.fill();ctx.stroke();
+  ctx.restore();
+  drawMeasuredPointsOnMap(ctx,cx,cy,Rpx,R);
+  ctx.save();ctx.translate(cx,cy);
+  const a=(+$('angle').value)*Math.PI/180;ctx.strokeStyle='#fff';ctx.lineWidth=1.7;ctx.beginPath();ctx.moveTo(-Rpx*Math.cos(a),Rpx*Math.sin(a));ctx.lineTo(Rpx*Math.cos(a),-Rpx*Math.sin(a));ctx.stroke();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(0,0,3,0,Math.PI*2);ctx.fill();ctx.restore();return range;
+}
+function project3(x,y,z,yaw,pitch,scale,cx,cy){
+  const ya=yaw*Math.PI/180,pa=pitch*Math.PI/180,cyw=Math.cos(ya),syw=Math.sin(ya),cp=Math.cos(pa),sp=Math.sin(pa);
+  const X=x*cyw-y*syw,Y=x*syw+y*cyw,Y2=Y*cp-z*sp,Z2=Y*sp+z*cp,persp=1/(1+.20*Z2);
+  return[cx+X*scale*persp,cy+Y2*scale*persp,Z2];
+}
+function waferBoundaryR(theta){
+  const R=(+$('diameter').value)/2;
+  const half=Math.max(.03,2.5/Math.max(R,1)),depth=Math.max(.8,.008*R);
+  const d=Math.abs(Math.atan2(Math.sin(theta+Math.PI/2),Math.cos(theta+Math.PI/2)));
+  if(d>=half)return R;
+  return R-depth*(1-d/half);
+}
+function meshRadius(frac,theta){
+  const R=(+$('diameter').value)/2;if(frac<=.90)return frac*R;
+  const br=waferBoundaryR(theta),t=(frac-.90)/.10;return .90*R+t*(br-.90*R);
+}
+function draw3dRing(ctx,rMM,style,dash,R,zmag,yaw,pitch,scale,cx,cy){
+  if(!(rMM>0&&rMM<R))return;
+  ctx.save();ctx.strokeStyle=style;ctx.lineWidth=1.4;ctx.setLineDash(dash||[]);ctx.beginPath();let started=false;
+  for(let j=0;j<=180;j++){
+    const a=2*Math.PI*j/180,x=rMM*Math.cos(a),y=rMM*Math.sin(a),zµ=rawZBlendClamped(x,y),z=(zµ*1e-3*zmag)/R,p=project3(x/R,y/R,z,yaw,pitch,scale,cx,cy);
+    if(!started){ctx.moveTo(p[0],p[1]);started=true}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();ctx.restore();
+}
+function draw3d(){
+  const c=$('view3d');if($("field3dSelect")&&$("field3dSelect").value!==state.field3d)$("field3dSelect").value=state.field3d;
+  c._probePoints=[];
+  const ctx=c.getContext('2d'),W=c.width,H=c.height;ctx.clearRect(0,0,W,H);
+  const hasData=state.inputMode==="map2d"?!!state.map2d:!!state.profile0;
+  if(!hasData){
+    ctx.fillStyle="#081018";ctx.fillRect(0,0,W,H);
+    ctx.fillStyle="#9bb0c3";ctx.font="16px system-ui";ctx.textAlign="center";ctx.fillText("No active wafer data",W/2,H/2);
+    ctx.textAlign="left";
+    return;
+  }
+  const R=(+$('diameter').value)/2,cut=+$('edgeCut').value,cov=rawCoverageRadius(),zmag=+$('zmagN').value||500,yaw=+$('yaw').value,pitch=+$('pitch').value;
+  const range=resolveDisplayRange(state.field3d),scale=Math.min(W,H)*.36*state.camZoom,cx=W*.5,cy=H*.54;
+  const rings=24,segs=120,quads=[];
+  for(let ir=0;ir<rings;ir++){
+    const f1=ir/rings,f2=(ir+1)/rings;
+    for(let j=0;j<segs;j++){
+      const a1=2*Math.PI*j/segs,a2=2*Math.PI*(j+1)/segs,verts=[[f1,a1],[f2,a1],[f2,a2],[f1,a2]],pts=[],radii=[];
+      for(const [f,a] of verts){
+        const r=meshRadius(f,a),x=r*Math.cos(a),y=r*Math.sin(a),zµ=rawZBlendClamped(x,y),z=(zµ*1e-3*zmag)/R;
+        pts.push(project3(x/R,y/R,z,yaw,pitch,scale,cx,cy));radii.push(r);
+      }
+      const ac=(a1+a2)/2,fc=(f1+f2)/2,rc=meshRadius(fc,ac),xc=rc*Math.cos(ac),yc=rc*Math.sin(ac),cls=coverageClass(rc);
+      let fill;
+      if(cls==='used'){
+        const v=blend(state.field3d,xc,yc),col=rangeColor(v,range.lo,range.hi);fill=`rgb(${col[0]},${col[1]},${col[2]})`;
+      }else if(cls==='excluded')fill='rgba(138,118,82,.94)';
+      else fill='rgba(70,81,91,.96)';
+      const zcµ=rawZBlendClamped(xc,yc),zc=(zcµ*1e-3*zmag)/R,pc=project3(xc/R,yc/R,zc,yaw,pitch,scale,cx,cy),vv=cls==='used'?blend(state.field3d,xc,yc):NaN;
+      quads.push({pts,fill,depth:mean(pts.map(p=>p[2])),probe:{sx:pc[0],sy:pc[1],x:xc,y:yc,z:zcµ,v:vv,cls}});
+    }
+  }
+  quads.sort((a,b)=>a.depth-b.depth);
+  c._probePoints=quads.map(q=>q.probe).filter(Boolean);
+  for(const q of quads){ctx.fillStyle=q.fill;ctx.strokeStyle='rgba(255,255,255,.075)';ctx.lineWidth=.55;ctx.beginPath();ctx.moveTo(q.pts[0][0],q.pts[0][1]);for(let i=1;i<4;i++)ctx.lineTo(q.pts[i][0],q.pts[i][1]);ctx.closePath();ctx.fill();ctx.stroke()}
+  // Data/analysis boundaries are visual overlays, not geometry cuts.
+  draw3dRing(ctx,Math.min(cov,R-.001),'rgba(112,191,255,.95)',[3,4],R,zmag,yaw,pitch,scale,cx,cy);
+  draw3dRing(ctx,Math.min(R-cut,R-.001),'rgba(240,205,126,.95)',[7,5],R,zmag,yaw,pitch,scale,cx,cy);
+  // Smooth physical outer silhouette including the single bottom notch.
+  ctx.save();ctx.strokeStyle='#e1edf6';ctx.lineWidth=2;ctx.beginPath();let first=true;
+  for(let j=0;j<=240;j++){
+    const a=2*Math.PI*j/240,r=waferBoundaryR(a),x=r*Math.cos(a),y=r*Math.sin(a),zµ=rawZBlendClamped(x,y),z=(zµ*1e-3*zmag)/R,p=project3(x/R,y/R,z,yaw,pitch,scale,cx,cy);
+    if(first){ctx.moveTo(p[0],p[1]);first=false}else ctx.lineTo(p[0],p[1]);
+  }
+  ctx.stroke();ctx.restore();
+
+  // Actual measurement locations on the after-deposition geometry.
+  if($("showMeasuredPoints")&&$("showMeasuredPoints").checked){
+    ctx.save();
+    const cutNow=+$("edgeCut").value;
+    const plotPoint=(x,y,zµ,used)=>{
+      if(![x,y,zµ].every(Number.isFinite)||Math.hypot(x,y)>R*1.02)return;
+      const z=(zµ*1e-3*zmag)/R,p=project3(x/R,y/R,z,yaw,pitch,scale,cx,cy);
+      ctx.fillStyle=used?"rgba(238,249,255,.98)":"rgba(240,205,126,.98)";
+      ctx.strokeStyle="rgba(5,14,21,.9)";ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(p[0],p[1],2.4,0,Math.PI*2);ctx.fill();ctx.stroke();
+    };
+    if(state.inputMode==="map2d"&&state.map2d){
+      const pts=state.map2d.rows,stride=Math.max(1,Math.ceil(pts.length/3000));
+      for(let i=0;i<pts.length;i+=stride){const p=pts[i];plotPoint(p.x,p.y,p.a,Math.hypot(p.x,p.y)<=R-cutNow+1e-9)}
+    }else{
+      const drawScan=(raw,axis)=>{
+        if(!raw)return;const stride=Math.max(1,Math.ceil(raw.x.length/2200));
+        for(let i=0;i<raw.x.length;i+=stride){
+          const q=raw.x[i],x=axis==="x"?q:0,y=axis==="y"?q:0;
+          plotPoint(x,y,raw.a[i],Math.abs(q)<=R-cutNow+1e-9);
+        }
+      };
+      drawScan(state.raw0,"x");if(state.hasOrthogonal&&state.raw90)drawScan(state.raw90,"y");
+    }
+    ctx.restore();
+  }
+
+  ctx.fillStyle='#dceaf6';ctx.font='18px system-ui';ctx.fillText(`Z × ${Math.round(zmag)} · camera ×${state.camZoom.toFixed(2)} · color: ${state.field3d==='z'?'displacement':state.field3d==='k'?'curvature':'stress'}`,18,28);
+  ctx.font='13px system-ui';ctx.fillStyle='#9bb0c3';ctx.fillText('Drag = rotate · pinch / wheel = camera zoom · gray = no data',18,49);
+}
+function sectionData(){
+  const R=(+$("diameter").value)/2,a=(+$("angle").value)*Math.PI/180,N=181,arr=[];
+  for(let i=0;i<N;i++){const s=-R+2*R*i/(N-1),x=s*Math.cos(a),y=s*Math.sin(a);arr.push({s,z:blend("z",x,y),k:blend("k",x,y),stress:blend("s",x,y)})}
+  return arr;
+}
+function drawPlot(id,data,key,title,unit,rawOverlay=false){
+  const c=$(id),ctx=c.getContext("2d"),W=c.width,H=c.height,pad={l:118,r:30,t:54,b:60};ctx.clearRect(0,0,W,H);ctx.fillStyle="#0a121a";ctx.fillRect(0,0,W,H);
+  const xs=data.map(d=>d.s),xmin=Math.min(...xs),xmax=Math.max(...xs);
+  const rawPts=(key==="z")?measuredSectionPoints():[];
+  const fitPts=(key==="z")?fitSectionData():[];
+  const yr=data.map(d=>d[key]).filter(Number.isFinite);
+  if(key==="z"){
+    rawPts.forEach(p=>{if(Number.isFinite(p.z))yr.push(p.z)});
+    fitPts.forEach(p=>{if(Number.isFinite(p.z))yr.push(p.z)});
+  }
+  if(!yr.length)return;
+  let ymin=Math.min(...yr),ymax=Math.max(...yr);if(ymin===ymax){ymin-=1;ymax+=1}const mm=.12*(ymax-ymin);ymin-=mm;ymax+=mm;
+  const X=x=>pad.l+(x-xmin)/(xmax-xmin)*(W-pad.l-pad.r),Y=y=>pad.t+(ymax-y)/(ymax-ymin)*(H-pad.t-pad.b);
+  ctx.strokeStyle="#263544";ctx.lineWidth=1;for(let i=0;i<=4;i++){const yy=pad.t+i*(H-pad.t-pad.b)/4;ctx.beginPath();ctx.moveTo(pad.l,yy);ctx.lineTo(W-pad.r,yy);ctx.stroke()}
+  const cut=+$("edgeCut").value,R=(+$("diameter").value)/2;ctx.fillStyle="rgba(255,255,255,.035)";ctx.fillRect(X(-R),pad.t,X(-R+cut)-X(-R),H-pad.t-pad.b);ctx.fillRect(X(R-cut),pad.t,X(R)-X(R-cut),H-pad.t-pad.b);
+
+  // Measured/interpolated displayed profile.
+  ctx.strokeStyle="#56b7ff";ctx.lineWidth=2;ctx.setLineDash([]);ctx.beginPath();let started=false;
+  for(const d of data){if(!Number.isFinite(d[key])){started=false;continue}const px=X(d.s),py=Y(d[key]);if(!started){ctx.moveTo(px,py);started=true}else ctx.lineTo(px,py)}ctx.stroke();
+
+  // Fitted after-deposition Z, shown only as a verification overlay.
+  if(key==="z"&&fitPts.length){
+    ctx.save();ctx.strokeStyle="#ffcf70";ctx.lineWidth=2;ctx.setLineDash([8,5]);ctx.beginPath();let fs=false;
+    for(const p of fitPts){if(!Number.isFinite(p.z)){fs=false;continue}const px=X(p.s),py=Y(p.z);if(!fs){ctx.moveTo(px,py);fs=true}else ctx.lineTo(px,py)}ctx.stroke();ctx.restore();
+  }
+
+  // Actual measured points. In 2D mode these are points close to the selected section.
+  if(key==="z"&&rawPts.length){
+    const stride=Math.max(1,Math.ceil(rawPts.length/1200));
+    ctx.save();
+    for(let i=0;i<rawPts.length;i+=stride){
+      const p=rawPts[i];if(!Number.isFinite(p.z)||p.s<xmin||p.s>xmax)continue;
+      ctx.fillStyle=p.used!==false?"#eefaff":"#f0cd7e";ctx.strokeStyle="#071018";ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.arc(X(p.s),Y(p.z),3.1,0,Math.PI*2);ctx.fill();ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  ctx.fillStyle="#dceaf6";ctx.font="bold 26px system-ui";ctx.textAlign="left";ctx.fillText(title,18,32);ctx.fillStyle="#9bb0c3";ctx.font="19px system-ui";ctx.fillText(unit,18,61);
+  if(key==="z"){
+    let lx=260;
+    if($("showMeasuredPoints")&&$("showMeasuredPoints").checked){
+      ctx.fillStyle="#eefaff";ctx.beginPath();ctx.arc(lx,18,3,0,Math.PI*2);ctx.fill();ctx.fillStyle="#9bb0c3";ctx.font="18px system-ui";ctx.fillText(state.inputMode==="map2d"?"near-section measured points":"measured points",lx+8,29);lx+=145;
+    }
+    if($("showFitOverlay")&&$("showFitOverlay").checked&&state.inputMode!=="map2d"){
+      ctx.strokeStyle="#ffcf70";ctx.lineWidth=2;ctx.setLineDash([7,4]);ctx.beginPath();ctx.moveTo(lx,18);ctx.lineTo(lx+22,18);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle="#9bb0c3";ctx.font="18px system-ui";ctx.fillText("quadratic fit",lx+28,29);
+    }
+  }
+  ctx.textAlign="right";ctx.fillStyle="#a9bfce";ctx.font="20px system-ui";for(let i=0;i<=4;i++){const v=ymax-i*(ymax-ymin)/4;ctx.fillText(fmt(v,Math.abs(v)<.1?4:2),pad.l-14,pad.t+i*(H-pad.t-pad.b)/4+7)}
+  ctx.textAlign="center";ctx.font="20px system-ui";for(let i=0;i<=4;i++){const v=xmin+i*(xmax-xmin)/4;ctx.fillText(fmt(v,0),X(v),H-28)}ctx.fillText("position along selected diameter (mm)",W/2,H-6);
+  c._probeMeta={data,key,pad,xmin,xmax,ymin,ymax};
+}
+function selfTest(){
+  // 1D exact parabola check.
+  const kTarget=.0123,x=[],b=[],a=[];
+  for(let i=0;i<=200;i++){const xx=-20+i*.2,xm=xx/1000;x.push(xx);b.push(0);a.push(.5*kTarget*xm*xm*1e6)}
+  const oldD=$('diameter').value,oldC=$('edgeCut').value,oldM=$('method').value,oldP=$('smoothPctN').value;
+  $('diameter').value=50;$('edgeCut').value=2;$('method').value='local';$('smoothPctN').value=10;
+  const p=processProfile(normalizeProfile(x,b,a)),err1=Math.abs(mean(p.dk)-kTarget)/kTarget*100;
+  $('diameter').value=oldD;$('edgeCut').value=oldC;$('method').value=oldM;$('smoothPctN').value=oldP;
+  // 2D local-quadratic tensor check using an exact saddle surface.
+  const kxT=.010,kyT=-.006,pts=[];
+  for(let j=-4;j<=4;j++)for(let i=-4;i<=4;i++){const x=i,y=j,xm=x/1000,ym=y/1000,z=(.5*kxT*xm*xm+.5*kyT*ym*ym)*1e6;pts.push({x,y,b:0,a:z})}
+  const fit=localSurfaceFits(pts,0,0,25),c=fit.after.curv,err2=Math.max(Math.abs((c.kx-kxT)/kxT),Math.abs((c.ky-kyT)/kyT))*100;
+  const err=Math.max(err1,err2);
+  $('vSelfValue').textContent=fmt(err,6)+'% max error';status($('vSelfStatus'),err<.001?'pass':'caution',err<.001?'PASS':'CHECK');
+  $('vSelfText').textContent=`1D parabola plus 2D local-surface saddle test. Recovered κx=${fmt(c.kx,6)}, κy=${fmt(c.ky,6)} 1/m.`;
+}
+function updateValidation(){
+  selfTest();
+  if(state.meta.kind==="wafer40"){
+    const n=state.raw0&&state.raw0.x?state.raw0.x.length:0;
+    const dx=n>1?mean(state.raw0.x.slice(1).map((v,i)=>v-state.raw0.x[i])):NaN;
+    const ok=n>=700&&Math.abs(dx-.05)<1e-4;
+    $("v50Value").textContent=`${n.toLocaleString()} pts · ${fmt(dx,3)} mm`;
+    status($("v50Status"),ok?"pass":"caution",ok?"PASS":"CHECK");
+    $("v50Text").textContent="Embedded published-fit offline reconstruction. No runtime internet dependency; not the official 7,755-point raw dataset.";
+  }else{
+    $("v50Value").textContent="select 50 mm case";status($("v50Status"),"","—");
+    $("v50Text").textContent="Embedded published-fit reconstruction is available offline.";
+  }
+  if(state.meta.kind==="toray"){
+    const val=mean(state.profile0.stress),err=Math.abs((val-state.meta.targetStress)/state.meta.targetStress)*100;
+    $("vTorayValue").textContent=`${fmt(val,1)} MPa · ${fmt(err,3)}%`;
+    status($("vTorayStatus"),err<1?"pass":"caution",err<1?"PASS":"CHECK");
+    $("vTorayText").textContent="Published target −441 MPa; analytic parabola benchmark, not raw Toray graph data.";
+  }else{$("vTorayValue").textContent="target −441 MPa";status($("vTorayStatus"),"","—");$("vTorayText").textContent="Select the Toray 300 mm preset to run this benchmark."}
+  if(state.meta.kind==="kspace"){
+    const val=mean(state.profile0.dk),err=Math.abs((val-state.meta.targetCurvature)/state.meta.targetCurvature)*100;
+    $("vKValue").textContent=`${fmt(val,5)} 1/m · ${fmt(err,2)}%`;
+    status($("vKStatus"),err<2?"pass":"caution",err<2?"PASS":"CHECK");
+    $("vKText").textContent=`Published static mean target ${state.meta.targetCurvature} 1/m; curve shape is reconstructed from summary-level information.`;
+  }else{$("vKValue").textContent="select k-Space slot";status($("vKStatus"),"","—");$("vKText").textContent="Targets: −0.00617, −0.00889, −0.01299 1/m."}
+
+  if(state.meta.kind==="glass"){
+    const val=mean(state.profile0.stress),err=Math.abs((val-state.meta.targetStress)/state.meta.targetStress)*100;
+    $("vNonSiValue").textContent=`${fmt(val,1)} MPa · ${fmt(err,2)}%`;
+    status($("vNonSiStatus"),err<1?"pass":"caution",err<1?"PASS":"CHECK");
+    $("vNonSiText").textContent="B270 modified soda-lime glass / Ti isotropic-substrate benchmark. Target = +576 MPa tensile.";
+  }else if(state.meta.kind==="sapphire"){
+    const val=mean(state.profile0.stress),absv=Math.abs(val);
+    $("vNonSiValue").textContent=`${fmt(val,1)} MPa`;
+    status($("vNonSiStatus"),absv<100?"pass":"caution",absv<100?"PASS":"CHECK");
+    $("vNonSiText").textContent="Sapphire / ruby near-zero-stress control. The source indicates stress remained close to zero within roughly 100 MPa resolution.";
+  }else if(state.meta.kind==="xyz_demo"){
+    const m=state.map2d,vals=(m&&m.delta&&m.delta.mean?m.delta.mean:[]).filter(Number.isFinite),k1=(m&&m.delta&&m.delta.k1?m.delta.k1:[]).filter(Number.isFinite),k2=(m&&m.delta&&m.delta.k2?m.delta.k2:[]).filter(Number.isFinite);const H=vals.length?mean(vals):NaN,K1=k1.length?mean(k1):NaN,K2=k2.length?mean(k2):NaN,err=Math.max(Math.abs((H-.010)/.010),Math.abs((K1-.015)/.015),Math.abs((K2-.005)/.005))*100;
+    $("vNonSiValue").textContent=`H ${fmt(H,5)} · κ1 ${fmt(K1,5)} · κ2 ${fmt(K2,5)} 1/m`;
+    status($("vNonSiStatus"),err<1?"pass":"caution",err<1?"PASS":"CHECK");
+    $("vNonSiText").textContent=`Analytic full-field self-check. Targets: H=+0.01000, κ1=+0.01500, κ2=+0.00500 1/m. Max mean error ${fmt(err,2)}%.`;
+  }else if(state.meta.kind==="sio2jsss"){
+    const val=mean(state.profile0.stress),err=Math.abs((val-state.meta.targetStress)/state.meta.targetStress)*100,kmag=Math.abs(mean(state.profile0.dk));
+    $("vNonSiValue").textContent=`${fmt(val,1)} MPa · |Δκ| ${fmt(kmag,5)} 1/m`;
+    status($("vNonSiStatus"),err<1?"pass":"caution",err<1?"PASS":"CHECK");
+    $("vNonSiText").textContent="2026 JSSS SiO₂ benchmark: −130.0 MPa compressive residual stress on 100 mm Si(100); thermal curvature measured from 50–350 °C.";
+  }else if(state.meta.kind==="sin"){
+    const val=mean(state.profile0.stress),err=Math.abs((val-state.meta.targetStress)/state.meta.targetStress)*100,kmag=Math.abs(mean(state.profile0.dk));
+    $("vNonSiValue").textContent=`${fmt(val,1)} MPa · |Δκ| ${fmt(kmag,5)} 1/m`;
+    status($("vNonSiStatus"),err<1?"pass":"caution",err<1?"PASS":"CHECK");
+    $("vNonSiText").textContent="2026 JSSS SiN benchmark: +1300.0 MPa tensile intrinsic stress on 100 mm Si(100); thermal curvature measured from 50–350 °C.";
+  }else{$("vNonSiValue").textContent="select added case";status($("vNonSiStatus"),"","—");$("vNonSiText").textContent="Glass, sapphire, x,y,z analytic demo, JSSS SiO₂ and JSSS SiN cases report here."}
+
+  $("validationSource").innerHTML=`<b>Active case:</b> ${state.meta.title||"—"} · ${state.meta.note||""}`;
+}
+function updateSummary(){
+  let z=[],dk=[],stressVals=[],meanCurv=NaN,meanStress=NaN;
+  let curvLabel="Mean scan Δκ",curvSub="inside retained scan region";
+  let stressLabel="Mean scan stress",stressSub="Stoney-equivalent line average";
+  let rangeSub="min … max along retained scan";
+
+  if(state.inputMode==="map2d"&&state.map2d){
+    const R=(+$("diameter").value)/2,cut=+$("edgeCut").value,m=state.map2d;
+    for(let j=0;j<m.N;j++)for(let i=0;i<m.N;i++){
+      const x=-m.R+i*m.step,y=-m.R+j*m.step,r=Math.hypot(x,y),q=j*m.N+i;
+      if(r<=Math.min(m.coverageR,R-cut)&&Number.isFinite(m.za[q]))z.push(m.za[q]);
+      if(r<=Math.min(m.coverageR,R-cut)&&Number.isFinite(m.dk[q])&&Number.isFinite(m.stress[q])){
+        dk.push(m.dk[q]);stressVals.push(m.stress[q]);
+      }
+    }
+    meanCurv=dk.length?mean(dk):NaN;
+    meanStress=stressVals.length?mean(stressVals):NaN;
+    curvLabel="Area-mean ΔH";
+    curvSub=`${dk.length.toLocaleString()} valid equal-area grid cells`;
+    stressLabel=state.meta.kind==="xyz_demo"?"Illustrative stress (analytic demo)":"Area-mean film stress";
+    stressSub=state.meta.kind==="xyz_demo"?"generic editable properties — not a material benchmark":`area-weighted over ${stressVals.length.toLocaleString()} valid equal-area cells`;
+    rangeSub=state.meta.kind==="xyz_demo"?"analytic-demo Stoney-equivalent range":"min … max over valid measured area";
+  }else if(state.profile0){
+    const p0=state.profile0,p90=state.profile90||p0;
+    if(state.hasOrthogonal&&p90){
+      const mK0=mean(p0.dk),mK90=mean(p90.dk),mS0=mean(p0.stress),mS90=mean(p90.stress);
+      meanCurv=.5*(mK0+mK90);
+      meanStress=.5*(mS0+mS90);
+      z=[...p0.a,...p90.a];
+      dk=[...p0.dk,...p90.dk];
+      stressVals=[...p0.stress,...p90.stress];
+      curvLabel="Directional-average Δκ";
+      curvSub=`0° ${fmt(mK0,5)} · 90° ${fmt(mK90,5)} 1/m`;
+      stressLabel=state.meta.kind==="wafer40"?"Directional Stoney-equivalent stress (input t_f)":"Directional-average stress";
+      stressSub=state.meta.kind==="wafer40"?`0° ${fmt(mS0,1)} · 90° ${fmt(mS90,1)} MPa · constant t_f=${fmt(+$('filmThk').value,1)} nm`:`0° ${fmt(mS0,1)} · 90° ${fmt(mS90,1)} MPa`;
+      rangeSub=state.meta.kind==="wafer40"?"equivalent range using entered constant film thickness":"min … max across both retained scans";
+    }else{
+      z=p0.a.slice();dk=p0.dk.slice();stressVals=p0.stress.slice();
+      meanCurv=dk.length?mean(dk):NaN;
+      meanStress=stressVals.length?mean(stressVals):NaN;
+      if(state.meta.kind==="kspace"){
+        curvLabel="Mean static curvature κ";
+        curvSub="published mean-curvature target; reconstructed scan shape";
+        stressLabel="Equivalent stress (assumed t_f)";
+        stressSub=`not a published film-stress target · t_f = ${fmt(+$('filmThk').value,1)} nm`;
+        rangeSub="equivalent range from reconstructed static curvature";
+      }else if(state.meta.kind==="wafer40"){
+        stressLabel="Stoney-equivalent stress (input t_f)";
+        stressSub=`source film thickness is spatially nonuniform · current constant t_f = ${fmt(+$('filmThk').value,1)} nm`;
+        rangeSub="equivalent range using entered constant film thickness";
+      }
+    }
+  }
+
+  const zr=minmax(z),sr=minmax(stressVals);
+  $("mBow").textContent=Number.isFinite(zr[0])?fmt(zr[1]-zr[0],2)+" µm":"—";
+  $("mCurvLabel").textContent=curvLabel;
+  $("mCurvSub").textContent=curvSub;
+  $("mCurv").textContent=Number.isFinite(meanCurv)?fmt(meanCurv,5)+" 1/m":"—";
+  $("mStressLabel").textContent=stressLabel;
+  $("mStressSub").textContent=stressSub;
+  $("mStress").textContent=Number.isFinite(meanStress)?fmt(meanStress,1)+" MPa":"—";
+  $("mRangeSub").textContent=rangeSub;
+  $("mRange").textContent=stressVals.length?fmt(sr[0],1)+" … "+fmt(sr[1],1)+" MPa":"—";
+
+  const D=(+$("diameter").value)/1000,h=(+$("subThk").value)*1e-6,tf=(+$("filmThk").value)*1e-9,Dh=D/h;$("mDh").textContent=fmt(Dh,1);
+  const finiteS=stressVals.filter(Number.isFinite),maxS=finiteS.length?Math.max(...finiteS.map(v=>Math.abs(v)))*1e6:0,A=maxS*tf*D*D/(h*h*h),AG=A/1e9,Ac=680;
+  let txt,col;if(AG<.2*Ac){txt="Classical regime";col="var(--good)"}else if(AG<Ac){txt="Caution";col="var(--warn)"}else{txt="Large-deflection risk";col="var(--bad)"}
+  $("mValid").innerHTML=`<span class="dot" style="background:${col}"></span><span style="font-size:14px">${txt}</span>`;$("mA").textContent=`A(max local) = ${fmt(AG,1)} GPa`;
+}
+function recompute(){
+  updateVerificationUi();
+  updateMethodUi();
+  updateCurvatureControls();
+  if(state.inputMode==="map2d"){
+    if(!state.map2d)return;
+    if(Math.abs(state.map2d.diameterAtBuild-(+$("diameter").value))>1e-9)build2DMap(state.map2d.rows.map(p=>[p.x,p.y,p.b,p.a]));
+    else update2DStress();
+  }else{
+    if(!state.raw0)return;
+    $("smoothPctN").value=clamp(+$("smoothPctN").value||10,1,20);$("smoothPct").value=$("smoothPctN").value;
+    state.profile0=processProfile(state.raw0);state.profile90=processProfile(state.raw90||state.raw0);
+  }
+  updateSummary();updateValidation();renderHistory();
+  const full2d=state.inputMode==="map2d";
+  $("curvMapTitle").textContent=curvDisplayLabel();
+  if(state.meta.kind==="kspace") $("stressMapTitle").innerHTML='Equivalent stress (assumed t<sub>f</sub>) <span style="font-weight:500;color:var(--muted)">(+ tensile / − compressive)</span>';
+  else if(state.meta.kind==="wafer40") $("stressMapTitle").innerHTML='Stoney-equivalent stress (input t<sub>f</sub>) <span style="font-weight:500;color:var(--muted)">(+ tensile / − compressive)</span>';
+  else if(state.meta.kind==="xyz_demo") $("stressMapTitle").innerHTML='Illustrative Stoney-equivalent stress <span style="font-weight:500;color:var(--muted)">(+ tensile / − compressive)</span>';
+  else $("stressMapTitle").innerHTML='Estimated film stress <span style="font-weight:500;color:var(--muted)">(+ tensile / − compressive)</span>';
+  const rzb=drawMap("mapZBefore","zb"),rz=drawMap("mapZ","z"),rk=drawMap("mapK","k"),rs=drawMap("mapS","s");
+  $("zBMin").textContent=fmt(rzb.lo,2);$("zBMax").textContent=fmt(rzb.hi,2);$("zBCenter").textContent=fmt(legendCenter(rzb.lo,rzb.hi),2);
+  $("zMin").textContent=fmt(rz.lo,2);$("zMax").textContent=fmt(rz.hi,2);$("zCenter").textContent=fmt(legendCenter(rz.lo,rz.hi),2);
+  $("kMin").textContent=fmt(rk.lo,4);$("kMax").textContent=fmt(rk.hi,4);$("kCenter").textContent=fmt(legendCenter(rk.lo,rk.hi),4);
+  $("sMin").textContent=fmt(rs.lo,1);$("sMax").textContent=fmt(rs.hi,1);$("sCenter").textContent=fmt(legendCenter(rs.lo,rs.hi),1);
+  draw3d();const sd=sectionData();
+  drawPlot("plotZ",sd,"z","Cross-section: after-deposition Z",state.inputMode==="map2d"?"µm · measured points near section when enabled":"µm · solid = measured/interpolated; dashed = fit when enabled",true);
+  drawPlot("plotK",sd,"k","Cross-section: "+curvDisplayLabel(),state.inputMode==="map2d"?"1/m · selected 2D curvature field":"1/m");
+  drawPlot("plotS",sd,"stress",state.meta.kind==="kspace"?"Cross-section: equivalent stress (assumed t_f)":"Cross-section: local Stoney-equivalent film stress","MPa");
+  $("angleRead").textContent=$("angle").value+"°";syncQuickLabels();
+  const M=getBiaxialModulus()/1e9,R=(+$("diameter").value)/2,cov=rawCoverageRadius();
+  if(state.inputMode==="map2d"){
+    $("processingNote").innerHTML=`Input: <b>full x,y,z map</b><br>Measured points: <b>${state.map2d.rows.length.toLocaleString()}</b> · display ${$("showMeasuredPoints").checked?"ON":"OFF"}<br>Coverage: <b>measured-point convex hull</b><br>Internal map: <b>${state.map2d.N} × ${state.map2d.N}</b><br>2D curvature: <b>local quadratic surface fit, ${state.map2d.neighborCount} neighbors</b><br>Stress driver: <b>ΔH (mean curvature change)</b><br>Biaxial modulus: <b>${fmt(M,1)} GPa</b><br>Edge exclusion: <b>${fmt(+$("edgeCut").value,1)} mm</b>`;
+    $("coverageNote").innerHTML=`Full-area x,y,z measured coverage extends to a maximum radius of approximately <b>${fmt(cov,2)} mm</b> on a ${fmt(2*R,0)} mm wafer. Gray indicates no measured-area support; amber indicates measured but edge-excluded area.`;
+    $("reconBadge").textContent=state.meta.kind==="xyz_demo"?"Analytic full x,y,z demo — known curvature":"Full x,y,z measured-map mode";
+  }else{
+    const p=state.profile0,rawN=state.raw0.x.length;
+    const stressAssumption=state.meta.kind==="kspace"?`<br><b>Stress caution:</b> k-Space publishes curvature, not film stress. Any stress shown is equivalent and depends on the assumed t_f = ${fmt(+$('filmThk').value,1)} nm.`:state.meta.kind==="wafer40"?`<br><b>Stress caution:</b> the source SiC film thickness is spatially nonuniform. Stress shown here uses the entered constant t_f = ${fmt(+$('filmThk').value,1)} nm.`:"";
+    $("processingNote").innerHTML=`Input: <b>diameter scan(s)</b><br>Measured Z display: <b>raw/interpolated measurement — independent of fit method</b><br>Summary averaging: <b>${state.hasOrthogonal?"equal-weight 0°/90° directional average":"single-scan line average"}</b><br>Verification overlay: <b>${$("showMeasuredPoints").checked?"measured points ON":"measured points OFF"} · ${$("showFitOverlay").checked?"fit curve ON":"fit curve OFF"}</b><br>Curvature method: <b>${$("method").value==="local"?"local quadratic":"global quadratic"}</b><br>Retained raw points: <b>${p.nRetained.toLocaleString()}</b> / ${rawN.toLocaleString()}<br>${$("method").value==="local"?`Local k: <b>${p.k}</b> points/side (asymmetric near retained ends)<br>`:""}Biaxial modulus: <b>${fmt(M,1)} GPa</b><br>Edge exclusion: <b>${fmt(+$("edgeCut").value,1)} mm</b>${stressAssumption}`;
+    $("coverageNote").innerHTML=`Processed scan reaches approximately <b>±${fmt(cov,2)} mm</b> from center on a ${fmt(2*R,0)} mm wafer. The 2D map is reconstructed from the available diameter scan(s).`;
+    $("reconBadge").textContent=state.hasOrthogonal?"Orthogonal scans → reconstructed 2D field":"1D scan → reconstructed 2D field";
+  }
+  $("presetNote").textContent=state.meta.note||"";
+}
+function exportCsv(){
+  const data=sectionData(),lines=["s_mm,z_after_um,delta_kappa_1_per_m,stress_MPa"];
+  data.forEach(d=>lines.push([d.s,d.z,d.k,d.stress].map(v=>Number.isFinite(v)?v:"").join(",")));
+  const blob=new Blob([lines.join("\n")],{type:"text/csv"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="MakeCoTech_wafer_section_v0.27.csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),500);
+}
+function probeFmt(v,d=3){
+  if(!Number.isFinite(v))return "—";
+  const sign=v>0?"+":"";
+  return sign+fmt(v,d);
+}
+function ensureProbeTip(canvas){
+  const parent=canvas.parentElement;
+  let tip=parent.querySelector(".probeTip");
+  if(!tip){tip=document.createElement("div");tip.className="probeTip";parent.appendChild(tip)}
+  return tip;
+}
+function hideProbe(canvas){
+  const tip=canvas&&canvas.parentElement?canvas.parentElement.querySelector(".probeTip"):null;
+  if(tip)tip.style.display="none";
+}
+function positionProbe(canvas,tip,e){
+  const parent=canvas.parentElement,pr=parent.getBoundingClientRect(),cr=canvas.getBoundingClientRect();
+  tip.style.display="block";
+  let left=e.clientX-pr.left+12,top=e.clientY-pr.top+12;
+  const tw=tip.offsetWidth||160,th=tip.offsetHeight||90;
+  if(left+tw>parent.clientWidth-5)left=e.clientX-pr.left-tw-12;
+  if(top+th>parent.clientHeight-5)top=e.clientY-pr.top-th-12;
+  tip.style.left=Math.max(5,left)+"px";tip.style.top=Math.max(5,top)+"px";
+}
+function probeKindInfo(kind){
+  if(kind==="zb")return{title:"Before-deposition Z",label:"Z before",unit:"µm",digits:4,zKind:"zb"};
+  if(kind==="z")return{title:"After-deposition Z",label:"Z after",unit:"µm",digits:4,zKind:"z"};
+  if(kind==="k")return{title:curvDisplayLabel(),label:"Curvature",unit:"1/m",digits:6,zKind:"z"};
+  return{title:"Film stress",label:"Stress",unit:"MPa",digits:3,zKind:"z"};
+}
+function bind3DProbe(){
+  const c=$("view3d"),tip=ensureProbeTip(c);
+  c.addEventListener("pointermove",e=>{
+    if(e.buttons){tip.style.display="none";return}
+    const pts=c._probePoints||[];if(!pts.length){tip.style.display="none";return}
+    const r=c.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*c.width,py=(e.clientY-r.top)/r.height*c.height;
+    let best=null,bd=Infinity;for(const p of pts){const d=(p.sx-px)*(p.sx-px)+(p.sy-py)*(p.sy-py);if(d<bd){bd=d;best=p}}
+    const cssDist=Math.sqrt(bd)*(r.width/c.width);if(!best||cssDist>22){tip.style.display="none";return}
+    const info=probeKindInfo(state.field3d),status=best.cls==="used"?"measured/used field":best.cls==="excluded"?"edge-excluded":"no measurement coverage";
+    tip.innerHTML=`<div class="ptitle">3D ${info.title}</div><div class="prow"><span class="pk">x</span><span class="pv">${probeFmt(best.x,3)} mm</span></div><div class="prow"><span class="pk">y</span><span class="pv">${probeFmt(best.y,3)} mm</span></div><div class="prow"><span class="pk">z</span><span class="pv">${probeFmt(best.z,4)} µm</span></div><div class="prow"><span class="pk">${info.label}</span><span class="pv">${probeFmt(best.v,info.digits)} ${info.unit}</span></div><div class="pstatus">${status}</div>`;
+    positionProbe(c,tip,e);
+  });
+  c.addEventListener("pointerleave",()=>tip.style.display="none");
+  c.addEventListener("pointerdown",()=>tip.style.display="none");
+}
+function bindMapProbe(id,kind){
+  const c=$(id),tip=ensureProbeTip(c);
+  c.addEventListener("pointermove",e=>{
+    if(c._angleDragging||e.buttons){tip.style.display="none";return}
+    const r=c.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*c.width,py=(e.clientY-r.top)/r.height*c.height;
+    const Rpx=Math.min(c.width,c.height)*.44,cx=c.width/2,cy=c.height/2,dx=(px-cx)/Rpx,dy=(py-cy)/Rpx;
+    if(Math.hypot(dx,dy)>1){tip.style.display="none";return}
+    const R=(+$("diameter").value)/2,x=dx*R,y=-dy*R,cls=coverageClassXY(x,y),info=probeKindInfo(kind);
+    let z=NaN,val=NaN;
+    if(cls==="used"){z=blend(info.zKind,x,y);val=blend(kind,x,y)}
+    const status=cls==="used"?"measured/used field":cls==="excluded"?"edge-excluded":"no measurement coverage";
+    tip.innerHTML=`<div class="ptitle">${info.title}</div>
+      <div class="prow"><span class="pk">x</span><span class="pv">${probeFmt(x,3)} mm</span></div>
+      <div class="prow"><span class="pk">y</span><span class="pv">${probeFmt(y,3)} mm</span></div>
+      <div class="prow"><span class="pk">z</span><span class="pv">${probeFmt(z,4)} µm</span></div>
+      <div class="prow"><span class="pk">${info.label}</span><span class="pv">${probeFmt(val,info.digits)} ${info.unit}</span></div>
+      <div class="pstatus">${status}</div>`;
+    positionProbe(c,tip,e);
+  });
+  c.addEventListener("pointerleave",()=>tip.style.display="none");
+  c.addEventListener("pointerdown",()=>tip.style.display="none");
+}
+function bindPlotProbe(id){
+  const c=$(id),tip=ensureProbeTip(c);
+  c.addEventListener("pointermove",e=>{
+    if(e.buttons){tip.style.display="none";return}
+    const m=c._probeMeta;if(!m||!m.data||!m.data.length){tip.style.display="none";return}
+    const r=c.getBoundingClientRect(),px=(e.clientX-r.left)/r.width*c.width,py=(e.clientY-r.top)/r.height*c.height;
+    if(px<m.pad.l||px>c.width-m.pad.r||py<m.pad.t||py>c.height-m.pad.b){tip.style.display="none";return}
+    const ss=m.xmin+(px-m.pad.l)/(c.width-m.pad.l-m.pad.r)*(m.xmax-m.xmin);
+    let best=null,bd=Infinity;
+    for(const d of m.data){const q=Math.abs(d.s-ss);if(q<bd&&Number.isFinite(d[m.key])){bd=q;best=d}}
+    if(!best){tip.style.display="none";return}
+    const a=(+$("angle").value||0)*Math.PI/180,x=best.s*Math.cos(a),y=best.s*Math.sin(a),z=best.z;
+    const label=m.key==="z"?"Displacement":m.key==="k"?"Curvature":"Stress";
+    const unit=m.key==="z"?"µm":m.key==="k"?"1/m":"MPa",digits=m.key==="k"?6:m.key==="s"?3:4;
+    tip.innerHTML=`<div class="ptitle">${label} probe</div>
+      <div class="prow"><span class="pk">x</span><span class="pv">${probeFmt(x,3)} mm</span></div>
+      <div class="prow"><span class="pk">y</span><span class="pv">${probeFmt(y,3)} mm</span></div>
+      <div class="prow"><span class="pk">z</span><span class="pv">${probeFmt(z,4)} µm</span></div>
+      <div class="prow"><span class="pk">${label}</span><span class="pv">${probeFmt(best[m.key],digits)} ${unit}</span></div>`;
+    positionProbe(c,tip,e);
+  });
+  c.addEventListener("pointerleave",()=>tip.style.display="none");
+}
+function setAngleFromCanvas(canvas,e){
+  const r=canvas.getBoundingClientRect(),x=(e.clientX-r.left)/r.width*canvas.width-canvas.width/2,y=(e.clientY-r.top)/r.height*canvas.height-canvas.height/2;
+  let deg=Math.atan2(-y,x)*180/Math.PI;if(deg<0)deg+=180;if(deg>=180)deg-=180;
+  deg=Math.round(deg);$("angle").value=deg;$("angleN").value=deg;$("angleQuick").value=deg;recompute();
+}
+function bindMapAngle(id){
+  const c=$(id);let active=false;c._angleDragging=false;
+  c.addEventListener("pointerdown",e=>{active=true;c._angleDragging=true;hideProbe(c);c.setPointerCapture(e.pointerId);setAngleFromCanvas(c,e)});
+  c.addEventListener("pointermove",e=>{if(active){hideProbe(c);setAngleFromCanvas(c,e)}});
+  const end=()=>{active=false;c._angleDragging=false};
+  c.addEventListener("pointerup",end);c.addEventListener("pointercancel",end);
+}
+function openCanvasWindow(id,title){
+  const c=$(id);if(!c)return;
+  const url=c.toDataURL("image/png");
+  const w=window.open("","_blank","width=1100,height=850,resizable=yes,scrollbars=yes");
+  if(!w){alert("Pop-up blocked. Allow pop-ups for this page to open enlarged views.");return}
+  w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><style>html,body{margin:0;background:#081018;color:#eef5fb;font-family:system-ui}header{padding:12px 16px;border-bottom:1px solid #263746;display:flex;justify-content:space-between;align-items:center}main{display:grid;place-items:center;min-height:calc(100vh - 52px);padding:12px}img{max-width:96vw;max-height:88vh;width:auto;height:auto;border:1px solid #263746;border-radius:12px;background:#081018}</style></head><body><header><strong>${title}</strong><span>Snapshot of current tool view</span></header><main><img src="${url}" alt="${title}"></main></body></html>`);w.document.close();
+}
+function bindOpenViews(){document.querySelectorAll('.openView').forEach(b=>b.addEventListener('click',()=>openCanvasWindow(b.dataset.canvas,b.dataset.title||'MakeCoTech view')))}
+function resetView(){
+  setVals({yaw:-30,pitch:58,zmag:500,zmagN:500,angle:0,angleN:0});state.camZoom=1;$("angleQuick").value=0;$("zQuick").value=500;recompute();
+}
+function syncRange(range,num,fn){
+  $(range).addEventListener("input",()=>{$(num).value=$(range).value;fn()});
+  $(num).addEventListener("input",()=>{$(range).value=clamp(+$(num).value,+$(range).min,+$(range).max);fn()});
+}
+$("preset").addEventListener("change",loadPreset);
+$("modeProfileBtn").addEventListener("click",()=>{$("customMode").value="profile";updateCustomMode();});
+$("modeMapBtn").addEventListener("click",()=>{$("customMode").value="map2d";updateCustomMode();});
+$("customMode").addEventListener("change",updateCustomMode);
+$("curvState").addEventListener("change",recompute);$("curvComponent").addEventListener("change",recompute);
+$("substrate").addEventListener("change",()=>{$("isoBox").style.display=$("substrate").value==="iso"?"grid":"none";recompute()});
+["diameter","subThk","filmThk","edgeCut","young","nu"].forEach(id=>$(id).addEventListener("input",recompute));
+$("method").addEventListener("change",()=>{updateMethodUi();recompute()});
+$("showMeasuredPoints").addEventListener("change",recompute);
+$("showFitOverlay").addEventListener("change",recompute);
+
+["rangeZBMode","rangeZMode","rangeKMode","rangeSMode"].forEach(id=>$(id).addEventListener("change",recompute));
+["rangeZBMin","rangeZBMax","rangeZMin","rangeZMax","rangeKMin","rangeKMax","rangeSMin","rangeSMax"].forEach(id=>$(id).addEventListener("input",()=>{if(!$(id).disabled)recompute()}));
+$("resetRanges").addEventListener("click",()=>{["rangeZBMode","rangeZMode","rangeKMode","rangeSMode"].forEach(id=>$(id).value="sym");recompute()});
+
+syncRange("smoothPct","smoothPctN",recompute);syncRange("angle","angleN",recompute);syncRange("zmag","zmagN",()=>{syncQuickLabels();draw3d()});
+$("file1d").addEventListener("change",()=>readLocalDataFile("file1d","dataText1d","profile"));
+$("file2d").addEventListener("change",()=>readLocalDataFile("file2d","dataText2d","map2d"));
+$("template1d").addEventListener("click",()=>downloadInputTemplate("profile"));
+$("template2d").addEventListener("click",()=>downloadInputTemplate("map2d"));
+$("loadCustom").addEventListener("click",parseCustom);$("exportCsv").addEventListener("click",exportCsv);$("resetView").addEventListener("click",resetView);$("mobileReset").addEventListener("click",resetView);
+$("processInfoFile").addEventListener("change",readProcessInfoFile);
+$("downloadProcessInfo").addEventListener("click",downloadProcessInfo);
+$("useBenchmarkInfo").addEventListener("click",useBenchmarkReportInfo);
+$("printReport").addEventListener("click",()=>{updatePrintReportInfo();window.print()});
+$("topPrintReport").addEventListener("click",()=>{updatePrintReportInfo();window.print()});
+["rProject","rDate","rOperator","rStack","rMetrology","rProcess","rTemp","rNotes"].forEach(id=>$(id).addEventListener("input",updatePrintReportInfo));
+$("angleQuick").addEventListener("input",()=>{$("angle").value=$("angleQuick").value;$("angleN").value=$("angleQuick").value;recompute()});
+$("zQuick").addEventListener("input",()=>{$("zmag").value=$("zQuick").value;$("zmagN").value=$("zQuick").value;syncQuickLabels();draw3d()});
+["yaw","pitch"].forEach(id=>$(id).addEventListener("input",draw3d));
+$("field3dSelect").addEventListener("change",()=>{state.field3d=$("field3dSelect").value;draw3d()});
+["mapZBefore","mapZ","mapK","mapS"].forEach(bindMapAngle);
+bindMapProbe("mapZBefore","zb");bindMapProbe("mapZ","z");bindMapProbe("mapK","k");bindMapProbe("mapS","s");
+["plotZ","plotK","plotS"].forEach(bindPlotProbe);
+bind3DProbe();
+bindOpenViews();
+updatePrintReportInfo();
+
+const c3=$("view3d");
+c3.addEventListener("pointerdown",e=>{
+  c3.setPointerCapture(e.pointerId);state.points3d.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(state.points3d.size===1){state.lastX=e.clientX;state.lastY=e.clientY}
+  if(state.points3d.size===2){const p=[...state.points3d.values()];state.pinchDist=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);state.pinchZoom=state.camZoom}
+});
+c3.addEventListener("pointermove",e=>{
+  if(!state.points3d.has(e.pointerId))return;const prev=state.points3d.get(e.pointerId);state.points3d.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(state.points3d.size===1){
+    const dx=e.clientX-prev.x,dy=e.clientY-prev.y;$("yaw").value=clamp(+$("yaw").value+dx*.45,-180,180);$("pitch").value=clamp(+$("pitch").value-dy*.35,5,85);draw3d();
+  }else if(state.points3d.size>=2){
+    const p=[...state.points3d.values()].slice(0,2),d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);
+    if(state.pinchDist>0){state.camZoom=clamp(state.pinchZoom*d/state.pinchDist,.55,1.9);draw3d()}
+  }
+});
+function end3d(e){state.points3d.delete(e.pointerId);if(state.points3d.size<2){state.pinchDist=null;state.pinchZoom=null}}
+c3.addEventListener("pointerup",end3d);c3.addEventListener("pointercancel",end3d);
+c3.addEventListener("wheel",e=>{e.preventDefault();state.camZoom=clamp(state.camZoom*(e.deltaY>0?.92:1.08),.55,1.9);draw3d()},{passive:false});
+
+if(matchMedia("(max-width:820px)").matches){
+  const groups=[...document.querySelectorAll(".controlGroup")];groups.forEach((g,i)=>g.open=i<3);
+}
+updateCustomMode();
+updateMethodUi();
+updateVerificationUi();
+updateCurvatureControls();
+updateRangeInputs();
+loadPreset();
+})();
+</script>
+</body>
+</html>
+<style>
+/* v0.26 final readability override */
+.profileGrid .graphicHead strong{font-size:14.5px!important}
+.profileGrid .graphicHead span{font-size:11px!important}
+.workspaceLower{grid-template-columns:minmax(470px,.98fr) minmax(0,1.02fr)!important}
+@media(max-width:1100px){
+  .workspaceLower{grid-template-columns:1fr!important}
+  .canvas3d{height:445px!important}
+  .profileGrid{height:auto!important}
+  .plotCanvas{height:195px!important;min-height:182px!important}
+}
+</style>
