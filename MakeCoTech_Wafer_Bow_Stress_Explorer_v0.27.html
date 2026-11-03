@@ -330,9 +330,95 @@ footer{color:#70889c;font-size:11px;line-height:1.5;padding:5px 2px 18px}
   .row2{grid-template-columns:1fr}.validationGrid{grid-template-columns:1fr}.summary{gap:7px}
   .metric{padding:9px}.metric .v{font-size:16px}.mobileQuick{grid-template-columns:1fr 1fr}.mobileQuick button{grid-column:1/-1}
 }
+
+/* MakeCoTech site header for the standalone Wafer Explorer.
+   All declarations are scoped to mct-* classes to protect tool styles. */
+.mct-site-header{
+  display:flex;align-items:center;justify-content:space-between;gap:22px;
+  width:100%;min-height:97px;padding:8px 7%;
+  background:#102348;border-bottom:1px solid rgba(255,255,255,.12);
+  color:#fff;position:relative;z-index:30;
+}
+.mct-site-brand{display:block;flex:0 0 auto;line-height:0;text-decoration:none}
+.mct-site-brand img{display:block;width:170px;max-width:40vw;height:auto;background:#fff}
+.mct-site-navigation{display:flex;align-items:center;justify-content:flex-end;gap:22px}
+.mct-site-navigation a{
+  font:700 11px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.03em;
+  text-transform:uppercase;color:#fff;text-decoration:none;white-space:nowrap;
+}
+.mct-site-navigation a:hover{color:#22c4ff}
+.mct-site-navigation a:focus-visible,.mct-menu-toggle:focus-visible{outline:2px solid #7ec8ff;outline-offset:4px}
+.mct-menu-toggle{display:none;background:transparent;color:#fff;border:0;font-size:26px;line-height:1;cursor:pointer;min-height:42px;padding:4px 9px}
+.mct-tool-hero{
+  width:100%;padding:16px 4.5% 14px;
+  background:linear-gradient(135deg,#07172f 0%,#0b2a5b 58%,#164d82 100%);
+  border-bottom:1px solid rgba(255,255,255,.14);
+}
+.mct-tool-hero-inner{max-width:1360px;margin:0 auto}
+.mct-tool-hero .mct-eyebrow{
+  margin:0 0 4px;color:#7ec8ff;letter-spacing:.08em;text-transform:uppercase;
+  font:800 10px/1.3 Arial,Helvetica,sans-serif;
+}
+.mct-tool-hero h1{
+  font:700 clamp(23px,2.25vw,34px)/1.08 Arial,Helvetica,sans-serif;
+  letter-spacing:-.015em;color:#fff;margin:0;
+}
+.mct-tool-hero h1 span{color:#7ec8ff}
+.mct-tool-hero p{
+  color:rgba(255,255,255,.86);font:400 13px/1.45 Arial,Helvetica,sans-serif;
+  margin:8px 0 0;max-width:1000px;
+}
+/* Avoid duplicating the same full-page title inside the original tool header.
+   Leave the H1 present in the document for print reports and compatibility. */
+@media screen {.mct-branded .wrap > header .brand h1{display:none}}
+.mct-branded .wrap > header .brand .sub{max-width:1050px}
+@media(max-width:1020px){
+  .mct-site-header{padding:8px 5%;min-height:80px}
+  .mct-menu-toggle{display:block;margin-left:auto}
+  .mct-site-navigation{
+    display:none;position:absolute;top:100%;left:0;right:0;padding:19px 7%;
+    background:#061a3d;flex-direction:column;align-items:flex-start;gap:17px;
+    box-shadow:0 12px 18px rgba(0,0,0,.3)
+  }
+  .mct-site-navigation.is-open{display:flex}
+  .mct-site-navigation a{font-size:13px}
+}
+@media(max-width:560px){
+  .mct-site-brand img{width:145px}
+  .mct-tool-hero{padding:14px 18px 12px}
+  .mct-tool-hero h1{font-size:22px}
+  .mct-tool-hero p{font-size:12px}
+}
+@media print{
+  .mct-site-header,.mct-tool-hero{display:none!important}
+  .mct-branded .wrap > header .brand h1{display:block!important}
+}
+
 </style>
 </head>
-<body>
+<body class="mct-branded">
+<div class="mct-site-header" role="banner">
+  <a class="mct-site-brand" href="index.html#home" aria-label="MakeCoTech homepage">
+    <img src="makecotech_logo.png" alt="MakeCoTech logo" width="170">
+  </a>
+  <button class="mct-menu-toggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mct-site-navigation">☰</button>
+  <nav class="mct-site-navigation" id="mct-site-navigation" aria-label="MakeCoTech main navigation">
+    <a href="index.html#home">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#industries">Industries</a>
+    <a href="index.html#resources">Technical Resources</a>
+    <a href="index.html#about">About</a>
+    <a href="index.html#founder">Founder</a>
+    <a href="index.html#contact">Contact</a>
+  </nav>
+</div>
+<section class="mct-tool-hero" aria-labelledby="mct-tool-title">
+  <div class="mct-tool-hero-inner">
+    <p class="mct-eyebrow">Technical Resource · Interactive Engineering Tool</p>
+    <h1 id="mct-tool-title">Wafer Bow &amp; Thin-Film Stress Explorer <span>v0.27</span></h1>
+    <p>Explore wafer curvature, 3D deformation and Stoney-equivalent stress from before- and after-deposition measurements.</p>
+  </div>
+</section>
 <div class="wrap">
 <header>
   <div class="brand">
@@ -2165,6 +2251,23 @@ updateVerificationUi();
 updateCurvatureControls();
 updateRangeInputs();
 loadPreset();
+})();
+</script>
+<script>
+/* Navigation only: this does not affect calculations, plots or local measurement data. */
+(()=>{
+  const toggle=document.querySelector('.mct-menu-toggle');
+  const nav=document.querySelector('.mct-site-navigation');
+  if(!toggle||!nav)return;
+  toggle.addEventListener('click',()=>{
+    const opened=nav.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded',String(opened));
+    toggle.setAttribute('aria-label',opened?'Close navigation menu':'Open navigation menu');
+  });
+  nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    nav.classList.remove('is-open');toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Open navigation menu');
+  }));
 })();
 </script>
 </body>
