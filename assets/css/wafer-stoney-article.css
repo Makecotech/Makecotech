@@ -1,0 +1,78 @@
+
+/* MakeCoTech wafer article — supplementary styles only.
+   All sitewide typography, navigation, logo and hero framing come from style.css.
+   This stylesheet is scoped to .wafer-article-page to avoid overriding the website. */
+.wafer-article-page{background:#fff}
+.wafer-article-page .wafer-actions{margin:13px 0 3px;display:flex;flex-wrap:wrap;gap:10px}
+.wafer-article-page .wafer-button{display:inline-flex;align-items:center;justify-content:center;padding:9px 17px;background:#008cff;border:1px solid #60b9ff;color:#fff;text-decoration:none;border-radius:7px;font-size:.80rem;font-weight:700}
+.wafer-article-page .wafer-button:hover{background:#006dca}
+.wafer-article-page .article-body{padding-bottom:50px}
+.wafer-article-page .wafer-content{max-width:1180px;color:#0b214f}
+.wafer-article-page .wafer-content h2{color:#0b2a5b;font-size:clamp(1.22rem,1.8vw,1.55rem);margin:38px 0 13px;line-height:1.25}
+.wafer-article-page .wafer-content h3{color:#163a63;font-size:1.06rem;margin:12px 0 9px}
+.wafer-article-page .wafer-content p,.wafer-article-page .wafer-content li{font-size:clamp(.89rem,1vw,.99rem);line-height:1.7;color:#334155}
+.wafer-article-page .wafer-content a{color:#0074d9}
+.wafer-article-page .wafer-content a:hover{color:#0b2a5b}
+.wafer-article-page .wafer-content p.lead{font-size:1.05rem;line-height:1.65;margin:24px 0}
+.wafer-article-page .section-kicker{font-size:.69rem;text-transform:uppercase;letter-spacing:.1em;color:#0074d9;font-weight:800;margin:13px 0 8px}
+.wafer-article-page .keynote{border-left:4px solid #0074d9;background:#eff6ff;padding:17px 20px;margin:24px 0;border-radius:0 9px 9px 0}
+.wafer-article-page .keynote strong{color:#0b2a5b}
+.wafer-article-page .equation{background:#f5f9ff;border:1px solid #dbe8f6;border-left:4px solid #0074d9;border-radius:8px;padding:17px 12px;margin:19px 0;text-align:center;overflow-x:auto}
+.wafer-article-page .equation math{color:#0b2a5b;font-size:1.38rem}
+.wafer-article-page .math-grid,.wafer-article-page .twocol{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:19px 0}
+.wafer-article-page .math-grid .equation{margin:0}
+.wafer-article-page .fact-card{background:#f9fbff;border:1px solid #dbe8f6;border-radius:9px;padding:18px}
+.wafer-article-page .fact-card p{margin:0}
+.wafer-article-page .mct-figure,.wafer-article-page .mct-app-shot{margin:24px 0 30px;background:#fff;border:1px solid #dbe8f6;border-radius:10px;overflow:hidden;max-width:100%}
+.wafer-article-page .mct-figure img,.wafer-article-page .mct-app-shot img{display:block;width:100%;max-width:100%;height:auto;padding:12px}
+.wafer-article-page .figure-head,.wafer-article-page .app-shot-intro{display:block;background:#eef5ff;padding:14px 18px;border-bottom:1px solid #dbe8f6;color:#0b2a5b}
+.wafer-article-page .figure-head p,.wafer-article-page .app-shot-intro span{display:block;color:#5d6878;font-size:.82rem;margin:4px 0 0}
+.wafer-article-page .mct-figure figcaption,.wafer-article-page .mct-app-shot figcaption{display:block;font-size:.84rem;line-height:1.55;color:#5d6878;padding:6px 17px 17px}
+.wafer-article-page .mct-figure-context{color:#5d6878}
+.wafer-article-page .mct-table-wrap{overflow-x:auto;max-width:100%;margin:15px 0 21px}
+.wafer-article-page .mct-table{border-collapse:collapse;width:100%;font-size:.86rem}
+.wafer-article-page .mct-table th,.wafer-article-page .mct-table td{padding:12px;border-bottom:1px solid #dbe8f6;text-align:left}
+.wafer-article-page .mct-table th{background:#0b2a5b;color:#fff;font-weight:700}
+.wafer-article-page .mct-table tr:nth-child(even){background:#f5f9ff}
+.wafer-article-page .metrics,.wafer-article-page .mct-app-note{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:19px 0}
+.wafer-article-page .metric,.wafer-article-page .mct-app-note>div{background:#eff6ff;border:1px solid #bfd7f4;border-radius:10px;padding:15px;min-width:0}
+.wafer-article-page .metric .label,.wafer-article-page .mct-app-note .k{font-size:.79rem;color:#456584;font-weight:700}
+.wafer-article-page .metric .value,.wafer-article-page .mct-app-note .n{font-weight:800;color:#0b2a5b;font-size:clamp(1.15rem,2vw,1.8rem);margin:7px 0}
+.wafer-article-page .metric .context{font-size:.75rem;color:#637587}
+.wafer-article-page .caution{border-left:4px solid #ce7e35;background:#fff8ef;padding:15px 19px;margin:20px 0}
+.wafer-article-page .application-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:19px 0}
+.wafer-article-page .application-card{border:1px solid #dbe8f6;border-radius:10px;overflow:hidden;background:#fff}
+.wafer-article-page .application-card .app-art{height:112px;display:flex;align-items:center;justify-content:center;background:linear-gradient(125deg,#061a3d,#0b2a5b)}
+.wafer-article-page .application-card .app-art svg{width:95%;height:90px}
+.wafer-article-page .application-card .app-body{padding:16px}
+.wafer-article-page .application-card .app-number{color:#0074d9;font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;font-weight:800;margin-bottom:7px}
+.wafer-article-page .application-card h3{font-size:1rem}
+.wafer-article-page .application-card .app-focus{border-top:1px solid #dbe8f6;padding-top:11px;font-size:.82rem;color:#426486}
+.wafer-article-page .application-conclusion{background:#eff6ff;border-left:4px solid #0074d9;padding:15px 20px;margin:22px 0}
+.wafer-article-page .tool-section{background:#f2f8ff;border:1px solid #bbd7f5;border-radius:11px;padding:20px 22px;margin:30px 0;color:#0b214f}
+.wafer-article-page .tool-section h2{margin:10px 0 12px;color:#0b2a5b}
+.wafer-article-page .tool-section p,.wafer-article-page .tool-section li{color:#334155}
+.wafer-article-page .tool-tag{color:#0074d9;font-size:.73rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800}
+.wafer-article-page .mct-open-tool{display:inline-flex;background:#0b2a5b;color:#fff!important;text-decoration:none;padding:11px 16px;font-size:.88rem;font-weight:700;border-radius:6px;margin:12px 0}
+.wafer-article-page .mct-open-tool:hover{background:#0074d9}
+.wafer-article-page .references{border-top:1px solid #dbe8f6;margin-top:30px;padding-top:15px}
+.wafer-article-page .references li{overflow-wrap:anywhere;margin-bottom:11px}
+.wafer-article-page .fineprint{font-size:.78rem;color:#5d6878}
+@media(max-width:860px){.wafer-article-page .application-grid{grid-template-columns:1fr}}
+@media(max-width:680px){.wafer-article-page .math-grid,.wafer-article-page .twocol,.wafer-article-page .metrics,.wafer-article-page .mct-app-note{grid-template-columns:1fr}.wafer-article-page .mct-figure img,.wafer-article-page .mct-app-shot img{padding:3px}.wafer-article-page .wafer-content h2{margin-top:27px}.wafer-article-page .tool-section{padding:13px}.wafer-article-page .equation math{font-size:1.04rem}}
+
+
+/* Source-of-stress explainer and authentic animation assets */
+.wafer-article-page .wafer-stress-source-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.wafer-article-page .wafer-stress-source{border:1px solid #dbe8f6;background:#f4f8fc;border-radius:10px;padding:16px 18px}
+.wafer-article-page .wafer-stress-source h3{margin:0 0 8px;color:#0b2a5b}
+.wafer-article-page .wafer-stress-source p{margin:0}
+.wafer-article-page .wafer-five-panel img{max-height:620px;object-fit:contain}
+.wafer-article-page .wafer-tool-animation{max-width:1020px}
+.wafer-article-page .wafer-tool-animation a{display:block}
+.wafer-article-page .wafer-tool-animation img{padding:10px;aspect-ratio:16/9;object-fit:contain;background:#f7fbff}
+.wafer-article-page .wafer-tool-animation a:focus-visible{outline:3px solid #008cff;outline-offset:3px}
+@media(max-width:700px){.wafer-article-page .wafer-stress-source-grid{grid-template-columns:1fr}.wafer-article-page .wafer-five-panel img{max-height:none}}
+
+.wafer-article-page #actual-3d-stress-screen{max-width:660px;margin:26px auto}
+.wafer-article-page #actual-3d-stress-screen img{max-width:540px;margin:auto}

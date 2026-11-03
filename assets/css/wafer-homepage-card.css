@@ -1,0 +1,14 @@
+
+/* Additional MakeCoTech wafer animation card rules.
+   Original site colors, header, logos and existing cards remain unchanged. */
+.resources .wafer-resource-card .resource-motion img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  height: auto;
+  object-fit: contain;
+  background: #061a3d;
+}
+@media (prefers-reduced-motion: reduce) {
+  .resources .wafer-resource-card .resource-motion { animation: none; }
+}
