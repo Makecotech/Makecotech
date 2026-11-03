@@ -1362,3 +1362,14 @@ body.service-dialog-open { overflow: hidden; }
     grid-template-columns: minmax(0, 1fr);
   }
 }
+
+
+/* Wafer Bow & Thin-Film Stress resource card — shared by EN and FR indexes.
+   Uses the site's existing MakeCoTech palette and card components. */
+.resources .wafer-resource-card .resource-motion img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: contain;
+  background: #0b1824;
+}
