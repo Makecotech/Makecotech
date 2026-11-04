@@ -394,6 +394,28 @@ footer{color:#70889c;font-size:11px;line-height:1.5;padding:5px 2px 18px}
   .mct-branded .wrap > header .brand h1{display:block!important}
 }
 
+
+/* MakeCoTech offline / measurement-data privacy notice. Isolated from existing tool styles. */
+.mct-privacy-strip{
+  padding:12px max(18px,calc((100vw - 1360px)/2));
+  background:#ffe286;color:#14213a;border-bottom:2px solid #d4a327;
+  font:600 14px/1.45 Arial,Helvetica,sans-serif;
+}
+.mct-privacy-inner{max-width:1360px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.mct-privacy-copy{flex:1 1 480px}
+.mct-privacy-copy strong{font-size:16px;font-weight:900;color:#122342}
+.mct-privacy-copy small{display:block;font-size:11px;font-weight:500;color:#374351;margin-top:3px}
+.mct-offline-button{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  background:#102d58!important;border:1px solid #102d58!important;color:#fff!important;
+  border-radius:9px;padding:11px 17px;font:800 13px/1.2 Arial,Helvetica,sans-serif;
+  min-height:42px;cursor:pointer;white-space:normal;text-align:center;
+}
+.mct-offline-button:hover{background:#174277!important}
+.mct-offline-button:focus-visible{outline:3px solid #1774bd;outline-offset:3px}
+@media(max-width:740px){.mct-privacy-strip{padding:12px 18px}.mct-privacy-inner{align-items:stretch;gap:10px}.mct-offline-button{width:100%}}
+@media print{.mct-privacy-strip{display:none!important}}
+
 </style>
 </head>
 <body class="mct-branded">
@@ -417,6 +439,16 @@ footer{color:#70889c;font-size:11px;line-height:1.5;padding:5px 2px 18px}
     <p class="mct-eyebrow">Technical Resource · Interactive Engineering Tool</p>
     <h1 id="mct-tool-title">Wafer Bow &amp; Thin-Film Stress Explorer <span>v0.27</span></h1>
     <p>Explore wafer curvature, 3D deformation and Stoney-equivalent stress from before- and after-deposition measurements.</p>
+  </div>
+</section>
+<section class="mct-privacy-strip" aria-label="Offline and measurement data privacy">
+  <div class="mct-privacy-inner">
+    <div class="mct-privacy-copy">
+      <strong>🔒 OFFLINE-READY &amp; PRIVATE — Your measurement data stays on your device.</strong>
+      <div>All calculations run locally in your browser. Uploaded wafer files are <strong>not sent to, recorded by, or stored by MakeCoTech.</strong></div>
+      <small>You can save a standalone copy and use it without internet. Visiting this website or opening external reference links may generate standard server access logs.</small>
+    </div>
+    <button type="button" class="mct-offline-button" id="mct-download-offline" title="Save a self-contained copy of this interactive tool for use without an internet connection">⬇ Download offline copy (.html)</button>
   </div>
 </section>
 <div class="wrap">
@@ -2268,6 +2300,49 @@ loadPreset();
     nav.classList.remove('is-open');toggle.setAttribute('aria-expanded','false');
     toggle.setAttribute('aria-label','Open navigation menu');
   }));
+})();
+</script>
+
+<script>
+/* Offline saver: preserve a fresh app template, not the user's live measurement entries.
+   Uses the already loaded, same-origin logo image; no network request is needed. */
+(function(){
+  'use strict';
+  var initialPageHtml = null;
+  function snapshot(){
+    if(!initialPageHtml){
+      initialPageHtml='<!doctype html>\n'+document.documentElement.outerHTML;
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',snapshot,{once:true});
+  else snapshot();
+  var button=document.getElementById('mct-download-offline');
+  if(!button) return;
+  button.addEventListener('click',async function(){
+    snapshot();
+    var html=initialPageHtml;
+    var logo=document.querySelector('.mct-site-brand img');
+    try{
+      if(logo && typeof logo.decode==='function' && !logo.complete) await logo.decode();
+      if(logo && logo.naturalWidth>0){
+        var canvas=document.createElement('canvas');
+        canvas.width=logo.naturalWidth;canvas.height=logo.naturalHeight;
+        canvas.getContext('2d').drawImage(logo,0,0);
+        var imageData=canvas.toDataURL('image/png');
+        html=html.replace('src="makecotech_logo.png"','src="'+imageData+'"');
+      }
+    }catch(e){
+      // The downloaded HTML still works as an offline calculator if the logo cannot be embedded.
+    }
+    var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+    var url=URL.createObjectURL(blob);
+    var link=document.createElement('a');
+    link.href=url;
+    link.download='MakeCoTech_Wafer_Bow_Stress_Explorer_v0.27_OFFLINE.html';
+    document.body.appendChild(link);
+    link.click();link.remove();
+    setTimeout(function(){URL.revokeObjectURL(url);},2000);
+  });
 })();
 </script>
 </body>
